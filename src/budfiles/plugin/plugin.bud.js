@@ -185,8 +185,11 @@ module.exports = {
       file: 'package.json',
       merge: pkg => ({
         ...pkg,
-        browserslist: ['extends @wordpress/browserslist-config'],
+        browserslist: [
+          'extends @wordpress/browserslist-config',
+        ],
         scripts: {
+          ...pkg.scripts,
           dev:
             'cross-env NODE_ENV=hmr webpack-dev-server --colors --watch --config webpack.config.js',
           build:

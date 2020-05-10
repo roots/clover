@@ -258,6 +258,36 @@ export const bud = {
   },
 
   /**
+   * Action: Install from package files
+   *
+   * @param  {string} repo
+   * @return {Observable}
+   */
+  install: async function ({repo}, observer) {
+    let installation
+
+    observer.next(`Installing packages from ${repo}...`)
+
+    if (repo !== 'npm' && repo !== 'packagist') {
+      observer.error(`Incorrect package repo specified.`)
+    }
+
+    if (repo == 'npm') {
+      installation = this.execa.command(`yarn`, this.execaOptions)
+    }
+
+    if (repo == 'packagist') {
+      installation = this.execa.command(`composer install`, this.execaOptions)
+    }
+
+    installation.stdout.on('data', status => {
+      observer.next(status)
+    })
+
+    installation.then(() => observer.complete())
+  },
+
+  /**
    * Expose project JSON
    */
   json: async function ({file, merge}, observer) {

@@ -171,6 +171,10 @@ module.exports = {
       path: '.bud/budfiles/example/templates/Component.js.hbs',
     },
     {
+      action: 'install',
+      repo: 'npm',
+    },
+    {
       action: 'env',
     },
   ],
