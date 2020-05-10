@@ -185,9 +185,7 @@ module.exports = {
       file: 'package.json',
       merge: pkg => ({
         ...pkg,
-        browserslist: [
-          'extends @wordpress/browserslist-config',
-        ],
+        browserslist: ['extends @wordpress/browserslist-config'],
         scripts: {
           ...pkg.scripts,
           dev:

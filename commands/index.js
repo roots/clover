@@ -9,7 +9,8 @@ const Bud = () => (
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text>
-          To get started run <Color green>npx @roots/bud init {`{project-dir}`}</Color>
+          To get started run{' '}
+          <Color green>npx @roots/bud init {`{project-dir}`}</Color>
         </Text>
       </Box>
     </Box>
