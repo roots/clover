@@ -19,10 +19,7 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write ."
   },
-  "files": [
-    "build",
-    "src"
-  ],
+  "files": ["build", "src"],
   "dependencies": {
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
