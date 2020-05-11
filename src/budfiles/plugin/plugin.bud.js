@@ -144,8 +144,6 @@ module.exports = {
         'autoprefixer',
         'babel-eslint',
         'babel-loader',
-        'browser-sync',
-        'browser-sync-webpack-plugin',
         'clean-webpack-plugin',
         'cross-env',
         'css-loader',

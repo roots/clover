@@ -1,5 +1,5 @@
 const {existsSync, readdirSync, statSync} = require('fs')
-const {basename, join, resolve} = require('path')
+const {join, resolve} = require('path')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
@@ -7,7 +7,6 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const {HotModuleReplacementPlugin, NoEmitOnErrorsPlugin} = require('webpack')
 const WebpackBar = require('webpackbar')
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
 /**
@@ -24,9 +23,10 @@ const isHMR = process.env.NODE_ENV === 'hmr'
  * @param  {string} parentDir
  * @return {array}
  */
-const dirs = parentDir => readdirSync(
-  resolve(__dirname, parentDir)
-).filter(file => statSync(join(parentDir, file)).isDirectory())
+const dirs = parentDir =>
+  readdirSync(resolve(__dirname, parentDir)).filter(file =>
+    statSync(join(parentDir, file)).isDirectory(),
+  )
 
 /**
  * Block webpack entries
@@ -72,20 +72,22 @@ const entry = () => {
 module.exports = {
   entry,
   context: join(__dirname, 'src'),
+  devServer: {
+    disableHostCheck: true,
+  },
   output: {
     path: resolve(__dirname, 'dist'),
-    publicPath: !isHMR
-      ? `{{protocol}}://{{proxy}}/{{path}}/${basename(__dirname)}/dist/`
-      : `{{protocol}}://localhost:{{port}}/{{path}}/${basename(__dirname)}/dist/`,
+    publicPath: '/dist/',
     sourceMapFilename: '[file].map',
   },
-  mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? false : 'inline-source-map',
+  mode: isProduction ? 'production' : 'development',
   resolve: {
     alias: {
       '@blocks': resolve(__dirname, 'src/blocks'),
       '@components': resolve(__dirname, 'src/components'),
       '@extensions': resolve(__dirname, 'src/extensions'),
+      '@hooks': resolve(__dirname, 'src/hooks'),
     },
     extensions: ['.js', '.json', '.jsx', '.css'],
     modules: [resolve(__dirname, 'node_modules')],
@@ -132,26 +134,19 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new ManifestPlugin({
-      output: {
-        publicPath: resolve(__dirname, 'dist'),
-      },
-    }),
+    new ManifestPlugin(),
     new DependencyExtractionWebpackPlugin({
       injectPolyfill: false,
       useDefaults: true,
       outputFormat: 'json',
     }),
     new FriendlyErrorsWebpackPlugin(),
-    ...(isHMR ? [
-        new HotModuleReplacementPlugin(),
-        new NoEmitOnErrorsPlugin(),
-        new WriteFilePlugin(),
-        new BrowserSyncPlugin({
-          host: 'localhost',
-          port: 3000,
-          proxy: '{{protocol}}://{{proxy}}',
-        }),
-    ] : [new WebpackBar()])
+    ...(isHMR
+      ? [
+          new HotModuleReplacementPlugin(),
+          new NoEmitOnErrorsPlugin(),
+          new WriteFilePlugin(),
+        ]
+      : [new WebpackBar()]),
   ],
 }

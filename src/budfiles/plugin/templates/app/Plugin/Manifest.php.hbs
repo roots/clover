@@ -59,7 +59,7 @@ class Manifest
             );
 
             $entry = $this->collection::make([
-                'url' => $url,
+                'url' => plugins_url($url, realpath(__DIR__ . '/..')),
                 'type' => $this->types[$fileParts[1]],
                 'name' => $handleParts[1],
                 'location' => $fileParts[0],
