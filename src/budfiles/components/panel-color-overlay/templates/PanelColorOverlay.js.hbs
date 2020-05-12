@@ -4,6 +4,7 @@ import {ColorPalette, InspectorControls} from '@wordpress/block-editor'
 import {PanelBody, RangeControl} from '@wordpress/components'
 
 /** Modules */
+import chroma from 'chroma-js'
 import PropTypes from 'prop-types'
 
 /**
@@ -57,4 +58,14 @@ PanelColorOverlay.propTypes = {
   setAttributes: PropTypes.func.isRequired,
 }
 
+/**
+ * Applies opacity value to color value
+ *
+ * @param {string}  color
+ * @param {opacity} color
+ */
+const mixColor = (color, opacity) =>
+  chroma(color).alpha(opacity * 0.01).hex('rgba')
+
+export {mixColor}
 export default PanelColorOverlay
