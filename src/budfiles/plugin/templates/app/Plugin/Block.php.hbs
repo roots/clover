@@ -18,6 +18,9 @@ class Block implements BlockInterface
     protected $dependencies;
 
     /** @var array */
+    protected $attributes;
+
+    /** @var array */
     protected $assets;
 
     /**
@@ -52,16 +55,30 @@ class Block implements BlockInterface
 
     /**
      * Get manifest entry
+     *
+     * @return array
      */
-    public function getAssets()
+    public function getAssets(): array
     {
         return $this->assets;
     }
 
     /**
-     * Set manifest entry.
+     * Set manifest entries
+     *
+     * @param  array $assets
+     * @return void
      */
-    public function addAsset($asset)
+     public function setAssets(array $assets): void
+     {
+         $this->assets = $assets;
+     }
+
+    /**
+     * Set manifest entry.
+     *
+     */
+    public function addAsset(array $asset)
     {
         $this->assets->push($asset);
     }

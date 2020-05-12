@@ -1,0 +1,125 @@
+<?php
+
+namespace {{pascalcase namespace}}\Plugin;
+
+use Psr\Container\ContainerInterface;
+use Illuminate\Support\Collection;
+
+/**
+ * Asset.
+ */
+class EditorAsset
+{
+    private $label;
+
+    private $path;
+
+    private $url;
+
+    private $dependencies;
+
+    /**
+     * Construct.
+     */
+    public function __construct(ContainerInterface $bud)
+    {
+        $this->bud = $bud;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set label
+     */
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Set path
+     *
+     * @param  string path
+     * @return void
+     */
+    public function setPath(string $path): void
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set url
+     *
+     * @param  string url
+     * @return void
+     */
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
+    }
+
+    /**
+     * Get dependencies
+     *
+     * @return array
+     */
+    public function getDependencies(): array
+    {
+        return $this->dependencies;
+    }
+
+    /**
+     * Set dependencies
+     *
+     * @param  array url
+     * @return void
+     */
+    public function setDependencies(array $dependencies): void
+    {
+        $this->dependencies = $dependencies;;
+    }
+
+    /**
+     * Get asset.
+     *
+     * @return object
+     */
+    public function getEnqueueValues()
+    {
+        return (object) [
+            'enqueue' => [
+                $this->label,
+                $this->uri,
+                ...$this->dependencies,
+            ],
+        ];
+    }
+}

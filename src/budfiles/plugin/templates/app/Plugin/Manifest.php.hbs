@@ -28,10 +28,10 @@ class Manifest
     public function __construct(ContainerInterface $bud)
     {
         $this->bud = $bud;
+        $this->entries = $bud->get('config.manifest');
+
         $this->collection = $bud->get('util.collection');
         $this->namespace = $bud->get('config.namespace');
-
-        $this->entries = $this->collection::make([]);
     }
 
     /**
@@ -40,16 +40,13 @@ class Manifest
     public function load()
     {
         /**
-         * Collect assets from manifest
-         */
-        $entries = $this->collection::make(
-            json_decode(file_get_contents($this->bud->get('config.manifest')))
-        );
-
-        /**
          * Process manifest entries.
          */
-        $entries->each(function ($url, $handle) {
+        $this->entries->each(function ($url, $handle) {
+            $entry = $bud->make('entry');
+            $entry->setUrl($url);
+            $entry->setPath($handle);
+
             $handleParts = $this->collection::make(
                 explode('/', $handle)
             );
@@ -88,11 +85,7 @@ class Manifest
             /**
              * Matched against Block handle property.
              */
-            $entry->put('handle', join('/', [
-                $this->namespace,
-                $entry->get('name'),
-                $entry->get('registration')
-            ]));
+            $entry->put('handle', $this->getHandle());
 
             /**
              * Process WordPress dependency manifest plugin

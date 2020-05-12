@@ -7,6 +7,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use function DI\create;
+use function DI\make;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
@@ -18,7 +19,15 @@ $builder = new ContainerBuilder;
 
 $builder->addDefinitions([
     'config.dir' => realpath(__DIR__ . '/..'),
-    'config.manifest' => realpath(__DIR__ . '/../dist/manifest.json'),
+    'config.manifest' => make(ContainerInterface $bud) {
+        if (! $manifestPath = realpath(__DIR__ . '/../dist/manifest.json')) {
+            return;
+        }
+
+        return $bud->get('util.collection')::make(
+            json_decode(file_get_contents($this->bud->get('config.manifest')))
+        );
+    },
     'config.namespace' => '{{lowercase (dashcase namespace)}}',
     'block' => function (ContainerInterface $bud) {
         return new Block($bud, $bud->get('util.collection'));
