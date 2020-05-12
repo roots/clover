@@ -1,6 +1,6 @@
 {
   "name": "@roots/bud",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "repository": {
     "type": "git",
     "url": "git://github.com/roots/bud.git"
@@ -19,7 +19,10 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write ."
   },
-  "files": ["build", "src"],
+  "files": [
+    "build",
+    "src"
+  ],
   "dependencies": {
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
