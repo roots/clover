@@ -1,7 +1,13 @@
 /**
- * This script is executed on
- * outward facing post contents when
- * the block is utilized in `the_content`
+ * Public scripts.
  */
 
-console.log('hello world')
+/** @wordpress */
+import domReady from '@wordpress/dom-ready'
+
+/** styles */
+import './public.css'
+
+domReady(() => {
+  console.log('dom ready event.')
+})

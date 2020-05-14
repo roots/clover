@@ -2,7 +2,7 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
-use {{pascalcase namespace}}\Plugin\Block;
+use {{pascalcase namespace}}\Block\Contracts\BlockInterface;
 use Illuminate\Support\Collection;
 
 /**
@@ -16,7 +16,7 @@ interface BlockRepositoryInterface
      * @param string $handle
      * @return Block
      */
-    public function get(string $handle): Block;
+    public function get(string $handle): BlockInterface;
 
     /**
      * Get blocks.

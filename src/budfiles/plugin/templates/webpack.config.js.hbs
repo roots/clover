@@ -38,24 +38,16 @@ module.exports = {
     dirs('src/blocks').forEach(asset => {
       assets = {
         ...assets,
-        [`${asset}/editor`]: [
-          join(__dirname, `src/blocks/${asset}/editor.js`),
-        ],
-        [`${asset}/public`]: [
-          join(__dirname, `src/blocks/${asset}/public.js`),
-        ],
+        [`${asset}/editor`]: [join(__dirname, `src/blocks/${asset}/editor.js`)],
+        [`${asset}/public`]: [join(__dirname, `src/blocks/${asset}/public.js`)],
       }
     })
 
     dirs('src/extensions').forEach(asset => {
       assets = {
         ...assets,
-        [`${asset}/editor`]: [
-          join(__dirname, `src/blocks/${asset}/editor.js`),
-        ],
-        [`${asset}/public`]: [
-          join(__dirname, `src/blocks/${asset}/public.js`),
-        ],
+        [`${asset}/editor`]: [join(__dirname, `src/blocks/${asset}/editor.js`)],
+        [`${asset}/public`]: [join(__dirname, `src/blocks/${asset}/public.js`)],
       }
     })
 
@@ -103,10 +95,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: join(__dirname, 'src'),
-        use: [
-          {loader: 'babel-loader'},
-          {loader: 'eslint-loader'},
-        ],
+        use: [{loader: 'babel-loader'}, {loader: 'eslint-loader'}],
       },
       {
         test: /\.css$/,

@@ -106,14 +106,14 @@ module.exports = {
     },
     {
       action: 'template',
-      template: 'styles/editor.css',
-      path: 'src/blocks/{{lowercase (dashcase name)}}/styles/editor.css',
+      template: 'editor.css',
+      path: 'src/blocks/{{lowercase (dashcase name)}}/editor.css',
       parser: 'css',
     },
     {
       action: 'template',
-      template: 'styles/public.css',
-      path: 'src/blocks/{{lowercase (dashcase name)}}/styles/public.css',
+      template: 'public.css',
+      path: 'src/blocks/{{lowercase (dashcase name)}}/public.css',
       parser: 'css',
     },
   ],

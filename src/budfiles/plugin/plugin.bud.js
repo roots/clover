@@ -7,6 +7,13 @@ module.exports = {
   description: 'Generate a new plugin',
   actions: [
     {
+      action: 'scaffold',
+      paths: [
+        'src', 'src/blocks', 'src/components', 'src/extensions',
+        'app', 'app/Block', 'app/Block/Partials', 'app/Block/Contracts', 'app/Block/Base',
+      ],
+    },
+    {
       action: 'template',
       template: 'README.md.hbs',
       path: 'README.md',
@@ -107,13 +114,18 @@ module.exports = {
     },
     {
       action: 'template',
-      template: 'app/Plugin/Block.php.hbs',
-      path: 'app/Plugin/Block.php',
+      template: 'app/Block/Block.php.hbs',
+      path: 'app/Block/Block.php',
     },
     {
       action: 'template',
-      template: 'app/Plugin/BlockInterface.php.hbs',
-      path: 'app/Plugin/BlockInterface.php',
+      template: 'app/Block/Base/BaseBlock.php.hbs',
+      path: 'app/Block/Base/BaseBlock.php',
+    },
+    {
+      action: 'template',
+      template: 'app/Block/Contracts/BlockInterface.php.hbs',
+      path: 'app/Block/Contracts/BlockInterface.php',
     },
     {
       action: 'template',
@@ -129,10 +141,6 @@ module.exports = {
       action: 'template',
       template: 'app/Plugin/Manifest.php.hbs',
       path: 'app/Plugin/Manifest.php',
-    },
-    {
-      action: 'scaffold',
-      paths: ['src', 'src/blocks', 'src/components', 'src/extensions'],
     },
     {
       action: 'addDependencies',

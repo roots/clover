@@ -4,7 +4,7 @@ namespace {{pascalcase namespace}}\Plugin;
 
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
-use {{pascalcase namespace}}\Plugin\Block;
+use {{pascalcase namespace}}\Block\Contracts\BlockInterface;
 use {{pascalcase namespace}}\Plugin\BlockRepositoryInterface;
 
 /**
@@ -27,9 +27,9 @@ class BlockRepository implements BlockRepositoryInterface
      * Get block.
      *
      * @param  string
-     * @return Block
+     * @return BlockInterface
      */
-    public function get(string $handle): Block
+    public function get(string $handle): BlockInterface
     {
         return $this->blocks->get($handle);
     }
@@ -47,10 +47,10 @@ class BlockRepository implements BlockRepositoryInterface
     /**
      * Add block.
      *
-     * @param  Block
+     * @param  BlockInterface
      * @return void
      */
-    public function add(Block $block): void
+    public function add(BlockInterface $block): void
     {
         $this->blocks->put($block->getName(), $block);
     }

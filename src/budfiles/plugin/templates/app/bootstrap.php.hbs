@@ -11,7 +11,7 @@ use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
 use {{pascalcase namespace}}\Plugin\Asset;
-use {{pascalcase namespace}}\Plugin\Block;
+use {{pascalcase namespace}}\Block\Block;
 use {{pascalcase namespace}}\Plugin\BlockRepository;
 use {{pascalcase namespace}}\Plugin\Manifest;
 
@@ -52,4 +52,8 @@ $builder->addDefinitions([
     'plugin.path.dist' => realpath(__DIR__ . '/../dist/'),
     'plugin.path.src' => realpath(__DIR__ . '/../src/'),
     'plugin.path.src.blocks' => realpath(__DIR__ . '/../src/blocks/'),
+    'plugin.path.storage' => realpath(__DIR__ . '/../storage/'),
+    'plugin.path.storage.cache' => realpath(__DIR__ . '/../storage/cache'),
 ]);
+
+return $builder->build();

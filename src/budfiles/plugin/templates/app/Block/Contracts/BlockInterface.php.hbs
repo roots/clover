@@ -1,6 +1,6 @@
 <?php
 
-namespace {{pascalcase namespace}}\Plugin;
+namespace {{pascalcase namespace}}\Block\Contracts;
 
 use {{pascalcase namespace}}\Plugin\AssetInterface;
 use Illuminate\Support\Collection;
@@ -10,23 +10,19 @@ use Illuminate\Support\Collection;
  */
 interface BlockInterface
 {
+    public function register(): void;
+
     public function getName(): string;
 
     public function setName(string $name): void;
 
     public function getAttributes(): Collection;
 
+    public function getAssets(): Collection;
+
     public function setAttributes(Collection $attributes): void;
 
-    public function getEditorScript(): string;
-
-    public function getEditorStyle(): string;
-
     public function setEditorAsset(AssetInterface $asset): void;
-
-    public function getPublicScript(): string;
-
-    public function getPublicStyle(): string;
 
     public function setPublicAsset(AssetInterface $asset): void;
 }

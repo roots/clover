@@ -1,17 +1,17 @@
 <?php
 
-namespace {{pascalcase namespace}}\Plugin;
+namespace {{pascalcase namespace}}\Block\Base;
 
 use \WP_Block_Type;
-use {{pascalcase namespace}}\Plugin\AssetInterface;
-use {{pascalcase namespace}}\Plugin\BlockInterface;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
+use {{pascalcase namespace}}\Plugin\AssetInterface;
+use {{pascalcase namespace}}\Block\Contracts\BlockInterface;
 
 /**
  * Block class.
  */
-class Block extends WP_Block_Type implements BlockInterface
+class BaseBlock extends WP_Block_Type implements BlockInterface
 {
     /** @var string */
     public $name;
@@ -41,6 +41,16 @@ class Block extends WP_Block_Type implements BlockInterface
     {
         $this->bud = $bud;
         $this->assets = $this->bud->get('collection')::make([]);
+    }
+
+    /**
+     * Register block.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        register_block_type($this);
     }
 
     /**
@@ -86,45 +96,13 @@ class Block extends WP_Block_Type implements BlockInterface
     }
 
     /**
-     * Get editor script
+     * Get assets.
      *
-     * @return string
+     * @return Collection
      */
-    public function getEditorScript(): string
+    public function getAssets(): Collection
     {
-        return $this->editor_script;
-    }
-
-    /**
-     * Get editor style
-     *
-     * @return string
-     */
-    public function getEditorStyle(): string
-    {
-        return $this->editor_style;
-    }
-
-    /**
-     * Get editor script
-     *
-     * @param  string
-     * @return string
-     */
-    public function getPublicScript(): string
-    {
-        return $this->script;
-    }
-
-    /**
-     * Set editor style
-     *
-     * @param  string
-     * @return string
-     */
-    public function getPublicStyle(): string
-    {
-        return $this->style;
+        return $this->assets;
     }
 
     /**
@@ -152,15 +130,5 @@ class Block extends WP_Block_Type implements BlockInterface
         $this->assets->push($asset);
 
         $this->{$asset->getType()} = $asset->getName();
-    }
-
-    /**
-     * Get assets.
-     *
-     * @return Collection
-     */
-    public function getAssets(): Collection
-    {
-        return $this->assets;
     }
 }
