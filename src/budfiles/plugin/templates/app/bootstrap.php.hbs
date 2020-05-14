@@ -46,7 +46,7 @@ $builder->addDefinitions([
             return str_replace($this->bud->get('plugin.path.src.blocks') . '/', '', $path);
         });
     },
-    'plugin.namespace' => 'acme-co',
+    'plugin.namespace' => '{{lowercase (dashcase namespace)}}',
     'plugin.url' => plugins_url('', __DIR__),
     'plugin.path' => realpath(__DIR__ . '/../'),
     'plugin.path.dist' => realpath(__DIR__ . '/../dist/'),

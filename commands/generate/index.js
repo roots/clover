@@ -1,6 +1,6 @@
-import {join, resolve} from 'path'
 import React, {useState, useEffect} from 'react'
-import {Text, Color, Box} from 'ink'
+import {Text, Box} from 'ink'
+import Spinner from 'ink-spinner'
 import Table from 'ink-table'
 import BudCLI from '../../src/components/BudCLI'
 import globby from 'globby'
@@ -8,15 +8,11 @@ import globby from 'globby'
 /**
  * Budfile glob paths
  */
-const rootsBudsGlob = resolve(__dirname, `../../../src/budfiles/**/*.bud.js`)
+const rootsBudsGlob = `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/*.bud.js`
+const moduleBudsGlob = `${process.cwd()}/node_modules/**/bud-plugin-*/*.bud.js`
+const projectBudsGlob = `${process.cwd()}/.bud/**/*.bud.js`
 
-const moduleBudsGlob = join(
-  process.cwd(),
-  `node_modules/**/bud-plugin-*/**/*.bud.js`,
-)
-const projectBudsGlob = join(process.cwd(), `.bud/budfiles/**/*.bud.js`)
-
-/** Command: bud generate */
+/** Command: yarn generate */
 /// List available budfiles
 const GenerateIndex = () => {
   /**
@@ -24,20 +20,20 @@ const GenerateIndex = () => {
    */
   const [projectBuds, setProjectBuds] = useState([])
   useEffect(() => {
-    ;(async () => {
-      const buds = await globby([projectBudsGlob])
+    projectBuds.length == 0 && (async () => {
+      const buds = await globby(projectBudsGlob)
 
       buds &&
         setProjectBuds(
           buds.map(bud => {
             const src = require(bud)
             return {
-              command: `bud generate ${src.name}`,
+              command: `yarn generate ${src.name}`,
               source: 'project',
               name: src.name,
               description: src.description,
             }
-          }),
+          }).filter(bud => bud.name)
         )
     })()
   }, [])
@@ -47,20 +43,21 @@ const GenerateIndex = () => {
    */
   const [moduleBuds, setModuleBuds] = useState([])
   useEffect(() => {
-    ;(async () => {
-      const buds = await globby([moduleBudsGlob])
+    (async () => {
+      const buds = await globby(moduleBudsGlob)
 
       buds &&
         setModuleBuds(
           buds.map(bud => {
             const src = require(bud)
+
             return {
-              command: `bud generate ${src.name}`,
-              source: 'plugin',
+              command: `yarn generate ${src.name}`,
+              source: src.source ? src.source : null,
               name: src.name,
               description: src.description,
             }
-          }),
+          }).filter(bud => bud.name)
         )
     })()
   }, [])
@@ -70,8 +67,8 @@ const GenerateIndex = () => {
    */
   const [rootsBuds, setRootsBuds] = useState([])
   useEffect(() => {
-    ;(async () => {
-      const buds = await globby([rootsBudsGlob])
+    rootsBuds.length == 0 && (async () => {
+      const buds = await globby(rootsBudsGlob)
 
       buds &&
         setRootsBuds(
@@ -80,7 +77,7 @@ const GenerateIndex = () => {
               const src = require(bud)
               return src.name !== 'bud' && src.name !== 'init'
                 ? {
-                    command: `bud generate ${src.name}`,
+                    command: `yarn generate ${src.name}`,
                     source: '@roots/bud',
                     name: src.name,
                     description: src.description,
@@ -92,29 +89,30 @@ const GenerateIndex = () => {
     })()
   }, [])
 
+  const buds = [...projectBuds, ...rootsBuds, ...moduleBuds]
+
   /**
    * Render
    */
   return (
-    <BudCLI label={'bud generate'} inert={true}>
+    <>
+    <BudCLI label={'Available commands'} inert={true}>
       <Box flexDirection="column" marginTop={1} marginBottom={1}>
-        <Box marginBottom={1}>
-          <Text>
-            <Color green>Budfiles available:</Color>
-          </Text>
-        </Box>
+        {! moduleBuds.length > 0 &&
+          <Box flexDirection="row" marginBottom={1} alignItems="center"><Spinner type='monkey' /> <Text>Looking for modules</Text></Box>}
         <Box
           width={200}
           flexDirection="column"
           flexGrow={1}
           justifyContent="space-between">
-          <Table
+          {buds.length > 0 && <Table
             width={200}
-            data={[...projectBuds, ...rootsBuds, ...moduleBuds]}
-          />
+            data={buds}
+          />}
         </Box>
       </Box>
     </BudCLI>
+    </>
   )
 }
 

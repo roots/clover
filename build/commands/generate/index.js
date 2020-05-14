@@ -687,6 +687,8 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _ink = require("ink");
 
+var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
+
 var _inkTable = _interopRequireDefault(require("ink-table"));
 
 var _BudCLI = _interopRequireDefault(require("../../src/components/BudCLI"));
@@ -702,10 +704,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Budfile glob paths
  */
-const rootsBudsGlob = (0, _path.resolve)(__dirname, `../../../src/budfiles/**/*.bud.js`);
-const moduleBudsGlob = (0, _path.join)(process.cwd(), `node_modules/**/bud-plugin-*/**/*.bud.js`);
-const projectBudsGlob = (0, _path.join)(process.cwd(), `.bud/budfiles/**/*.bud.js`);
-/** Command: bud generate */
+const rootsBudsGlob = `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/*.bud.js`;
+const moduleBudsGlob = `${process.cwd()}/node_modules/**/bud-plugin-*/*.bud.js`;
+const projectBudsGlob = `${process.cwd()}/.bud/**/*.bud.js`;
+/** Command: yarn generate */
 /// List available budfiles
 
 const GenerateIndex = () => {
@@ -714,20 +716,18 @@ const GenerateIndex = () => {
    */
   const [projectBuds, setProjectBuds] = (0, _react.useState)([]);
   (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      const buds = await (0, _globby.default)([projectBudsGlob]);
+    projectBuds.length == 0 && (async () => {
+      const buds = await (0, _globby.default)(projectBudsGlob);
       buds && setProjectBuds(buds.map(bud => {
         const src = require(bud);
 
         return {
-          command: `bud generate ${src.name}`,
+          command: `yarn generate ${src.name}`,
           source: 'project',
           name: src.name,
           description: src.description
         };
-      }));
+      }).filter(bud => bud.name));
     })();
   }, []);
   /**
@@ -736,20 +736,18 @@ const GenerateIndex = () => {
 
   const [moduleBuds, setModuleBuds] = (0, _react.useState)([]);
   (0, _react.useEffect)(() => {
-    ;
-
     (async () => {
-      const buds = await (0, _globby.default)([moduleBudsGlob]);
+      const buds = await (0, _globby.default)(moduleBudsGlob);
       buds && setModuleBuds(buds.map(bud => {
         const src = require(bud);
 
         return {
-          command: `bud generate ${src.name}`,
-          source: 'plugin',
+          command: `yarn generate ${src.name}`,
+          source: src.source ? src.source : null,
           name: src.name,
           description: src.description
         };
-      }));
+      }).filter(bud => bud.name));
     })();
   }, []);
   /**
@@ -758,15 +756,13 @@ const GenerateIndex = () => {
 
   const [rootsBuds, setRootsBuds] = (0, _react.useState)([]);
   (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      const buds = await (0, _globby.default)([rootsBudsGlob]);
+    rootsBuds.length == 0 && (async () => {
+      const buds = await (0, _globby.default)(rootsBudsGlob);
       buds && setRootsBuds(buds.map(bud => {
         const src = require(bud);
 
         return src.name !== 'bud' && src.name !== 'init' ? {
-          command: `bud generate ${src.name}`,
+          command: `yarn generate ${src.name}`,
           source: '@roots/bud',
           name: src.name,
           description: src.description
@@ -774,30 +770,33 @@ const GenerateIndex = () => {
       }).filter(bud => bud.name));
     })();
   }, []);
+  const buds = [...projectBuds, ...rootsBuds, ...moduleBuds];
   /**
    * Render
    */
 
-  return /*#__PURE__*/_react.default.createElement(_BudCLI.default, {
-    label: 'bud generate',
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_BudCLI.default, {
+    label: 'Available commands',
     inert: true
   }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
     flexDirection: "column",
     marginTop: 1,
     marginBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    marginBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    green: true
-  }, "Budfiles available:"))), /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  }, !moduleBuds.length > 0 && /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    flexDirection: "row",
+    marginBottom: 1,
+    alignItems: "center"
+  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, {
+    type: "monkey"
+  }), " ", /*#__PURE__*/_react.default.createElement(_ink.Text, null, "Looking for modules")), /*#__PURE__*/_react.default.createElement(_ink.Box, {
     width: 200,
     flexDirection: "column",
     flexGrow: 1,
     justifyContent: "space-between"
-  }, /*#__PURE__*/_react.default.createElement(_inkTable.default, {
+  }, buds.length > 0 && /*#__PURE__*/_react.default.createElement(_inkTable.default, {
     width: 200,
-    data: [...projectBuds, ...rootsBuds, ...moduleBuds]
-  }))));
+    data: buds
+  })))));
 };
 
 var _default = GenerateIndex;

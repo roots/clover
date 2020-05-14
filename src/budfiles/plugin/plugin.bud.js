@@ -9,8 +9,15 @@ module.exports = {
     {
       action: 'scaffold',
       paths: [
-        'src', 'src/blocks', 'src/components', 'src/extensions',
-        'app', 'app/Block', 'app/Block/Partials', 'app/Block/Contracts', 'app/Block/Base',
+        'src',
+        'src/blocks',
+        'src/components',
+        'src/extensions',
+        'app',
+        'app/Block',
+        'app/Block/Partials',
+        'app/Block/Contracts',
+        'app/Block/Base',
       ],
     },
     {
