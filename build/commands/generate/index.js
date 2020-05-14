@@ -681,8 +681,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _path = require("path");
-
 var _react = _interopRequireWildcard(require("react"));
 
 var _ink = require("ink");
@@ -736,6 +734,8 @@ const GenerateIndex = () => {
 
   const [moduleBuds, setModuleBuds] = (0, _react.useState)([]);
   (0, _react.useEffect)(() => {
+    ;
+
     (async () => {
       const buds = await (0, _globby.default)(moduleBudsGlob);
       buds && setModuleBuds(buds.map(bud => {

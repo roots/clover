@@ -20,22 +20,25 @@ const GenerateIndex = () => {
    */
   const [projectBuds, setProjectBuds] = useState([])
   useEffect(() => {
-    projectBuds.length == 0 && (async () => {
-      const buds = await globby(projectBudsGlob)
+    projectBuds.length == 0 &&
+      (async () => {
+        const buds = await globby(projectBudsGlob)
 
-      buds &&
-        setProjectBuds(
-          buds.map(bud => {
-            const src = require(bud)
-            return {
-              command: `yarn generate ${src.name}`,
-              source: 'project',
-              name: src.name,
-              description: src.description,
-            }
-          }).filter(bud => bud.name)
-        )
-    })()
+        buds &&
+          setProjectBuds(
+            buds
+              .map(bud => {
+                const src = require(bud)
+                return {
+                  command: `yarn generate ${src.name}`,
+                  source: 'project',
+                  name: src.name,
+                  description: src.description,
+                }
+              })
+              .filter(bud => bud.name),
+          )
+      })()
   }, [])
 
   /**
@@ -43,21 +46,23 @@ const GenerateIndex = () => {
    */
   const [moduleBuds, setModuleBuds] = useState([])
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const buds = await globby(moduleBudsGlob)
 
       buds &&
         setModuleBuds(
-          buds.map(bud => {
-            const src = require(bud)
+          buds
+            .map(bud => {
+              const src = require(bud)
 
-            return {
-              command: `yarn generate ${src.name}`,
-              source: src.source ? src.source : null,
-              name: src.name,
-              description: src.description,
-            }
-          }).filter(bud => bud.name)
+              return {
+                command: `yarn generate ${src.name}`,
+                source: src.source ? src.source : null,
+                name: src.name,
+                description: src.description,
+              }
+            })
+            .filter(bud => bud.name),
         )
     })()
   }, [])
@@ -67,26 +72,27 @@ const GenerateIndex = () => {
    */
   const [rootsBuds, setRootsBuds] = useState([])
   useEffect(() => {
-    rootsBuds.length == 0 && (async () => {
-      const buds = await globby(rootsBudsGlob)
+    rootsBuds.length == 0 &&
+      (async () => {
+        const buds = await globby(rootsBudsGlob)
 
-      buds &&
-        setRootsBuds(
-          buds
-            .map(bud => {
-              const src = require(bud)
-              return src.name !== 'bud' && src.name !== 'init'
-                ? {
-                    command: `yarn generate ${src.name}`,
-                    source: '@roots/bud',
-                    name: src.name,
-                    description: src.description,
-                  }
-                : {}
-            })
-            .filter(bud => bud.name),
-        )
-    })()
+        buds &&
+          setRootsBuds(
+            buds
+              .map(bud => {
+                const src = require(bud)
+                return src.name !== 'bud' && src.name !== 'init'
+                  ? {
+                      command: `yarn generate ${src.name}`,
+                      source: '@roots/bud',
+                      name: src.name,
+                      description: src.description,
+                    }
+                  : {}
+              })
+              .filter(bud => bud.name),
+          )
+      })()
   }, [])
 
   const buds = [...projectBuds, ...rootsBuds, ...moduleBuds]
@@ -96,22 +102,22 @@ const GenerateIndex = () => {
    */
   return (
     <>
-    <BudCLI label={'Available commands'} inert={true}>
-      <Box flexDirection="column" marginTop={1} marginBottom={1}>
-        {! moduleBuds.length > 0 &&
-          <Box flexDirection="row" marginBottom={1} alignItems="center"><Spinner type='monkey' /> <Text>Looking for modules</Text></Box>}
-        <Box
-          width={200}
-          flexDirection="column"
-          flexGrow={1}
-          justifyContent="space-between">
-          {buds.length > 0 && <Table
+      <BudCLI label={'Available commands'} inert={true}>
+        <Box flexDirection="column" marginTop={1} marginBottom={1}>
+          {!moduleBuds.length > 0 && (
+            <Box flexDirection="row" marginBottom={1} alignItems="center">
+              <Spinner type="monkey" /> <Text>Looking for modules</Text>
+            </Box>
+          )}
+          <Box
             width={200}
-            data={buds}
-          />}
+            flexDirection="column"
+            flexGrow={1}
+            justifyContent="space-between">
+            {buds.length > 0 && <Table width={200} data={buds} />}
+          </Box>
         </Box>
-      </Box>
-    </BudCLI>
+      </BudCLI>
     </>
   )
 }

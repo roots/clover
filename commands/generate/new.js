@@ -1,4 +1,4 @@
-import {join, resolve, dirname} from 'path'
+import {dirname} from 'path'
 import React, {useState, useEffect} from 'react'
 import {Text, Color} from 'ink'
 import PropTypes from 'prop-types'
@@ -8,11 +8,9 @@ import globby from 'globby'
 /**
  * Resolvers for different budfile locations
  */
-const getRootBudPath = name =>
-  resolve(__dirname, `../../../src/budfiles/**/${name}.bud.js`)
-const getModuleBudPath = name =>
-  join(process.cwd(), `node_modules/**/bud-plugin-*/**/${name}.bud.js`)
-const getProjectBudPath = name => join(process.cwd(), `.bud/**/${name}.bud.js`)
+const getRootBudPath = name => `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/${name}.bud.js`
+const getModuleBudPath = name => `${process.cwd()}/node_modules/**/bud-plugin-*/${name}.bud.js`
+const getProjectBudPath = name => `${process.cwd()}/.bud/budfiles/**/${name}.bud.js`
 
 /** Command: bud generate new */
 /// Generate code described by a budfile

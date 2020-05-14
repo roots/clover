@@ -702,11 +702,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Resolvers for different budfile locations
  */
-const getRootBudPath = name => (0, _path.resolve)(__dirname, `../../../src/budfiles/**/${name}.bud.js`);
+const getRootBudPath = name => `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/${name}.bud.js`;
 
-const getModuleBudPath = name => (0, _path.join)(process.cwd(), `node_modules/**/bud-plugin-*/**/${name}.bud.js`);
+const getModuleBudPath = name => `${process.cwd()}/node_modules/**/bud-plugin-*/${name}.bud.js`;
 
-const getProjectBudPath = name => (0, _path.join)(process.cwd(), `.bud/**/${name}.bud.js`);
+const getProjectBudPath = name => `${process.cwd()}/.bud/budfiles/**/${name}.bud.js`;
 /** Command: bud generate new */
 /// Generate code described by a budfile
 

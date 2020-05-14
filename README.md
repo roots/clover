@@ -78,7 +78,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 | ------------------ | ------------------------------------ |
 | `bud`              | Bud information                      |
 | `bud init`         | Create a new project                 |
-| `bud generate`     | List available budfiles              |
+| `yarn generate`    | List available budfiles              |
 | `bud generate new` | Generate code described by a budfile |
 
 ### Dependencies
