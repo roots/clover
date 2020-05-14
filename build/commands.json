@@ -1,6 +1,30 @@
 {
 	"commands": [
 		{
+			"path": "generate/index.js",
+			"name": "generate",
+			"description": "List available budfiles",
+			"args": [],
+			"subCommands": [
+				{
+					"path": "generate/new.js",
+					"name": "new",
+					"description": "Generate code described by a budfile",
+					"args": [
+						{
+							"key": "budName",
+							"type": "string",
+							"description": "",
+							"isRequired": false,
+							"aliases": [],
+							"positional": true
+						}
+					],
+					"subCommands": []
+				}
+			]
+		},
+		{
 			"path": "index.js",
 			"name": "index",
 			"description": "Bud information",
@@ -94,30 +118,6 @@
 				}
 			],
 			"subCommands": []
-		},
-		{
-			"path": "generate/index.js",
-			"name": "generate",
-			"description": "List available budfiles",
-			"args": [],
-			"subCommands": [
-				{
-					"path": "generate/new.js",
-					"name": "new",
-					"description": "Generate code described by a budfile",
-					"args": [
-						{
-							"key": "budName",
-							"type": "string",
-							"description": "",
-							"isRequired": false,
-							"aliases": [],
-							"positional": true
-						}
-					],
-					"subCommands": []
-				}
-			]
 		}
 	]
 }
