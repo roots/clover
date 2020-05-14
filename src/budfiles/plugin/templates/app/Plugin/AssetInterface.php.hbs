@@ -1,0 +1,18 @@
+<?php
+
+namespace {{pascalcase namespace}}\Plugin;
+
+interface AssetInterface
+{
+    public function getName(): string;
+
+    public function setName(string $name): void;
+
+    public function getUrl(): string;
+
+    public function setUrl(string $url): void;
+
+    public function getDependencies(): array;
+
+    public function setDependencies(array $dependencies): void;
+}

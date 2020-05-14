@@ -2,7 +2,8 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
-use {{pascalcase namespace}}\Plugin\Asset;
+use \WP_Block_Type;
+use {{pascalcase namespace}}\Plugin\AssetInterface;
 use {{pascalcase namespace}}\Plugin\BlockInterface;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
@@ -10,16 +11,28 @@ use Illuminate\Support\Collection;
 /**
  * Block class.
  */
-class Block implements BlockInterface
+class Block extends WP_Block_Type implements BlockInterface
 {
     /** @var string */
-    protected $name;
+    public $name;
+
+    /** @var string */
+    public $editor_script;
+
+    /** @var string */
+    public $editor_style;
+
+    /** @var string */
+    public $script;
+
+    /** @var string */
+    public $style;
 
     /** @var Collection */
-    protected $attributes;
+    public $assets;
 
-    /** @var object */
-    protected $assets;
+    /** @var Collection */
+    public $attributes;
 
     /**
      * Constructor.
@@ -27,11 +40,7 @@ class Block implements BlockInterface
     public function __construct(ContainerInterface $bud)
     {
         $this->bud = $bud;
-
-        $this->assets = (object) [
-            'editor' => $bud->get('collection')::make([]),
-            'public' => $bud->get('collection')::make([]),
-        ];
+        $this->assets = $this->bud->get('collection')::make([]);
     }
 
     /**
@@ -45,24 +54,14 @@ class Block implements BlockInterface
     }
 
     /**
-     * Set name.
+     * Set the block name.
      *
      * @param  string
      * @return void
      */
     public function setName(string $name): void
     {
-        $this->name = $name;
-    }
-
-    /**
-     * Get handle
-     *
-     * @return string
-     */
-    public function getHandle(): string
-    {
-        return "{$this->bud->get('plugin.namespace')}/{$this->name}";
+        $this->name = "{$this->bud->get('plugin.namespace')}/{$name}";
     }
 
     /**
@@ -87,50 +86,81 @@ class Block implements BlockInterface
     }
 
     /**
-     * Get asset url
+     * Get editor script
      *
-     * @param  string
+     * @return string
+     */
+    public function getEditorScript(): string
+    {
+        return $this->editor_script;
+    }
+
+    /**
+     * Get editor style
+     *
+     * @return string
+     */
+    public function getEditorStyle(): string
+    {
+        return $this->editor_style;
+    }
+
+    /**
+     * Get editor script
+     *
      * @param  string
      * @return string
      */
-    public function getAssetUrl(string $context, string $type): string
+    public function getPublicScript(): string
     {
-        return $this->assets->{$context}->get($type);
+        return $this->script;
     }
 
     /**
-     * Set asset
+     * Set editor style
      *
      * @param  string
-     * @param  string
-     * @param  string
-     * @return void
+     * @return string
      */
-    public function setAsset(string $context, string $type, string $asset): void
+    public function getPublicStyle(): string
     {
-        $this->assets->{$context}->put($type, $asset);
+        return $this->style;
     }
 
-   /**
-    * Get dependencies
-    *
-    * @param  string
-    * @return void
-    */
-   public function getDependencies(string $context): array
-   {
-        return $this->assets->{$context}->get('dependencies');
-   }
+    /**
+     * Set editor asset
+     *
+     * @param  Asset
+     * @return void
+     */
+    public function setEditorAsset(AssetInterface $asset): void
+    {
+        $this->assets->push($asset);
+
+        $property = "editor_{$asset->getType()}";
+        $this->{$property} = $asset->getName();
+    }
 
     /**
-     * Set dependencies
+     * Set public asset
      *
-     * @param  string
      * @param  string
      * @return void
      */
-    public function setDependencies(string $context, array $dependencies): void
+    public function setPublicAsset(AssetInterface $asset): void
     {
-        $this->assets->{$context}->put('dependencies', $dependencies);
+        $this->assets->push($asset);
+
+        $this->{$asset->getType()} = $asset->getName();
+    }
+
+    /**
+     * Get assets.
+     *
+     * @return Collection
+     */
+    public function getAssets(): Collection
+    {
+        return $this->assets;
     }
 }

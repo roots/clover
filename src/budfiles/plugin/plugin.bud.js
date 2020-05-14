@@ -97,6 +97,16 @@ module.exports = {
     },
     {
       action: 'template',
+      template: 'app/Plugin/Asset.php.hbs',
+      path: 'app/Plugin/Asset.php',
+    },
+    {
+      action: 'template',
+      template: 'app/Plugin/AssetInterface.php.hbs',
+      path: 'app/Plugin/AssetInterface.php',
+    },
+    {
+      action: 'template',
       template: 'app/Plugin/Block.php.hbs',
       path: 'app/Plugin/Block.php',
     },

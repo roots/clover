@@ -52,7 +52,7 @@ class BlockRepository implements BlockRepositoryInterface
      */
     public function add(Block $block): void
     {
-        $this->blocks->put($block->getHandle(), $block);
+        $this->blocks->put($block->getName(), $block);
     }
 
     /**

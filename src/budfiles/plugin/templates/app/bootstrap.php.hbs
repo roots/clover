@@ -10,6 +10,7 @@ use function DI\create;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
+use {{pascalcase namespace}}\Plugin\Asset;
 use {{pascalcase namespace}}\Plugin\Block;
 use {{pascalcase namespace}}\Plugin\BlockRepository;
 use {{pascalcase namespace}}\Plugin\Manifest;
@@ -17,6 +18,9 @@ use {{pascalcase namespace}}\Plugin\Manifest;
 $builder = new ContainerBuilder;
 
 $builder->addDefinitions([
+    'asset' => function (ContainerInterface $bud) {
+        return new Asset($bud);
+    },
     'block' => function (ContainerInterface $bud) {
         return new Block($bud, $bud->get('collection'));
     },
@@ -49,5 +53,3 @@ $builder->addDefinitions([
     'plugin.path.src' => realpath(__DIR__ . '/../src/'),
     'plugin.path.src.blocks' => realpath(__DIR__ . '/../src/blocks/'),
 ]);
-
-return $builder->build();

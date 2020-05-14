@@ -2,33 +2,31 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
+use {{pascalcase namespace}}\Plugin\AssetInterface;
+use Illuminate\Support\Collection;
+
 /**
- * Block inteface.
+ * Block class interface.
  */
 interface BlockInterface
 {
-    /**
-     * Get name.
-     */
     public function getName(): string;
 
-    /**
-     * Set name.
-     */
     public function setName(string $name): void;
 
-    /**
-     * Get name.
-     */
     public function getAttributes(): Collection;
 
-    /**
-     * Set name.
-     */
     public function setAttributes(Collection $attributes): void;
 
-    /**
-     * Get handle.
-     */
-    public function getHandle(): string;
+    public function getEditorScript(): string;
+
+    public function getEditorStyle(): string;
+
+    public function setEditorAsset(AssetInterface $asset): void;
+
+    public function getPublicScript(): string;
+
+    public function getPublicStyle(): string;
+
+    public function setPublicAsset(AssetInterface $asset): void;
 }

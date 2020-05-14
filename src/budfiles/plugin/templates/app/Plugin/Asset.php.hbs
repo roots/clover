@@ -2,24 +2,28 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
+use {{pascalcase namespace}}\Plugin\AssetInterface;
 use Psr\Container\ContainerInterface;
-use Illuminate\Support\Collection;
 
 /**
- * Asset.
+ * Asset class.
  */
-class EditorAsset
+class Asset implements AssetInterface
 {
-    private $label;
+    /** @var string */
+    public $name;
 
-    private $path;
+    /** @var string */
+    public $type;
 
-    private $url;
+    /** @var string */
+    public $url;
 
-    private $dependencies;
+    /** @var array */
+    public $dependencies;
 
     /**
-     * Construct.
+     * Constructor.
      */
     public function __construct(ContainerInterface $bud)
     {
@@ -27,42 +31,24 @@ class EditorAsset
     }
 
     /**
-     * Get label
+     * Get name.
      *
      * @return string
      */
-    public function getLabel(): string
+    public function getName(): string
     {
-        return $this->label;
+        return $this->name;
     }
 
     /**
-     * Set label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
-    }
-
-    /**
-     * Get path
+     * Set name.
      *
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    /**
-     * Set path
-     *
-     * @param  string path
+     * @param  string
      * @return void
      */
-    public function setPath(string $path): void
+    public function setName(string $name): void
     {
-        $this->path = $path;
+        $this->name = $name;
     }
 
     /**
@@ -78,8 +64,7 @@ class EditorAsset
     /**
      * Set url
      *
-     * @param  string url
-     * @return void
+     * @return string
      */
     public function setUrl(string $url): void
     {
@@ -87,39 +72,49 @@ class EditorAsset
     }
 
     /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set url
+     *
+     * @return string
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
      * Get dependencies
      *
-     * @return array
+     * @param  string
+     * @return void
      */
     public function getDependencies(): array
     {
-        return $this->dependencies;
+        if ($this->getType() == 'style') {
+            return [];
+        }
+
+        return $this->dependencies ?? [];
     }
 
     /**
      * Set dependencies
      *
-     * @param  array url
+     * @param  string
+     * @param  string
      * @return void
      */
     public function setDependencies(array $dependencies): void
     {
-        $this->dependencies = $dependencies;;
-    }
-
-    /**
-     * Get asset.
-     *
-     * @return object
-     */
-    public function getEnqueueValues()
-    {
-        return (object) [
-            'enqueue' => [
-                $this->label,
-                $this->uri,
-                ...$this->dependencies,
-            ],
-        ];
+        $this->dependencies = $dependencies;
     }
 }

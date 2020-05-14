@@ -7,7 +7,7 @@
  * License:      MIT
  * Text Domain:  {{lowercase (dashcase namespace)}}
  *
- * @package {{namespace}}
+ * @package {{lowercase (dashcase namespace)}}
  */
 
 /**
@@ -18,8 +18,17 @@
  */
 add_action('init', function () {
     (new class {
-        /** @var DI\Container */
+        /** @var \Psr\Container\ContainerInterface */
         public $bud;
+
+        /** @var \Illuminate\Support\Collection */
+        public $collection;
+
+        /** @var \{{pascalcase namespace}}\Plugin\BlockRepository */
+        public $blocks;
+
+        /** @var \{{pascalcase namespace}}\Plugin\Manifest */
+        public $manifest;
 
         /**
          * Class constructor.
@@ -28,7 +37,6 @@ add_action('init', function () {
         {
             $this->bud = require __DIR__ . '/app/bootstrap.php';
             $this->collection = $this->bud->get('collection');
-
             $this->blocks = $this->bud->get('blocks');
             $this->manifest = $this->bud->get('manifest');
         }
@@ -41,73 +49,66 @@ add_action('init', function () {
          */
         public function __invoke(): void
         {
-            $this->loadBlocks();
-            $this->registerBlocks();
+            $this->load();
+            $this->register();
         }
 
         /**
-         * Load blocks.
+         * Load blocks and assets.
          *
          * @return void
          */
-        protected function loadBlocks(): void
+        protected function load(): void
         {
             $this->bud->get('plugin.blocks')->each(function ($name) {
+                /** @var \{{pascalcase namespace}}\Plugin\BlockInterface */
                 $block = $this->bud->make('block');
 
                 $block->setName($name);
 
-                $this->collection::make(['editor', 'public'])
-                    ->each(function ($context) use ($block) {
-                        $block->setAsset($context, 'js', (
-                            $this->manifest->getAsset($block->getName(), $context, 'js')
-                        ));
+                $this->collection::make([
+                    $this->manifest->getAsset($block->getName(), 'editor', 'js'),
+                    $this->manifest->getAsset($block->getName(), 'editor', 'css'),
+                ])->each(function (\{{pascalcase namespace}}\Plugin\AssetInterface $asset) use ($block) {
+                    if (! $asset) return;
 
-                        $block->setAsset($context, 'css', (
-                            $this->manifest->getAsset($block->getName(), $context, 'css')
-                        ));
+                    $block->setEditorAsset($asset);
+                });
 
-                        $block->setDependencies($context, (
-                            $this->manifest->getDependencies($block->getName(), $context)
-                        ));
-                    });
+                $this->collection::make([
+                    $this->manifest->getAsset($block->getName(), 'public', 'js'),
+                    $this->manifest->getAsset($block->getName(), 'public', 'css'),
+                ])->each(function (\{{pascalcase namespace}}\Plugin\AssetInterface $asset) use ($block) {
+                    if (! $asset) return;
+
+                    $block->setPublicAsset($asset);
+                });
 
                 $this->blocks->add($block);
             });
         }
 
         /**
-         * Register blocks.
+         * Register blocks and assets.
          *
          * @return void
          */
-        protected function registerBlocks(): void
+        protected function register(): void
         {
-            $this->blocks->all()->each(function ($block) {
-                $this->collection::make(['editor', 'public'])
-                    ->each(function ($context) use ($block) {
-                        wp_register_script(
-                            join('/', [$block->getHandle(), $context, 'js']),
-                            $block->getAssetUrl($context, 'js'),
-                            $block->getDependencies($context),
-                            null
-                        );
+            $this->blocks->all()->each(function (\{{pascalcase namespace}}\Plugin\BlockInterface $block) {
+                $block->getAssets()->each(function (\{{pascalcase namespace}}\Plugin\AssetInterface $asset) {
+                    $registerAssetCallable = "wp_register_{$asset->getType()}";
+                    $registerAssetCallable(
+                        $asset->getName(),
+                        $asset->getUrl(),
+                        $asset->getDependencies(),
+                        null
+                    );
+                });
 
-                        wp_register_style(
-                            join('/', [$block->getHandle(), $context, 'css']),
-                            $block->getAssetUrl($context, 'css'),
-                            [],
-                            null
-                        );
-                    });
-
-                register_block_type($block->getHandle(), [
-                    'editor_script' => join('/', [$block->getHandle(), 'editor', 'js']),
-                    'editor_style' => join('/', [$block->getHandle(), 'editor', 'css']),
-                    'script' => join('/', [$block->getHandle(), 'public', 'js']),
-                    'style' => join('/', [$block->getHandle(), 'public', 'css']),
-                ]);
+                register_block_type($block);
             });
         }
     })();
 });
+
