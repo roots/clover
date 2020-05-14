@@ -2,6 +2,7 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
+use {{pascalcase namespace}}\Plugin\Asset;
 use {{pascalcase namespace}}\Plugin\BlockInterface;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
@@ -12,90 +13,124 @@ use Illuminate\Support\Collection;
 class Block implements BlockInterface
 {
     /** @var string */
-    protected $handle;
+    protected $name;
 
-    /** @var array */
-    protected $dependencies;
-
-    /** @var array */
+    /** @var Collection */
     protected $attributes;
 
-    /** @var array */
+    /** @var object */
     protected $assets;
 
     /**
      * Constructor.
      */
-    public function __construct(ContainerInterface $bud, Collection $collection)
+    public function __construct(ContainerInterface $bud)
     {
         $this->bud = $bud;
-        $this->assets = $collection::make([]);
+
+        $this->assets = (object) [
+            'editor' => $bud->get('collection')::make([]),
+            'public' => $bud->get('collection')::make([]),
+        ];
     }
 
     /**
-     * Get handle.
+     * Get name.
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set name.
+     *
+     * @param  string
+     * @return void
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get handle
      *
      * @return string
      */
     public function getHandle(): string
     {
-        return $this->handle;
+        return "{$this->bud->get('plugin.namespace')}/{$this->name}";
     }
 
     /**
-     * Set handle.
+     * Get attributes.
      *
-     * @param  string $handle
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Set attributes.
+     *
+     * @param  string $attributesPath
      * @return Block
      */
-    public function setHandle(string $handle): void
+    public function setAttributes(Collection $attributes): void
     {
-        $this->handle = $this->bud->get('config.namespace') . '/' . $handle;
+        $this->attributes = $attributes;
     }
 
     /**
-     * Get manifest entry
+     * Get asset url
      *
-     * @return array
+     * @param  string
+     * @param  string
+     * @return string
      */
-    public function getAssets(): array
+    public function getAssetUrl(string $context, string $type): string
     {
-        return $this->assets;
+        return $this->assets->{$context}->get($type);
     }
 
     /**
-     * Set manifest entries
+     * Set asset
      *
-     * @param  array $assets
+     * @param  string
+     * @param  string
+     * @param  string
      * @return void
      */
-     public function setAssets(array $assets): void
-     {
-         $this->assets = $assets;
-     }
+    public function setAsset(string $context, string $type, string $asset): void
+    {
+        $this->assets->{$context}->put($type, $asset);
+    }
+
+   /**
+    * Get dependencies
+    *
+    * @param  string
+    * @return void
+    */
+   public function getDependencies(string $context): array
+   {
+        return $this->assets->{$context}->get('dependencies');
+   }
 
     /**
-     * Set manifest entry.
+     * Set dependencies
      *
+     * @param  string
+     * @param  string
+     * @return void
      */
-    public function addAsset(array $asset)
+    public function setDependencies(string $context, array $dependencies): void
     {
-        $this->assets->push($asset);
-    }
-
-    /**
-     * Get dependencies.
-     */
-    public function getDependencies(): array
-    {
-        return $this->dependencies;
-    }
-
-    /**
-     * Set dependencies.
-     */
-    public function setDependencies(array $dependencies): void
-    {
-        $this->dependencies = $dependencies;
+        $this->assets->{$context}->put('dependencies', $dependencies);
     }
 }

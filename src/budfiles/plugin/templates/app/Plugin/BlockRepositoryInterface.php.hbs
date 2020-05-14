@@ -10,17 +10,17 @@ use {{pascalcase namespace}}\Plugin\Block;
 interface BlockRepositoryInterface
 {
     /**
-     * Get blocks.
-     *
-     * @return Block[]
-     */
-    public function getBlocks();
-
-    /**
      * Get block.
      *
      * @param string $handle
      * @return Block
      */
-    public function getBlock(string $handle): Block;
+    public function get(string $handle): Block;
+
+    /**
+     * Get blocks.
+     *
+     * @return Collection
+     */
+    public function all(): Collection;
 }

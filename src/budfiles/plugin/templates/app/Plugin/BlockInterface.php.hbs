@@ -3,22 +3,32 @@
 namespace {{pascalcase namespace}}\Plugin;
 
 /**
- * Block repository.
+ * Block inteface.
  */
 interface BlockInterface
 {
     /**
-     * Get handle.
-     *
-     * @return string
+     * Get name.
      */
-    public function getHandle(): string;
+    public function getName(): string;
 
     /**
-     * Set handle.
-     *
-     * @param  string $handle
-     * @return Block
+     * Set name.
      */
-    public function setHandle(string $handle): void;
+    public function setName(string $name): void;
+
+    /**
+     * Get name.
+     */
+    public function getAttributes(): Collection;
+
+    /**
+     * Set name.
+     */
+    public function setAttributes(Collection $attributes): void;
+
+    /**
+     * Get handle.
+     */
+    public function getHandle(): string;
 }

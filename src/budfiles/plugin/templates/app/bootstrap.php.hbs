@@ -7,7 +7,6 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use function DI\create;
-use function DI\make;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
@@ -18,29 +17,37 @@ use {{pascalcase namespace}}\Plugin\Manifest;
 $builder = new ContainerBuilder;
 
 $builder->addDefinitions([
-    'config.dir' => realpath(__DIR__ . '/..'),
-    'config.manifest' => make(ContainerInterface $bud) {
-        if (! $manifestPath = realpath(__DIR__ . '/../dist/manifest.json')) {
-            return;
-        }
-
-        return $bud->get('util.collection')::make(
-            json_decode(file_get_contents($this->bud->get('config.manifest')))
-        );
-    },
-    'config.namespace' => '{{lowercase (dashcase namespace)}}',
     'block' => function (ContainerInterface $bud) {
-        return new Block($bud, $bud->get('util.collection'));
+        return new Block($bud, $bud->get('collection'));
     },
     'blocks' => function (ContainerInterface $bud) {
         return new BlockRepository($bud);
     },
+    'collection' => create(Collection::class),
     'manifest' => function (ContainerInterface $bud) {
-        $manifest = new Manifest($bud);
-        $manifest->load();
-        return $manifest;
+        if (! $manifestPath = realpath(__DIR__ . '/../dist/assets.json')) {
+            return;
+        }
+
+        $assets = $bud->get('collection')::make(
+            json_decode(file_get_contents($manifestPath))
+        );
+
+        return new Manifest($bud, $assets, $bud->get('collection'));
     },
-    'util.collection' => create(Collection::class),
+    'plugin.blocks' => function(ContainerInterface $bud) {
+        return $bud->get('collection')::make(
+            glob($bud->get('plugin.path.src.blocks') . '/*', GLOB_ONLYDIR)
+        )->map(function ($path) {
+            return str_replace($this->bud->get('plugin.path.src.blocks') . '/', '', $path);
+        });
+    },
+    'plugin.namespace' => 'acme-co',
+    'plugin.url' => plugins_url('', __DIR__),
+    'plugin.path' => realpath(__DIR__ . '/../'),
+    'plugin.path.dist' => realpath(__DIR__ . '/../dist/'),
+    'plugin.path.src' => realpath(__DIR__ . '/../src/'),
+    'plugin.path.src.blocks' => realpath(__DIR__ . '/../src/blocks/'),
 ]);
 
 return $builder->build();
