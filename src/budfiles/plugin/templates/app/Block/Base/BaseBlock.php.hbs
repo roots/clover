@@ -36,9 +36,14 @@ class BaseBlock extends WP_Block_Type implements BlockInterface
 
     /**
      * Constructor.
+     *
+     * @param Collection
+     * @param ContainerInterface
      */
-    public function __construct(ContainerInterface $bud)
-    {
+    public function __construct(
+        Collection $collection,
+        ContainerInterface $bud
+    ) {
         $this->bud = $bud;
         $this->assets = $this->bud->get('collection')::make([]);
     }

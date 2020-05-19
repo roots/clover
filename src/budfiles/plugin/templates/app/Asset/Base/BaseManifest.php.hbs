@@ -1,15 +1,16 @@
 <?php
 
-namespace {{pascalcase namespace}}\Plugin;
+namespace {{pascalcase namespace}}\Asset\Base;
 
-use {{pascalcase namespace}}\Plugin\AssetInterface;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
+use {{pascalcase namespace}}\Asset\Contracts\AssetInterface;
+use {{pascalcase namespace}}\Asset\Contracts\ManifestInterface;
 
 /**
  * Manifest class.
  */
-class Manifest
+class Manifest implements ManifestInterface
 {
     /** @var ContainerInterface */
     protected $bud;

@@ -1,59 +1,61 @@
 <?php
 
 /**
- * The bootstrap file creates and returns the container.
+ * The bootstrap file creates and returns the plugin container.
  */
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use function DI\autowire;
 use function DI\create;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
-use {{pascalcase namespace}}\Plugin\Asset;
+use {{pascalcase namespace}}\Asset\Asset;
+use {{pascalcase namespace}}\Asset\Manifest;
 use {{pascalcase namespace}}\Block\Block;
-use {{pascalcase namespace}}\Plugin\BlockRepository;
-use {{pascalcase namespace}}\Plugin\Manifest;
+use {{pascalcase namespace}}\Block\BlockRepository;
+use {{pascalcase namespace}}\Plugin\Register;
+use {{pascalcase namespace}}\Plugin\Activate;
+use {{pascalcase namespace}}\Plugin\Deactivate;
+use {{pascalcase namespace}}\Plugin\Registration;
 
 $builder = new ContainerBuilder;
 
+/**
+ * Build the container instance
+ */
 $builder->addDefinitions([
-    'asset' => function (ContainerInterface $bud) {
-        return new Asset($bud);
-    },
-    'block' => function (ContainerInterface $bud) {
-        return new Block($bud, $bud->get('collection'));
-    },
-    'blocks' => function (ContainerInterface $bud) {
-        return new BlockRepository($bud);
-    },
+    'asset' => autowire('\\{{pascalcase namespace}}\Asset\Asset'),
+    'block' => autowire('\\{{pascalcase namespace}}\Block\Block'),
+    'blocks' => autowire('\\{{pascalcase namespace}}\Block\BlockRepository'),
+    'manifest' => function autowire('\\{{pascalcase namespace}}\Asset\Manifest'),
     'collection' => create(Collection::class),
-    'manifest' => function (ContainerInterface $bud) {
-        if (! $manifestPath = realpath(__DIR__ . '/../dist/assets.json')) {
-            return;
-        }
-
-        $assets = $bud->get('collection')::make(
-            json_decode(file_get_contents($manifestPath))
-        );
-
-        return new Manifest($bud, $assets, $bud->get('collection'));
+    'plugin.manifest' => function (ContainerInterface $bud) {
+        return $manifestPath = realpath(__DIR__ . '/../dist/assets.json')
+            ? $bud->get('collection')::make(json_decode(file_get_contents($manifestPath)))
+            : null;
     },
     'plugin.blocks' => function(ContainerInterface $bud) {
         return $bud->get('collection')::make(
-            glob($bud->get('plugin.path.src.blocks') . '/*', GLOB_ONLYDIR)
+            glob($bud->get('path.plugin.src.blocks') . '/*', GLOB_ONLYDIR)
         )->map(function ($path) {
-            return str_replace($this->bud->get('plugin.path.src.blocks') . '/', '', $path);
+            return str_replace($this->bud->get('path.plugin.src.blocks') . '/', '', $path);
         });
     },
-    'plugin.namespace' => '{{lowercase (dashcase namespace)}}',
+    'plugin.register' => autowire('\\{{pascalcase namespace}}\Plugin\Registration'),
+    'plugin.activate' => autowire('\\{{pascalcase namespace}}\Plugin\Activate'),
+    'plugin.deactivate' => autowire('\\{{pascalcase namespace}}\Plugin\Deactivate'),
     'plugin.url' => plugins_url('', __DIR__),
-    'plugin.path' => realpath(__DIR__ . '/../'),
-    'plugin.path.dist' => realpath(__DIR__ . '/../dist/'),
-    'plugin.path.src' => realpath(__DIR__ . '/../src/'),
-    'plugin.path.src.blocks' => realpath(__DIR__ . '/../src/blocks/'),
-    'plugin.path.storage' => realpath(__DIR__ . '/../storage/'),
-    'plugin.path.storage.cache' => realpath(__DIR__ . '/../storage/cache'),
+    'path.wp' => WP_CONTENT_DIR,
+    'path.plugins' => plugins_dir('', __DIR__),
+    'path.uploads' => (object) wp_upload_dir(),
+    'path.plugin' => realpath(__DIR__ . '/../'),
+    'path.plugin.dist' => realpath(__DIR__ . '/../dist/'),
+    'path.plugin.src' => realpath(__DIR__ . '/../src/'),
+    'path.plugin.src.blocks' => realpath(__DIR__ . '/../src/blocks/'),
+    'path.plugin.storage' => realpath(__DIR__ . '/../storage/'),
+    'path.plugin.storage.cache' => realpath(__DIR__ . '/../storage/cache'),
 ]);
 
 return $builder->build();

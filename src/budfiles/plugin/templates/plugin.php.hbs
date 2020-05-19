@@ -12,109 +12,17 @@
 
 namespace {{pascalcase namespace}};
 
-use \\{{pascalcase namespace}}\Plugin\Asset;
-use \\{{pascalcase namespace}}\Block\Block;
-
 /**
- * Register {{lowercase (dashcase namespace)}}/{{lowercase (dashcase name)}} block assets
- *
- * @see Enqueueing Editor Assets <https://git.io/JvPHy>
- * @see Dependency Extraction Webpack Plugin <https://git.io/Jv1ll>
+ * Initialize the plugin
  */
 add_action('init', function () {
-    (new class {
-        /** @var \Psr\Container\ContainerInterface */
-        public $bud;
+    /**
+     * Boot the container.
+     */
+    $bud = require __DIR__ . '/app/bootstrap.php';
 
-        /** @var \Illuminate\Support\Collection */
-        public $collection;
-
-        /** @var \\{{pascalcase namespace}}\Plugin\BlockRepository */
-        public $blocks;
-
-        /** @var \\{{pascalcase namespace}}\Plugin\Manifest */
-        public $manifest;
-
-        /**
-         * Class constructor.
-         */
-        public function __construct()
-        {
-            $this->bud = require __DIR__ . '/app/bootstrap.php';
-            $this->collection = $this->bud->get('collection');
-            $this->blocks = $this->bud->get('blocks');
-            $this->manifest = $this->bud->get('manifest');
-        }
-
-        /**
-         * Class invocation.
-         *
-         * @throws \WP_Error
-         * @return void
-         */
-        public function __invoke(): void
-        {
-            $this->load();
-            $this->register();
-        }
-
-        /**
-         * Load blocks and assets.
-         *
-         * @return void
-         */
-        protected function load(): void
-        {
-            $this->bud->get('plugin.blocks')->each(function ($name) {
-                /** @var \\{{pascalcase namespace}}\Block\Block */
-                $block = $this->bud->make('block');
-
-                $block->setName($name);
-
-                $this->collection::make([
-                    $this->manifest->getAsset($block->getName(), 'editor', 'js'),
-                    $this->manifest->getAsset($block->getName(), 'editor', 'css'),
-                ])->each(function (Asset $asset) use ($block) {
-                    if (! $asset) return;
-
-                    $block->setEditorAsset($asset);
-                });
-
-                $this->collection::make([
-                    $this->manifest->getAsset($block->getName(), 'public', 'js'),
-                    $this->manifest->getAsset($block->getName(), 'public', 'css'),
-                ])->each(function (Asset $asset) use ($block) {
-                    if (! $asset) return;
-
-                    $block->setPublicAsset($asset);
-                });
-
-                $this->blocks->add($block);
-            });
-        }
-
-        /**
-         * Register blocks and assets.
-         *
-         * @return void
-         */
-        protected function register(): void
-        {
-            $this->blocks->all()->each(function (Block $block) {
-                $block->getAssets()->each(function (Asset $asset) {
-                    $registerAssetCallable = "wp_register_{$asset->getType()}";
-
-                    $registerAssetCallable(
-                        $asset->getName(),
-                        $asset->getUrl(),
-                        $asset->getDependencies(),
-                        null
-                    );
-                });
-
-                $block->register();
-            });
-        }
-    })();
+    /**
+     * Register plugin assets.
+     */
+    $bud->get('registration')();
 });
-
