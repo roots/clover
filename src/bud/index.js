@@ -210,22 +210,22 @@ export const bud = {
   inferParser: async function (file) {
     const ext = file.split('.')[file.split('.').length - 2]
     const parserMap = {
-      'js': 'babel',
-      'jsx': 'babel',
-      'graphql': 'graphql',
-      'css': 'css',
-      'json': 'json',
-      'md': 'markdown',
-      'html': 'html',
-      'htm': 'html',
-      'ts': 'typescript',
-      'tsx': 'typescript',
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'less': 'less',
+      js: 'babel',
+      jsx: 'babel',
+      graphql: 'graphql',
+      css: 'css',
+      json: 'json',
+      md: 'markdown',
+      html: 'html',
+      htm: 'html',
+      ts: 'typescript',
+      tsx: 'typescript',
+      yml: 'yaml',
+      yaml: 'yaml',
+      less: 'less',
     }
 
-    return parserMap[`${ext}`] ?? null;
+    return parserMap[`${ext}`] ?? null
   },
 
   /**
@@ -240,7 +240,8 @@ export const bud = {
     const {contents} = await this.getTemplate(template)
     const dest = join(
       this.projectDir,
-      this.handlebars.compile(path)(this.getData())
+      this.handlebars
+        .compile(path)(this.getData())
         .replace('.hbs', '')
         .replace('.bud', ''),
     )
@@ -264,25 +265,27 @@ export const bud = {
   templateGlob: async function ({glob}, observer) {
     observer.next(glob)
 
-    const templates = await globby([
-      resolve(this.templateDir, glob),
-    ])
+    const templates = await globby([resolve(this.templateDir, glob)])
 
     from(templates)
       .pipe(
         concatMap(template => {
           return new Observable(async observer => {
             const parser = await this.inferParser(
-              template.replace('.bud', '').replace('.hbs', '')
+              template.replace('.bud', '').replace('.hbs', ''),
             )
 
-            await this.template({
-              parser,
-              template: template.replace(this.templateDir, ''),
-              path: template.replace(this.templateDir, '')
-                .replace('.bud', '')
-                .replace('.hbs', ''),
-            }, observer)
+            await this.template(
+              {
+                parser,
+                template: template.replace(this.templateDir, ''),
+                path: template
+                  .replace(this.templateDir, '')
+                  .replace('.bud', '')
+                  .replace('.hbs', ''),
+              },
+              observer,
+            )
           })
         }),
       )
