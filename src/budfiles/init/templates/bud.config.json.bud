@@ -5,12 +5,10 @@
     "description": "{{description}}",
     "website": "{{website}}",
     "author": "{{author}}",
-    "email": "{{email}}",
+    "email": "{{email}}"
   },
   "dev": {
-    "port": {{port}},
     "protocol": "{{protocol}}",
-    "proxy": "{{proxy}}",
     "path": ""
   },
   "installed": ["bud"]

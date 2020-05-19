@@ -1,9 +1,10 @@
-const {join} = require('path')
+const {join, resolve} = require('path')
 const fs = require('fs-extra')
 const fetch = require('node-fetch')
 const execa = require('execa')
 const handlebars = require('handlebars')
 const prettier = require('prettier')
+const globby = require('globby')
 const {Observable, from} = require('rxjs')
 const {concatMap} = require('rxjs/operators')
 
@@ -75,19 +76,6 @@ export const bud = {
   },
 
   /**
-   * Get template contents.
-   *
-   * @param  {string} template
-   * @return {array}
-   */
-  getTemplate: async function (template) {
-    const path = join(this.templateDir, template)
-    const contents = await fs.readFile(path, 'utf8')
-
-    return {path, contents}
-  },
-
-  /**
    * Register actions
    */
   registerActions: function () {
@@ -147,6 +135,8 @@ export const bud = {
         .pipe(
           concatMap(function (task) {
             return new Observable(async function (observer) {
+              observer.next(task.action)
+
               return bud[task.action](task, observer, bud)
             })
           }),
@@ -199,6 +189,46 @@ export const bud = {
   },
 
   /**
+   * Get template contents.
+   *
+   * @param  {string} template
+   * @return {array}
+   */
+  getTemplate: async function (template) {
+    const path = join(this.templateDir, template)
+    const contents = await fs.readFile(path, 'utf8')
+
+    return {path, contents}
+  },
+
+  /**
+   * Infer parser
+   *
+   * @param  {string} file
+   * @return {string}
+   */
+  inferParser: async function (file) {
+    const ext = file.split('.')[file.split('.').length - 2]
+    const parserMap = {
+      'js': 'babel',
+      'jsx': 'babel',
+      'graphql': 'graphql',
+      'css': 'css',
+      'json': 'json',
+      'md': 'markdown',
+      'html': 'html',
+      'htm': 'html',
+      'ts': 'typescript',
+      'tsx': 'typescript',
+      'yml': 'yaml',
+      'yaml': 'yaml',
+      'less': 'less',
+    }
+
+    return parserMap[`${ext}`] ?? null;
+  },
+
+  /**
    * Action: template
    *
    * @param  {string} parser
@@ -210,7 +240,9 @@ export const bud = {
     const {contents} = await this.getTemplate(template)
     const dest = join(
       this.projectDir,
-      this.handlebars.compile(path)(this.getData()),
+      this.handlebars.compile(path)(this.getData())
+        .replace('.hbs', '')
+        .replace('.bud', ''),
     )
 
     observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`)
@@ -222,6 +254,45 @@ export const bud = {
   },
 
   /**
+   * Action: template dir
+   *
+   * @param  {string} parser
+   * @param  {string} path
+   * @param  {string} templateDir
+   * @return {Observable}
+   */
+  templateGlob: async function ({glob}, observer) {
+    observer.next(glob)
+
+    const templates = await globby([
+      resolve(this.templateDir, glob),
+    ])
+
+    from(templates)
+      .pipe(
+        concatMap(template => {
+          return new Observable(async observer => {
+            const parser = await this.inferParser(
+              template.replace('.bud', '').replace('.hbs', '')
+            )
+
+            await this.template({
+              parser,
+              template: template.replace(this.templateDir, ''),
+              path: template.replace(this.templateDir, '')
+                .replace('.bud', '')
+                .replace('.hbs', ''),
+            }, observer)
+          })
+        }),
+      )
+      .subscribe({
+        next: next => observer.next(next),
+        complete: () => observer.complete(),
+      })
+  },
+
+  /**
    * Action: Modules
    *
    * @param  {array} pkgs
@@ -230,6 +301,7 @@ export const bud = {
    */
   addDependencies: async function ({repo, pkgs, dev}, observer) {
     let installation
+
     observer.next(`Installing packages from ${repo}...`)
 
     if (repo !== 'npm' && repo !== 'packagist') {

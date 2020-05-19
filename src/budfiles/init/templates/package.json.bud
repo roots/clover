@@ -11,13 +11,13 @@
   "authors": [
     {
       "name": "{{capitalizeAll author}}",
-      "email": "{{lowercase email}}",
+      "email": "{{lowercase email}}"
     }
   ],
   "private": true,
   "scripts": {
     "generate": "bud generate new",
-    "generate:list": "bud generate",
+    "generate:list": "bud generate"
   },
   "devDependencies": {
     "@roots/bud": "roots/bud#master"

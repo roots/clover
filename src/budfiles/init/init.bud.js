@@ -40,25 +40,6 @@ module.exports = {
       message: 'Author email',
       initial: 'wiley@gmail.com',
     },
-    {
-      type: 'input',
-      name: 'proxy',
-      message: 'Proxy hostname',
-      initial: 'sage-app.test',
-    },
-    {
-      type: 'select',
-      name: 'protocol',
-      message: 'What protocol are you using in development?',
-      initial: 'https',
-      choices: ['https', 'http'],
-    },
-    {
-      type: 'input',
-      name: 'port',
-      message: 'Live reload port',
-      initial: 3000,
-    },
   ],
   actions: [
     {

@@ -110,44 +110,8 @@ module.exports = {
       path: 'app/bootstrap.php',
     },
     {
-      action: 'template',
-      template: 'app/Plugin/Asset.php.hbs',
-      path: 'app/Plugin/Asset.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Plugin/AssetInterface.php.hbs',
-      path: 'app/Plugin/AssetInterface.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Block/Block.php.hbs',
-      path: 'app/Block/Block.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Block/Base/BaseBlock.php.hbs',
-      path: 'app/Block/Base/BaseBlock.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Block/Contracts/BlockInterface.php.hbs',
-      path: 'app/Block/Contracts/BlockInterface.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Plugin/BlockRepository.php.hbs',
-      path: 'app/Plugin/BlockRepository.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Plugin/BlockRepositoryInterface.php.hbs',
-      path: 'app/Plugin/BlockRepositoryInterface.php',
-    },
-    {
-      action: 'template',
-      template: 'app/Plugin/Manifest.php.hbs',
-      path: 'app/Plugin/Manifest.php',
+      action: 'templateGlob',
+      glob: 'app/**/*',
     },
     {
       action: 'addDependencies',
