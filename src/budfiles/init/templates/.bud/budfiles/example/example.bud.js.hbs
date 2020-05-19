@@ -1,9 +1,8 @@
 /**
  * Starter Budfile
  *
- * Invoke: `yarn bud generate new example`
+ * Run `yarn generate example`
  */
-
 module.exports = {
   name: 'example',
   description: 'Customize in .bud/budfiles',
@@ -22,7 +21,7 @@ module.exports = {
   actions: [
     {
       action: 'template',
-      template: 'Component.js.hbs',
+      template: 'Component.js.bud',
       path: 'src/components/{{{{raw}}}}{{componentName}}{{{{/raw}}}}.js',
       parser: 'babel',
     },

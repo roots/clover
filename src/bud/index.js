@@ -208,7 +208,7 @@ export const bud = {
    * @return {string}
    */
   inferParser: async function (file) {
-    const ext = file.split('.')[file.split('.').length - 2]
+    const ext = file.split('.')[file.split('.').length - 1]
     const parserMap = {
       js: 'babel',
       jsx: 'babel',
@@ -243,7 +243,6 @@ export const bud = {
       this.handlebars
         .compile(path)(this.getData())
         .replace('.hbs', '')
-        .replace('.bud', ''),
     )
 
     observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`)
@@ -272,7 +271,7 @@ export const bud = {
         concatMap(template => {
           return new Observable(async observer => {
             const parser = await this.inferParser(
-              template.replace('.bud', '').replace('.hbs', ''),
+              template.replace('.hbs', ''),
             )
 
             await this.template(
@@ -281,7 +280,6 @@ export const bud = {
                 template: template.replace(this.templateDir, ''),
                 path: template
                   .replace(this.templateDir, '')
-                  .replace('.bud', '')
                   .replace('.hbs', ''),
               },
               observer,

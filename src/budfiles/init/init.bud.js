@@ -53,7 +53,7 @@ module.exports = {
     },
     {
       action: 'template',
-      template: 'bud.config.json.hbs',
+      template: '.bud/bud.config.json.hbs',
       path: '.bud/bud.config.json',
       parser: 'json',
     },
@@ -65,12 +65,12 @@ module.exports = {
     },
     {
       action: 'template',
-      template: 'budfiles/example/example.bud.js.hbs',
+      template: '.bud/budfiles/example/example.bud.js.hbs',
       path: '.bud/budfiles/example/example.bud.js',
     },
     {
       action: 'template',
-      template: 'budfiles/example/templates/Component.js.hbs',
+      template: '.bud/budfiles/example/templates/Component.js.hbs',
       path: '.bud/budfiles/example/templates/Component.js.hbs',
     },
     {

@@ -1,6 +1,13 @@
 {
 	"commands": [
 		{
+			"path": "index.js",
+			"name": "index",
+			"description": "Bud information",
+			"args": [],
+			"subCommands": []
+		},
+		{
 			"path": "init.js",
 			"name": "init",
 			"description": "Create a new project",
@@ -54,30 +61,6 @@
 					"positional": false
 				},
 				{
-					"key": "proxy",
-					"type": "string",
-					"description": "Project proxy URL",
-					"isRequired": false,
-					"aliases": [],
-					"positional": false
-				},
-				{
-					"key": "protocol",
-					"type": "string",
-					"description": "Project uses SSL",
-					"isRequired": false,
-					"aliases": [],
-					"positional": false
-				},
-				{
-					"key": "port",
-					"type": "number",
-					"description": "Dev server port",
-					"isRequired": false,
-					"aliases": [],
-					"positional": false
-				},
-				{
 					"key": "projectDir",
 					"type": "string",
 					"description": "Output directory",
@@ -89,35 +72,27 @@
 			"subCommands": []
 		},
 		{
-			"path": "index.js",
-			"name": "index",
-			"description": "Bud information",
-			"args": [],
+			"path": "generate/index.js",
+			"name": "generate",
+			"description": "Generate code from a budfile",
+			"args": [
+				{
+					"key": "budName",
+					"type": "string",
+					"description": "",
+					"isRequired": false,
+					"aliases": [],
+					"positional": true
+				}
+			],
 			"subCommands": []
 		},
 		{
-			"path": "generate/index.js",
-			"name": "generate",
+			"path": "list/index.js",
+			"name": "list",
 			"description": "List available budfiles",
 			"args": [],
-			"subCommands": [
-				{
-					"path": "generate/new.js",
-					"name": "new",
-					"description": "Generate code described by a budfile",
-					"args": [
-						{
-							"key": "budName",
-							"type": "string",
-							"description": "",
-							"isRequired": false,
-							"aliases": [],
-							"positional": true
-						}
-					],
-					"subCommands": []
-				}
-			]
+			"subCommands": []
 		}
 	]
 }

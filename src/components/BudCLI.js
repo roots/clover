@@ -21,6 +21,7 @@ const DEFAULT_BUDFILE = {
  * @prop {string} outDir
  * @prop {object} values
  * @prop {object} children
+ * @prop {bool}   noClear
  */
 const BudCLI = ({
   label,
@@ -30,6 +31,7 @@ const BudCLI = ({
   values = null,
   inert = false,
   children,
+  noClear = false,
 }) => {
   /**
    * Parse values from .bud/bud.config.json
@@ -121,17 +123,25 @@ const BudCLI = ({
         </Box>
       </Box>
 
-      <Tasks data={data} status={status} complete={complete} />
+      <Tasks
+        data={data}
+        status={status}
+        complete={complete}
+        noClear={noClear}
+      />
 
       {children && children}
     </Box>
   )
 }
 
-const Tasks = ({data, status, complete}) => {
+/**
+ * Tasks
+ */
+const Tasks = ({data, status, complete, noClear}) => {
   const {stdout} = useStdout()
   useEffect(() => {
-    data && stdout.write('\x1B[2J\x1B[0f')
+    data && !noClear && stdout.write('\x1B[2J\x1B[0f')
   }, [data])
 
   return status ? (

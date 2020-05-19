@@ -13,6 +13,7 @@ const Init = props => {
       label={require(`${props.budFileDir}/init.bud`).label}
       sprout={require(`${props.budFileDir}/init.bud`)}
       templateDir={`${props.budFileDir}/templates`}
+      noClear={true}
     />
   )
 }
@@ -30,12 +31,6 @@ Init.propTypes = {
   email: PropTypes.string,
   /// Project website
   website: PropTypes.string,
-  /// Project proxy URL
-  proxy: PropTypes.string,
-  /// Project uses SSL
-  protocol: PropTypes.string,
-  /// Dev server port
-  port: PropTypes.number,
   /// Output directory
   projectDir: PropTypes.string,
 }

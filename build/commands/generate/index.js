@@ -122,7 +122,7 @@ module.exports = {
   arrowParens: 'avoid',
   bracketSpacing: false,
   tabWidth: 2,
-  printWidth: 80,
+  printWidth: 100,
   singleQuote: true,
   jsxBracketSameLine: true,
   useTabs: false,
@@ -418,21 +418,21 @@ const bud = {
   inferParser: async function (file) {
     var _parserMap$;
 
-    const ext = file.split('.')[file.split('.').length - 2];
+    const ext = file.split('.')[file.split('.').length - 1];
     const parserMap = {
-      'js': 'babel',
-      'jsx': 'babel',
-      'graphql': 'graphql',
-      'css': 'css',
-      'json': 'json',
-      'md': 'markdown',
-      'html': 'html',
-      'htm': 'html',
-      'ts': 'typescript',
-      'tsx': 'typescript',
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'less': 'less'
+      js: 'babel',
+      jsx: 'babel',
+      graphql: 'graphql',
+      css: 'css',
+      json: 'json',
+      md: 'markdown',
+      html: 'html',
+      htm: 'html',
+      ts: 'typescript',
+      tsx: 'typescript',
+      yml: 'yaml',
+      yaml: 'yaml',
+      less: 'less'
     };
     return (_parserMap$ = parserMap[`${ext}`]) !== null && _parserMap$ !== void 0 ? _parserMap$ : null;
   },
@@ -453,7 +453,7 @@ const bud = {
     const {
       contents
     } = await this.getTemplate(template);
-    const dest = join(this.projectDir, this.handlebars.compile(path)(this.getData()).replace('.hbs', '').replace('.bud', ''));
+    const dest = join(this.projectDir, this.handlebars.compile(path)(this.getData()).replace('.hbs', ''));
     observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`);
     const compiled = this.handlebars.compile(contents)(this.getData());
     const outputContents = parser ? this.format(compiled, parser) : compiled;
@@ -475,11 +475,11 @@ const bud = {
     const templates = await globby([resolve(this.templateDir, glob)]);
     from(templates).pipe(concatMap(template => {
       return new Observable(async observer => {
-        const parser = await this.inferParser(template.replace('.bud', '').replace('.hbs', ''));
+        const parser = await this.inferParser(template.replace('.hbs', ''));
         await this.template({
           parser,
           template: template.replace(this.templateDir, ''),
-          path: template.replace(this.templateDir, '').replace('.bud', '').replace('.hbs', '')
+          path: template.replace(this.templateDir, '').replace('.hbs', '')
         }, observer);
       });
     })).subscribe({
@@ -615,6 +615,7 @@ const DEFAULT_BUDFILE = {
  * @prop {string} outDir
  * @prop {object} values
  * @prop {object} children
+ * @prop {bool}   noClear
  */
 
 const BudCLI = ({
@@ -624,7 +625,8 @@ const BudCLI = ({
   outDir,
   values = null,
   inert = false,
-  children
+  children,
+  noClear = false
 }) => {
   /**
    * Parse values from .bud/bud.config.json
@@ -707,20 +709,26 @@ const BudCLI = ({
   }, '  Bud'))))), /*#__PURE__*/_react.default.createElement(Tasks, {
     data: data,
     status: status,
-    complete: complete
+    complete: complete,
+    noClear: noClear
   }), children && children);
 };
+/**
+ * Tasks
+ */
+
 
 const Tasks = ({
   data,
   status,
-  complete
+  complete,
+  noClear
 }) => {
   const {
     stdout
   } = (0, _ink.useStdout)();
   (0, _react.useEffect)(() => {
-    data && stdout.write('\x1B[2J\x1B[0f');
+    data && !noClear && stdout.write('\x1B[2J\x1B[0f');
   }, [data]);
   return status ? /*#__PURE__*/_react.default.createElement(_ink.Box, null, complete ? /*#__PURE__*/_react.default.createElement(_ink.Color, {
     green: true
@@ -741,13 +749,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _path = require("path");
+
 var _react = _interopRequireWildcard(require("react"));
 
 var _ink = require("ink");
 
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
-
-var _inkTable = _interopRequireDefault(require("ink-table"));
+var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _BudCLI = _interopRequireDefault(require("../../src/components/BudCLI"));
 
@@ -760,106 +768,84 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /**
- * Budfile glob paths
+ * Resolvers for different budfile locations
  */
-const rootsBudsGlob = `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/*.bud.js`;
-const moduleBudsGlob = `${process.cwd()}/node_modules/**/bud-plugin-*/*.bud.js`;
-const projectBudsGlob = `${process.cwd()}/.bud/**/*.bud.js`;
-/** Command: yarn generate */
-/// List available budfiles
+const getRootBudPath = name => `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/${name}.bud.js`;
 
-const GenerateIndex = () => {
-  /**
-   * Project buds
-   */
-  const [projectBuds, setProjectBuds] = (0, _react.useState)([]);
-  (0, _react.useEffect)(() => {
-    projectBuds.length == 0 && (async () => {
-      const buds = await (0, _globby.default)(projectBudsGlob);
-      buds && setProjectBuds(buds.map(bud => {
-        const src = require(bud);
+const getModuleBudPath = name => `${process.cwd()}/node_modules/**/bud-plugin-*/${name}.bud.js`;
 
-        return {
-          command: `yarn generate ${src.name}`,
-          source: 'project',
-          name: src.name,
-          description: src.description
-        };
-      }).filter(bud => bud.name));
-    })();
-  }, []);
+const getProjectBudPath = name => `${process.cwd()}/.bud/budfiles/**/${name}.bud.js`;
+/** Command: bud generate */
+/// Generate code from a budfile
+
+
+const Generate = props => {
+  const [budName] = (0, _react.useState)(props.budName);
+  const [sprout, setSprout] = (0, _react.useState)(false);
+  const [checked, setChecked] = (0, _react.useState)({
+    project: false,
+    modules: false,
+    roots: false
+  });
   /**
-   * Module buds
+   * Local budfiles
    */
 
-  const [moduleBuds, setModuleBuds] = (0, _react.useState)([]);
   (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      const buds = await (0, _globby.default)(moduleBudsGlob);
-      buds && setModuleBuds(buds.map(bud => {
-        const src = require(bud);
-
-        return {
-          command: `yarn generate ${src.name}`,
-          source: src.source ? src.source : null,
-          name: src.name,
-          description: src.description
-        };
-      }).filter(bud => bud.name));
+    budName && !checked.project && (async () => {
+      const buds = await (0, _globby.default)([getProjectBudPath(budName)]);
+      buds && buds.length > 0 && setSprout(buds[0]);
+      setChecked({ ...checked,
+        project: true
+      });
     })();
-  }, []);
+  }, [budName, checked.project]);
   /**
-   * Module buds
+   * Module budfiles
    */
 
-  const [rootsBuds, setRootsBuds] = (0, _react.useState)([]);
   (0, _react.useEffect)(() => {
-    rootsBuds.length == 0 && (async () => {
-      const buds = await (0, _globby.default)(rootsBudsGlob);
-      buds && setRootsBuds(buds.map(bud => {
-        const src = require(bud);
-
-        return src.name !== 'bud' && src.name !== 'init' ? {
-          command: `yarn generate ${src.name}`,
-          source: '@roots/bud',
-          name: src.name,
-          description: src.description
-        } : {};
-      }).filter(bud => bud.name));
+    !sprout && checked.project && (async () => {
+      const buds = await (0, _globby.default)([getModuleBudPath(budName)]);
+      buds && buds.length > 0 && setSprout(buds[0]);
+      setChecked({ ...checked,
+        modules: true
+      });
     })();
-  }, []);
-  const buds = [...projectBuds, ...rootsBuds, ...moduleBuds];
+  }, [sprout, checked.project]);
+  /**
+   * Core budfiles
+   */
+
+  (0, _react.useEffect)(() => {
+    !sprout && checked.modules && (async () => {
+      const buds = await (0, _globby.default)([getRootBudPath(budName)]);
+      buds && buds.length > 0 && setSprout(buds[0]);
+      setChecked({ ...checked,
+        roots: true
+      });
+    })();
+  }, [sprout, checked.modules]);
   /**
    * Render
    */
 
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_BudCLI.default, {
-    label: 'Available commands',
-    inert: true
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "column",
-    marginTop: 1,
-    marginBottom: 1
-  }, !moduleBuds.length > 0 && /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "row",
-    marginBottom: 1,
-    alignItems: "center"
-  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, {
-    type: "monkey"
-  }), " ", /*#__PURE__*/_react.default.createElement(_ink.Text, null, "Looking for modules")), /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    width: 200,
-    flexDirection: "column",
-    flexGrow: 1,
-    justifyContent: "space-between"
-  }, buds.length > 0 && /*#__PURE__*/_react.default.createElement(_inkTable.default, {
-    width: 200,
-    data: buds
-  })))));
+  return sprout ? /*#__PURE__*/_react.default.createElement(_BudCLI.default, {
+    label: require(sprout).description,
+    outDir: process.cwd(),
+    templateDir: `${(0, _path.dirname)(sprout)}/templates`,
+    sprout: require(sprout)
+  }) : /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+    green: true
+  }, "Searching..."));
 };
 
-var _default = GenerateIndex;
+Generate.propTypes = {
+  // Generator name ([name].bud.js)
+  budName: _propTypes.default.string
+};
+Generate.positionalArgs = ['budName'];
+var _default = Generate;
 exports.default = _default;
 },{"../../src/components/BudCLI":"../src/components/BudCLI.js"}]},{},["generate/index.js"], null)
 //# sourceMappingURL=/generate/index.js.map

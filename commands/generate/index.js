@@ -1,125 +1,92 @@
+import {dirname} from 'path'
 import React, {useState, useEffect} from 'react'
-import {Text, Box} from 'ink'
-import Spinner from 'ink-spinner'
-import Table from 'ink-table'
+import {Text, Color} from 'ink'
+import PropTypes from 'prop-types'
 import BudCLI from '../../src/components/BudCLI'
 import globby from 'globby'
 
 /**
- * Budfile glob paths
+ * Resolvers for different budfile locations
  */
-const rootsBudsGlob = `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/*.bud.js`
-const moduleBudsGlob = `${process.cwd()}/node_modules/**/bud-plugin-*/*.bud.js`
-const projectBudsGlob = `${process.cwd()}/.bud/**/*.bud.js`
+const getRootBudPath = name =>
+  `${process.cwd()}/node_modules/@roots/bud/src/budfiles/**/${name}.bud.js`
+const getModuleBudPath = name =>
+  `${process.cwd()}/node_modules/**/bud-plugin-*/${name}.bud.js`
+const getProjectBudPath = name =>
+  `${process.cwd()}/.bud/budfiles/**/${name}.bud.js`
 
-/** Command: yarn generate */
-/// List available budfiles
-const GenerateIndex = () => {
+/** Command: bud generate */
+/// Generate code from a budfile
+const Generate = props => {
+  const [budName] = useState(props.budName)
+  const [sprout, setSprout] = useState(false)
+  const [checked, setChecked] = useState({
+    project: false,
+    modules: false,
+    roots: false,
+  })
+
   /**
-   * Project buds
+   * Local budfiles
    */
-  const [projectBuds, setProjectBuds] = useState([])
   useEffect(() => {
-    projectBuds.length == 0 &&
+    budName &&
+      !checked.project &&
       (async () => {
-        const buds = await globby(projectBudsGlob)
-
-        buds &&
-          setProjectBuds(
-            buds
-              .map(bud => {
-                const src = require(bud)
-                return {
-                  command: `yarn generate ${src.name}`,
-                  source: 'project',
-                  name: src.name,
-                  description: src.description,
-                }
-              })
-              .filter(bud => bud.name),
-          )
+        const buds = await globby([getProjectBudPath(budName)])
+        buds && buds.length > 0 && setSprout(buds[0])
+        setChecked({...checked, project: true})
       })()
-  }, [])
+  }, [budName, checked.project])
 
   /**
-   * Module buds
+   * Module budfiles
    */
-  const [moduleBuds, setModuleBuds] = useState([])
   useEffect(() => {
-    ;(async () => {
-      const buds = await globby(moduleBudsGlob)
-
-      buds &&
-        setModuleBuds(
-          buds
-            .map(bud => {
-              const src = require(bud)
-
-              return {
-                command: `yarn generate ${src.name}`,
-                source: src.source ? src.source : null,
-                name: src.name,
-                description: src.description,
-              }
-            })
-            .filter(bud => bud.name),
-        )
-    })()
-  }, [])
-
-  /**
-   * Module buds
-   */
-  const [rootsBuds, setRootsBuds] = useState([])
-  useEffect(() => {
-    rootsBuds.length == 0 &&
+    !sprout &&
+      checked.project &&
       (async () => {
-        const buds = await globby(rootsBudsGlob)
-
-        buds &&
-          setRootsBuds(
-            buds
-              .map(bud => {
-                const src = require(bud)
-                return src.name !== 'bud' && src.name !== 'init'
-                  ? {
-                      command: `yarn generate ${src.name}`,
-                      source: '@roots/bud',
-                      name: src.name,
-                      description: src.description,
-                    }
-                  : {}
-              })
-              .filter(bud => bud.name),
-          )
+        const buds = await globby([getModuleBudPath(budName)])
+        buds && buds.length > 0 && setSprout(buds[0])
+        setChecked({...checked, modules: true})
       })()
-  }, [])
+  }, [sprout, checked.project])
 
-  const buds = [...projectBuds, ...rootsBuds, ...moduleBuds]
+  /**
+   * Core budfiles
+   */
+  useEffect(() => {
+    !sprout &&
+      checked.modules &&
+      (async () => {
+        const buds = await globby([getRootBudPath(budName)])
+        buds && buds.length > 0 && setSprout(buds[0])
+        setChecked({...checked, roots: true})
+      })()
+  }, [sprout, checked.modules])
 
   /**
    * Render
    */
-  return (
-    <>
-      <BudCLI label={'Available commands'} inert={true}>
-        <Box flexDirection="column" marginTop={1} marginBottom={1}>
-          {!moduleBuds.length > 0 && (
-            <Box flexDirection="row" marginBottom={1} alignItems="center">
-              <Spinner type="monkey" /> <Text>Looking for modules</Text>
-            </Box>
-          )}
-          <Box
-            width={200}
-            flexDirection="column"
-            flexGrow={1}
-            justifyContent="space-between">
-            {buds.length > 0 && <Table width={200} data={buds} />}
-          </Box>
-        </Box>
-      </BudCLI>
-    </>
+  return sprout ? (
+    <BudCLI
+      label={require(sprout).description}
+      outDir={process.cwd()}
+      templateDir={`${dirname(sprout)}/templates`}
+      sprout={require(sprout)}
+    />
+  ) : (
+    <Text>
+      <Color green>Searching...</Color>
+    </Text>
   )
 }
 
-export default GenerateIndex
+Generate.propTypes = {
+  // Generator name ([name].bud.js)
+  budName: PropTypes.string,
+}
+
+Generate.positionalArgs = ['budName']
+
+export default Generate
