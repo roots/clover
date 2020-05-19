@@ -42,9 +42,7 @@ const BudCLI = ({
   /**
    * Parse values from prompt
    */
-  const [prompts, setPrompts] = useState(
-    !values && sprout.prompts ? sprout.prompts : null,
-  )
+  const [prompts, setPrompts] = useState(!values && sprout.prompts ? sprout.prompts : null)
 
   const {exit} = useApp()
   const [data, setData] = useState(null)
@@ -123,12 +121,7 @@ const BudCLI = ({
         </Box>
       </Box>
 
-      <Tasks
-        data={data}
-        status={status}
-        complete={complete}
-        noClear={noClear}
-      />
+      <Tasks data={data} status={status} complete={complete} noClear={noClear} />
 
       {children && children}
     </Box>

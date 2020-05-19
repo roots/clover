@@ -190,8 +190,7 @@ module.exports = {
           translate: 'run-s -c translate:*',
           'translate:pot':
             'wp i18n make-pot . ./src/languages/plugin.pot --ignore-domain --include="./src"',
-          'translate:js':
-            'wp i18n make-json ./src/languages --no-purge --pretty-print',
+          'translate:js': 'wp i18n make-json ./src/languages --no-purge --pretty-print',
         },
       }),
     },

@@ -113,13 +113,10 @@ export const bud = {
    * @return {string}
    */
   format: function (content, parser) {
-    return this.prettier.format(
-      typeof content !== 'string' ? JSON.stringify(content) : content,
-      {
-        ...basePrettierConfig,
-        parser: parser || 'babel',
-      },
-    )
+    return this.prettier.format(typeof content !== 'string' ? JSON.stringify(content) : content, {
+      ...basePrettierConfig,
+      parser: parser || 'babel',
+    })
   },
 
   /**
@@ -240,9 +237,7 @@ export const bud = {
     const {contents} = await this.getTemplate(template)
     const dest = join(
       this.projectDir,
-      this.handlebars
-        .compile(path)(this.getData())
-        .replace('.hbs', '')
+      this.handlebars.compile(path)(this.getData()).replace('.hbs', ''),
     )
 
     observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`)
@@ -270,17 +265,13 @@ export const bud = {
       .pipe(
         concatMap(template => {
           return new Observable(async observer => {
-            const parser = await this.inferParser(
-              template.replace('.hbs', ''),
-            )
+            const parser = await this.inferParser(template.replace('.hbs', ''))
 
             await this.template(
               {
                 parser,
                 template: template.replace(this.templateDir, ''),
-                path: template
-                  .replace(this.templateDir, '')
-                  .replace('.hbs', ''),
+                path: template.replace(this.templateDir, '').replace('.hbs', ''),
               },
               observer,
             )
@@ -370,10 +361,7 @@ export const bud = {
     try {
       const output = merge(json)
 
-      await fs.outputFile(
-        `${this.projectDir}/${file}`,
-        this.format(output, 'json'),
-      )
+      await fs.outputFile(`${this.projectDir}/${file}`, this.format(output, 'json'))
 
       observer.complete()
     } catch (err) {

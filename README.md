@@ -74,12 +74,12 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ## All commands:
 
-| Command            | Description                          |
-| ------------------ | ------------------------------------ |
-| `bud`              | Bud information                      |
-| `bud init`         | Create a new project                 |
-| `yarn generate`    | List available budfiles              |
-| `bud generate new` | Generate code described by a budfile |
+| Command         | Description                  |
+| --------------- | ---------------------------- |
+| `bud`           | Bud information              |
+| `bud init`      | Create a new project         |
+| `bud generate`  | Generate code from a budfile |
+| `generate list` | List available budfiles      |
 
 ### Dependencies
 

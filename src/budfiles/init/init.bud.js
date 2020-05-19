@@ -44,12 +44,7 @@ module.exports = {
   actions: [
     {
       action: 'scaffold',
-      paths: [
-        '.bud',
-        '.bud/budfiles',
-        '.bud/budfiles/example',
-        '.bud/budfiles/example/templates',
-      ],
+      paths: ['.bud', '.bud/budfiles', '.bud/budfiles/example', '.bud/budfiles/example/templates'],
     },
     {
       action: 'template',

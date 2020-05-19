@@ -105,21 +105,12 @@ const List = () => {
       <BudCLI label={'Available commands'} inert={true}>
         <Box flexDirection="column" marginTop={1} marginBottom={1}>
           {!moduleBuds.length > 0 && (
-            <Box
-              flexDirection="row"
-              marginBottom={1}
-              alignItems="center">
+            <Box flexDirection="row" marginBottom={1} alignItems="center">
               <Spinner type="monkey" /> <Text>Looking for modules</Text>
             </Box>
           )}
-          <Box
-            width={200}
-            flexDirection="column"
-            flexGrow={1}
-            justifyContent="space-between">
-            {buds.length > 0 && (
-              <Table width={200} data={buds} />
-            )}
+          <Box width={200} flexDirection="column" flexGrow={1} justifyContent="space-between">
+            {buds.length > 0 && <Table width={200} data={buds} />}
           </Box>
         </Box>
       </BudCLI>
