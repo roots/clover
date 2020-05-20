@@ -124,12 +124,7 @@ const BudCLI = ({
       </Box>
 
       {!error ? (
-        <Tasks
-          data={data}
-          status={status}
-          complete={complete}
-          noClear={noClear}
-        />
+        <Tasks data={data} status={status} complete={complete} noClear={noClear} />
       ) : (
         <Error message={error} />
       )}

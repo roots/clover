@@ -274,31 +274,31 @@ export const bud = {
       const templates = await globby([resolve(this.templateDir, glob)])
 
       from(templates)
-      .pipe(
-        concatMap(template => {
-          return new Observable(async observer => {
-            try {
-              const parser = await this.inferParser(template.replace('.hbs', ''))
+        .pipe(
+          concatMap(template => {
+            return new Observable(async observer => {
+              try {
+                const parser = await this.inferParser(template.replace('.hbs', ''))
 
-              await this.template(
-                {
-                  parser,
-                  template: template.replace(this.templateDir, ''),
-                  path: template.replace(this.templateDir, '').replace('.hbs', ''),
-                },
-                observer,
-              )
-            } catch (error) {
-              observer.error(error)
-            }
-          })
-        }),
-      )
-      .subscribe({
-        next: next => observer.next(next),
-        error: error => observer.error(error),
-        complete: () => observer.complete(),
-      })
+                await this.template(
+                  {
+                    parser,
+                    template: template.replace(this.templateDir, ''),
+                    path: template.replace(this.templateDir, '').replace('.hbs', ''),
+                  },
+                  observer,
+                )
+              } catch (error) {
+                observer.error(error)
+              }
+            })
+          }),
+        )
+        .subscribe({
+          next: next => observer.next(next),
+          error: error => observer.error(error),
+          complete: () => observer.complete(),
+        })
     } catch (error) {
       observer.error(error)
     }
