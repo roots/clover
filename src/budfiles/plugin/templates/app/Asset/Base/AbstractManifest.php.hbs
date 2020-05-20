@@ -4,8 +4,8 @@ namespace {{pascalcase namespace}}\Asset\Base;
 
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use {{pascalcase namespace}}\Asset\Asset;
 use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
 
 /**
@@ -53,7 +53,6 @@ abstract class AbstractManifest implements ManifestInterface
     public function getAsset(BlockInterface $block, string $context, string $ext): AssetInterface
     {
         $blockName = str_replace($this->bud->get('plugin.namespace') . '/', '', $block->getName());
-
         $asset = $this->bud->make(AssetInterface::class);
 
         $asset->setType($this->types[$ext]);
@@ -61,8 +60,8 @@ abstract class AbstractManifest implements ManifestInterface
         $asset->setName(join('/', [$blockName, $context, $asset->getType()]));
         $asset->setUrl($this->bud->get('plugin.url') . $this->manifestContents->get("{$blockName}/{$context}")->{$ext});
 
-        if ($asset->getType() !== 'style' && $dependencies = $this->getDependencies($blockName, $context)) {
-            $asset->setDependencies($dependencies);
+        if ($asset->getType() !== 'style') {
+            $asset->setDependencies($this->getDependencies($blockName, $context) ?: []);
         }
 
         $this->assets->push($asset);
@@ -93,7 +92,7 @@ abstract class AbstractManifest implements ManifestInterface
      * @param  string $context
      * @return array
      */
-    public function getDependencies($name, $context): array
+    public function getDependencies(string $name, string $context): array
     {
         $dependencyManifest = join('', [
             $this->bud->get('path.plugin'),
