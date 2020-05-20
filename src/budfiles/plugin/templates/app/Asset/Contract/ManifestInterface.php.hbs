@@ -2,6 +2,16 @@
 
 namespace {{pascalcase namespace}}\Asset\Contract;
 
+use Illuminate\Support\Collection;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
+use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
+
+/**
+ * Asset Manifest interface.
+ */
 interface ManifestInterface
 {
+    public function getAsset(BlockInterface $block, string $context, string $ext): AssetInterface;
+
+    public function getAssets(BlockInterface $block): Collection;
 }

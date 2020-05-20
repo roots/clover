@@ -4,7 +4,6 @@ namespace {{pascalcase namespace}}\Plugin;
 
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface;
 use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
@@ -17,16 +16,16 @@ use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
  */
 class Registration
 {
-    /** @var \Psr\Container\ContainerInterface */
+    /** @var ContainerInterface */
     public $bud;
 
-    /** @var \Illuminate\Support\Collection */
+    /** @var Collection */
     public $collection;
 
-    /** @var \\{{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface */
+    /** @var BlockRepositoryInterface */
     public $blocks;
 
-    /** @var \\{{pascalcase namespace}}\Asset\Contract\ManifestInterface */
+    /** @var ManifestInterface */
     public $manifest;
 
     /**
@@ -69,27 +68,10 @@ class Registration
     protected function load(): void
     {
         $this->bud->get('plugin.blocks')->each(function ($name) {
-            $block = $this->bud->make('block');
+            $block = $this->bud->make(BlockInterface::class);
 
             $block->setName($name);
-
-            $this->collection::make([
-                $this->manifest->getAsset($block->getName(), 'editor', 'js'),
-                $this->manifest->getAsset($block->getName(), 'editor', 'css'),
-            ])->each(function (AssetInterface $asset) use ($block) {
-                if (! $asset) return;
-
-                $block->setEditorAsset($asset);
-            });
-
-            $this->collection::make([
-                $this->manifest->getAsset($block->getName(), 'public', 'js'),
-                $this->manifest->getAsset($block->getName(), 'public', 'css'),
-            ])->each(function (AssetInterface $asset) use ($block) {
-                if (! $asset) return;
-
-                $block->setPublicAsset($asset);
-            });
+            $block->setAssets($this->manifest->getAssets($block));
 
             $this->blocks->add($block);
         });
@@ -103,18 +85,7 @@ class Registration
     protected function register(): void
     {
         $this->blocks->all()->each(function (BlockInterface $block) {
-            $block->getAssets()->each(function (AssetInterface $asset) {
-                $registerAssetCallable = "wp_register_{$asset->getType()}";
-
-                $registerAssetCallable(
-                    $asset->getName(),
-                    $asset->getUrl(),
-                    $asset->getDependencies(),
-                    null
-                );
-            });
-
-            $block->register();
+            $this->blocks->register($block->getName());
         });
     }
 }

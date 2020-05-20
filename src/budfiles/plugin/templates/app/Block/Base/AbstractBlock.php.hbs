@@ -44,6 +44,7 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
         ContainerInterface $bud
     ) {
         $this->bud = $bud;
+
         $this->assets = $collection::make([]);
     }
 
@@ -110,17 +111,57 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
     }
 
     /**
+     * Set assets
+     *
+     * @return void
+     */
+    public function setAssets(Collection $assets): void
+    {
+        $this->assets = $assets;
+
+        $assets->each(function (AssetInterface $asset) {
+            if ($asset->getContext() == 'editor'
+            && $asset->getType() == 'script') {
+                $this->setEditorScript($asset);
+            }
+
+            if ($asset->getContext() == 'editor'
+            && $asset->getType() == 'style') {
+                $this->setEditorStyle($asset);
+            }
+
+            if ($asset->getContext() == 'public'
+            && $asset->getType() == 'script') {
+                $this->setPublicScript($asset);
+            }
+
+            if ($asset->getContext() == 'public'
+            && $asset->getType() == 'style') {
+                $this->setPublicStyle($asset);
+            }
+        });
+    }
+
+    /**
+     * Set editor script
+     *
+     * @param  Asset
+     * @return void
+     */
+    public function setEditorScript(AssetInterface $asset): void
+    {
+        $this->editor_script = $asset->getName();
+    }
+
+    /**
      * Set editor asset
      *
      * @param  Asset
      * @return void
      */
-    public function setEditorAsset(AssetInterface $asset): void
+    public function setEditorStyle(AssetInterface $asset): void
     {
-        $this->assets->push($asset);
-
-        $property = "editor_{$asset->getType()}";
-        $this->{$property} = $asset->getName();
+        $this->editor_style = $asset->getName();
     }
 
     /**
@@ -129,10 +170,19 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      * @param  string
      * @return void
      */
-    public function setPublicAsset(AssetInterface $asset): void
+    public function setPublicScript(AssetInterface $asset): void
     {
-        $this->assets->push($asset);
+        $this->script = $asset->getName();
+    }
 
-        $this->{$asset->getType()} = $asset->getName();
+    /**
+     * Set public asset
+     *
+     * @param  string
+     * @return void
+     */
+    public function setPublicStyle(AssetInterface $asset): void
+    {
+        $this->style = $asset->getName();
     }
 }

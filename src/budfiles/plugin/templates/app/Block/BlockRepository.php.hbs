@@ -4,6 +4,7 @@ namespace {{pascalcase namespace}}\Block;
 
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
+use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface;
 
@@ -20,9 +21,9 @@ class BlockRepository implements BlockRepositoryInterface
      *
      * @param ContainerInterface
      */
-    public function __construct(ContainerInterface $bud)
+    public function __construct(Collection $collection)
     {
-        $this->blocks = $bud->get('collection')::make([]);
+        $this->blocks = $collection::make([]);
     }
 
     /**
@@ -60,11 +61,43 @@ class BlockRepository implements BlockRepositoryInterface
     /**
      * Remove block.
      *
-     * @param  string
+     * @param  string $name
      * @return void
      */
-    public function remove(string $handle): void
+    public function remove(string $name): void
     {
-        $this->blocks->forget($handle);
+        $this->blocks->forget($name);
+    }
+
+    /**
+     * Register block.
+     *
+     * @param  string $name
+     * @return void
+     */
+    public function register(string $name): void
+    {
+        $block = $this->blocks->get($name);
+
+        $block->getAssets()->each(function (AssetInterface $asset) {
+            if (! in_array($asset->getType(), ['script','style'])) {
+                return;
+            }
+
+            $enqueueParams = [
+                $asset->getName(),
+                $asset->getUrl(),
+                $asset->getDependencies(),
+                null
+            ];
+
+            if ($asset->type == 'script') {
+                wp_register_script(...$enqueueParams);
+            }
+
+            wp_register_style(...$enqueueParams);
+        });
+
+        register_block_type($block);
     }
 }

@@ -16,13 +16,15 @@ interface BlockInterface
 
     public function setName(string $name): void;
 
-    public function getAttributes(): Collection;
-
     public function getAssets(): Collection;
 
-    public function setAttributes(Collection $attributes): void;
+    public function setAssets(Collection $assets): void;
 
-    public function setEditorAsset(AssetInterface $asset): void;
+    public function setEditorScript(AssetInterface $asset): void;
 
-    public function setPublicAsset(AssetInterface $asset): void;
+    public function setEditorStyle(AssetInterface $asset): void;
+
+    public function setPublicScript(AssetInterface $asset): void;
+
+    public function setPublicStyle(AssetInterface $asset): void;
 }
