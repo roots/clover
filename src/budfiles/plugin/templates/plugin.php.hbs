@@ -16,10 +16,18 @@ namespace {{pascalcase namespace}};
  * {{name}}
  */
 (new class {
+    /** @var string */
     public $autoload;
+
+    /** @var string */
     public $container;
+
+    /** @var Psr\Container\ContainerInterface */
     public $bud;
 
+    /**
+     * Class constructor.
+     */
     public function __construct()
     {
         $this->autoload = realpath(__DIR__ . '/vendor/autoload.php');
@@ -53,7 +61,12 @@ namespace {{pascalcase namespace}};
         register_deactivation_hook(__FILE__, $this->bud->get('plugin.deactivate'));
     }
 
-    public function composerError()
+    /**
+     * WP admin alert if autoloader can't be found.
+     *
+     * @return void
+     */
+    public function composerError(): void
     {
         print '<div class="notice notice-error">
             <p><strong>There\'s a problem with the {{name}} plugin.</strong></p>
