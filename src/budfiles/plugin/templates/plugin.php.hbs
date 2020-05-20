@@ -45,24 +45,24 @@ namespace {{pascalcase namespace}};
         }
 
         /**
-         * The plugin container
+         * Instantiate the plugin container.
          */
         $this->bud = require $this->bootstrap;
 
         /**
-         * Registers script and style assets
+         * Register script and style assets.
          */
         add_action('init', $this->bud->get('plugin.registration'));
 
         /**
-         * Handles plugin runtime concerns.
+         * Handle plugin lifecycle.
          */
         register_activation_hook(__FILE__, $this->bud->get('plugin.activate'));
         register_deactivation_hook(__FILE__, $this->bud->get('plugin.deactivate'));
     }
 
     /**
-     * WP admin alert if autoloader can't be found.
+     * Alert if autoloader can't be found.
      *
      * @return void
      */

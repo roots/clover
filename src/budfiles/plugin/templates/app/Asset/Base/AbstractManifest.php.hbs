@@ -38,7 +38,9 @@ abstract class AbstractManifest implements ManifestInterface
         $this->bud = $bud;
         $this->collection = $collection;
 
-        $this->assets = $this->collection::make(
+        $this->assets = $collection::make([]);
+
+        $this->manifestContents = $collection::make(
             $this->bud->get('plugin.manifest')
         );
     }
@@ -48,21 +50,18 @@ abstract class AbstractManifest implements ManifestInterface
      *
      * @return AssetInterface
      */
-    public function getAsset($name, $context, $ext): AssetInterface
+    public function getAsset(BlockInterface $block, string $context, string $ext): AssetInterface
     {
-        $blockName = str_replace($this->bud->get('plugin.namespace') . '/', '', $name);
+        $blockName = str_replace($this->bud->get('plugin.namespace') . '/', '', $block->getName());
 
-        $entry = $this->assets->get("{$blockName}/{$context}")->{$ext};
-        $uri = str_replace($this->bud->get('path.plugin.dist'), '', $entry);
+        $asset = $this->bud->make(AssetInterface::class);
 
-        $asset = $this->bud->make(Asset::class);
-
-        $asset->setName(join('/', [$name, $context, $this->types[$ext]]));
         $asset->setType($this->types[$ext]);
-        $asset->setUrl($this->bud->get('plugin.url') . $uri);
+        $asset->setContext($context);
+        $asset->setName(join('/', [$blockName, $context, $asset->getType()]));
+        $asset->setUrl($this->bud->get('plugin.url') . $this->manifestContents->get("{$blockName}/{$context}")->{$ext});
 
-        if ($this->types[$ext] !== 'style'
-        && $dependencies = $this->getDependencies($blockName, $context)) {
+        if ($asset->getType() !== 'style' && $dependencies = $this->getDependencies($blockName, $context)) {
             $asset->setDependencies($dependencies);
         }
 
@@ -72,11 +71,34 @@ abstract class AbstractManifest implements ManifestInterface
     }
 
     /**
-     * Return dependency manifest
+     * Get assets.
+     *
+     * @param  BlockInterface $block
+     * @return Collection
      */
-    public function getDependencies($name, $context)
+    public function getAssets(BlockInterface $block): Collection
     {
-        $manifestPath = $this->bud->get('path.plugin') . $this->assets->get("{$name}/{$context}")->json;
+        return $this->collection::make([
+            $this->getAsset($block, 'editor', 'js'),
+            $this->getAsset($block, 'public', 'js'),
+            $this->getAsset($block, 'editor', 'css'),
+            $this->getAsset($block, 'public', 'css'),
+        ]);
+    }
+
+    /**
+     * Get dependency manifest.
+     *
+     * @param  string $name
+     * @param  string $context
+     * @return array
+     */
+    public function getDependencies($name, $context): array
+    {
+        $dependencyManifest = join('', [
+            $this->bud->get('path.plugin'),
+            $this->manifestContents->get("{$name}/{$context}")->json
+        ]);
 
         return $this->collection::make(
             (object) json_decode(file_get_contents($dependencyManifest))
