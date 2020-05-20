@@ -47,6 +47,7 @@ const BudCLI = ({
   const {exit} = useApp()
   const [data, setData] = useState(null)
   const [status, setStatus] = useState(null)
+  const [error, setError] = useState(null)
   const [complete, setComplete] = useState(false)
   const [budSubscription, setBudSubscription] = useState(false)
 
@@ -91,6 +92,7 @@ const BudCLI = ({
           .actions()
           .subscribe({
             next: next => setStatus(next),
+            error: error => setError(error),
             complete: () => setComplete(true),
           }),
       )
@@ -121,12 +123,30 @@ const BudCLI = ({
         </Box>
       </Box>
 
-      <Tasks data={data} status={status} complete={complete} noClear={noClear} />
+      {!error ? (
+        <Tasks
+          data={data}
+          status={status}
+          complete={complete}
+          noClear={noClear}
+        />
+      ) : (
+        <Error message={error} />
+      )}
 
       {children && children}
     </Box>
   )
 }
+
+/**
+ * Error
+ */
+const Error = ({message}) => (
+  <Box>
+    <Color red>💥 {JSON.stringify(message)}</Color>
+  </Box>
+)
 
 /**
  * Tasks

@@ -108,18 +108,38 @@ module.exports = {
     },
     {
       action: 'template',
-      template: 'app/Plugin/Asset.php.hbs',
-      path: 'app/Plugin/Asset.php',
+      template: 'app/Plugin/Registration.php.hbs',
+      path: 'app/Plugin/Registration.php',
     },
     {
       action: 'template',
-      template: 'app/Plugin/AssetInterface.php.hbs',
-      path: 'app/Plugin/AssetInterface.php',
+      template: 'app/Asset/Asset.php.hbs',
+      path: 'app/Asset/Asset.php',
     },
     {
       action: 'template',
-      template: 'app/Plugin/Manifest.php.hbs',
-      path: 'app/Plugin/Manifest.php',
+      template: 'app/Asset/Base/AbstractAsset.php.hbs',
+      path: 'app/Asset/Base/AbstractAsset.php',
+    },
+    {
+      action: 'template',
+      template: 'app/Asset/Contract/AssetInterface.php.hbs',
+      path: 'app/Asset/Contract/AssetInterface.php',
+    },
+    {
+      action: 'template',
+      template: 'app/Asset/Manifest.php.hbs',
+      path: 'app/Asset/Manifest.php',
+    },
+    {
+      action: 'template',
+      template: 'app/Asset/Base/AbstractManifest.php.hbs',
+      path: 'app/Asset/Base/AbstractManifest.php',
+    },
+    {
+      action: 'template',
+      template: 'app/Asset/Contract/ManifestInterface.php.hbs',
+      path: 'app/Asset/Contract/ManifestInterface.php',
     },
     {
       action: 'template',
@@ -128,23 +148,23 @@ module.exports = {
     },
     {
       action: 'template',
-      template: 'app/Block/Base/BaseBlock.php.hbs',
-      path: 'app/Block/Base/BaseBlock.php',
+      template: 'app/Block/Base/AbstractBlock.php.hbs',
+      path: 'app/Block/Base/AbstractBlock.php',
     },
     {
       action: 'template',
-      template: 'app/Block/Contracts/BlockInterface.php.hbs',
-      path: 'app/Block/Contracts/BlockInterface.php',
+      template: 'app/Block/Contract/BlockInterface.php.hbs',
+      path: 'app/Block/Contract/BlockInterface.php',
     },
     {
       action: 'template',
-      template: 'app/Plugin/BlockRepository.php.hbs',
-      path: 'app/Plugin/BlockRepository.php',
+      template: 'app/Block/BlockRepository.php.hbs',
+      path: 'app/Block/BlockRepository.php',
     },
     {
       action: 'template',
-      template: 'app/Plugin/BlockRepositoryInterface.php.hbs',
-      path: 'app/Plugin/BlockRepositoryInterface.php',
+      template: 'app/Block/Contract/BlockRepositoryInterface.php.hbs',
+      path: 'app/Block/Contract/BlockRepositoryInterface.php',
     },
     {
       action: 'scaffold',

@@ -12,17 +12,50 @@
 
 namespace {{pascalcase namespace}};
 
-/**
- * Initialize the plugin
- */
-add_action('init', function () {
-    /**
-     * Boot the container.
-     */
-    $bud = require __DIR__ . '/app/bootstrap.php';
+(new class {
+    /** @var string */
+    public $autoload;
+
+    /** @var string */
+    public $container;
+
+    /** @var \Psr\Container\ContainerInterface */
+    public $bud;
 
     /**
-     * Register plugin assets.
+     * Plugin constructor
      */
-    $bud->get('registration')();
-});
+    public function __construct()
+    {
+        $this->autoload = realpath(__DIR__ . '/vendor/autoload.php');
+        $this->container = realpath(__DIR__ . '/app/bootstrap.php');
+    }
+
+    /**
+     * Plugin invocation.
+     */
+    public function __invoke()
+    {
+        /** Bounce early if the autoloader/container are missing */
+        if (! $this->autoload || ! $this->container) {
+            add_action('admin_notices', [$this, 'error']);
+
+            return;
+        }
+
+        /** Load the container and hook the runtime on init */
+        $this->bud = require $this->container;
+        add_action('init', $this->bud->get('plugin.registration'));
+    }
+
+    /**
+     * Plugin error.
+     */
+    public function error()
+    {
+        print '<div class="notice notice-error">
+            <p><strong>There\'s a problem with the {{name}} plugin.</strong></p>
+            <p>Please run <code>composer install</code> in <code>' . __DIR__ .'</code></p>
+        </div>';
+    }
+})();

@@ -2,16 +2,15 @@
 
 namespace {{pascalcase namespace}}\Block\Base;
 
-use \WP_Block_Type;
-use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
-use {{pascalcase namespace}}\Plugin\AssetInterface;
-use {{pascalcase namespace}}\Block\Contracts\BlockInterface;
+use Psr\Container\ContainerInterface;
+use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 
 /**
  * Block class.
  */
-class BaseBlock extends WP_Block_Type implements BlockInterface
+abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
 {
     /** @var string */
     public $name;
@@ -45,7 +44,7 @@ class BaseBlock extends WP_Block_Type implements BlockInterface
         ContainerInterface $bud
     ) {
         $this->bud = $bud;
-        $this->assets = $this->bud->get('collection')::make([]);
+        $this->assets = $collection::make([]);
     }
 
     /**

@@ -159,12 +159,17 @@ export const bud = {
       .pipe(
         concatMap(path => {
           return new Observable(async observer => {
-            await this.mkDir({path}, observer)
+            try {
+              await this.mkDir({path}, observer)
+            } catch (e) {
+              observer.error(e)
+            }
           })
         }),
       )
       .subscribe({
         next: next => observer.next(next),
+        error: error => observer.error(error),
         complete: () => observer.complete(),
       })
   },
@@ -180,9 +185,13 @@ export const bud = {
     const pathTemplate = this.handlebars.compile(path)
     const dirPath = join(this.projectDir, pathTemplate(this.getData()))
 
-    await fs.ensureDir(dirPath).then(() => {
-      observer.complete()
-    })
+    try {
+      await fs.ensureDir(dirPath).then(() => {
+        observer.complete()
+      })
+    } catch (e) {
+      observer.error(e)
+    }
   },
 
   /**
@@ -234,18 +243,22 @@ export const bud = {
    * @return {Observable}
    */
   template: async function ({parser, path, template}, observer) {
-    const {contents} = await this.getTemplate(template)
-    const dest = join(
-      this.projectDir,
-      this.handlebars.compile(path)(this.getData()).replace('.hbs', ''),
-    )
+    try {
+      const {contents} = await this.getTemplate(template)
+      const dest = join(
+        this.projectDir,
+        this.handlebars.compile(path)(this.getData()).replace('.hbs', ''),
+      )
 
-    observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`)
+      observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`)
 
-    const compiled = this.handlebars.compile(contents)(this.getData())
-    const outputContents = parser ? this.format(compiled, parser) : compiled
+      const compiled = this.handlebars.compile(contents)(this.getData())
+      const outputContents = parser ? this.format(compiled, parser) : compiled
 
-    fs.outputFile(dest, outputContents).then(() => observer.complete())
+      fs.outputFile(dest, outputContents).then(() => observer.complete())
+    } catch (error) {
+      observer.error(error)
+    }
   },
 
   /**
@@ -257,31 +270,38 @@ export const bud = {
    * @return {Observable}
    */
   templateGlob: async function ({glob}, observer) {
-    observer.next(glob)
+    try {
+      const templates = await globby([resolve(this.templateDir, glob)])
 
-    const templates = await globby([resolve(this.templateDir, glob)])
-
-    from(templates)
+      from(templates)
       .pipe(
         concatMap(template => {
           return new Observable(async observer => {
-            const parser = await this.inferParser(template.replace('.hbs', ''))
+            try {
+              const parser = await this.inferParser(template.replace('.hbs', ''))
 
-            await this.template(
-              {
-                parser,
-                template: template.replace(this.templateDir, ''),
-                path: template.replace(this.templateDir, '').replace('.hbs', ''),
-              },
-              observer,
-            )
+              await this.template(
+                {
+                  parser,
+                  template: template.replace(this.templateDir, ''),
+                  path: template.replace(this.templateDir, '').replace('.hbs', ''),
+                },
+                observer,
+              )
+            } catch (error) {
+              observer.error(error)
+            }
           })
         }),
       )
       .subscribe({
         next: next => observer.next(next),
+        error: error => observer.error(error),
         complete: () => observer.complete(),
       })
+    } catch (error) {
+      observer.error(error)
+    }
   },
 
   /**

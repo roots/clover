@@ -1,11 +1,11 @@
 <?php
 
-namespace {{pascalcase namespace}}\Plugin;
+namespace {{pascalcase namespace}}\Block;
 
-use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
-use {{pascalcase namespace}}\Block\Contracts\BlockInterface;
-use {{pascalcase namespace}}\Plugin\BlockRepositoryInterface;
+use Psr\Container\ContainerInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface;
 
 /**
  * Block repository implementation class.
@@ -17,6 +17,8 @@ class BlockRepository implements BlockRepositoryInterface
 
     /**
      * Construct.
+     *
+     * @param ContainerInterface
      */
     public function __construct(ContainerInterface $bud)
     {

@@ -2,19 +2,18 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
-use \Illuminate\Support\Collection
-use \Psr\Container\ContainerInterface
-use \\{{pascalcase namespace}}\Asset\Contracts\AssetInterface;
-use \\{{pascalcase namespace}}\Block\Contracts\BlockInterface;
-use \\{{pascalcase namespace}}\Block\Contracts\BlockRepositoryInterface;
+use Illuminate\Support\Collection;
+use Psr\Container\ContainerInterface;
+use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface;
+use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
 
 /**
- *
  * Register {{lowercase (dashcase namespace)}}/{{lowercase (dashcase name)}} block assets
  *
  * @see Enqueueing Editor Assets <https://git.io/JvPHy>
  * @see Dependency Extraction Webpack Plugin <https://git.io/Jv1ll>
- */
  */
 class Registration
 {
@@ -33,15 +32,18 @@ class Registration
     /**
       * Class constructor.
       *
+      * @param ContainerInterface       $bud
       * @param Collection               $collection
       * @param BlockRepositoryInterface $blocks
       * @param ManifestInterface        $manifest
       */
     public function __construct(
+        ContainerInterface $bud,
         Collection $collection,
         BlockRepositoryInterface $blocks,
-        ManifestInterface $manifest,
+        ManifestInterface $manifest
     ) {
+        $this->bud = $bud;
         $this->collection = $collection;
         $this->blocks = $blocks;
         $this->manifest = $manifest;
@@ -67,7 +69,6 @@ class Registration
     protected function load(): void
     {
         $this->bud->get('plugin.blocks')->each(function ($name) {
-            /** @var \\{{pascalcase namespace}}\Block\Contracts\BlockInterface */
             $block = $this->bud->make('block');
 
             $block->setName($name);

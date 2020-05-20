@@ -2,15 +2,16 @@
 
 namespace {{pascalcase namespace}}\Asset\Base;
 
-use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
-use {{pascalcase namespace}}\Asset\Contracts\AssetInterface;
-use {{pascalcase namespace}}\Asset\Contracts\ManifestInterface;
+use Psr\Container\ContainerInterface;
+use {{pascalcase namespace}}\Asset\Asset;
+use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
+use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
 
 /**
- * Manifest class.
+ * Abstract Manifest class.
  */
-class Manifest implements ManifestInterface
+abstract class AbstractManifest implements ManifestInterface
 {
     /** @var ContainerInterface */
     protected $bud;
@@ -33,12 +34,14 @@ class Manifest implements ManifestInterface
      */
     public function __construct(
         ContainerInterface $bud,
-        Collection $assets,
         Collection $collection
     ) {
         $this->bud = $bud;
-        $this->assets = $assets;
         $this->collection = $collection;
+
+        $this->assets = $this->collection::make(
+            $this->bud->get('plugin.manifest')
+        );
     }
 
     /**
@@ -49,10 +52,12 @@ class Manifest implements ManifestInterface
     public function getAsset($name, $context, $ext): AssetInterface
     {
         $blockName = str_replace($this->bud->get('plugin.namespace') . '/', '', $name);
-        $entry = $this->assets->get("{$blockName}/{$context}")->{$ext};
-        $uri = str_replace($this->bud->get('plugin.path.dist'), '', $entry);
 
-        $asset = $this->bud->make('asset');
+        $entry = $this->assets->get("{$blockName}/{$context}")->{$ext};
+        $uri = str_replace($this->bud->get('path.plugin.dist'), '', $entry);
+
+        $asset = $this->bud->make(Asset::class);
+
         $asset->setName(join('/', [$name, $context, $this->types[$ext]]));
         $asset->setType($this->types[$ext]);
         $asset->setUrl($this->bud->get('plugin.url') . $uri);
@@ -70,7 +75,7 @@ class Manifest implements ManifestInterface
      */
     public function getDependencies($name, $context)
     {
-        $manifestPath = $this->bud->get('plugin.path') . $this->assets->get("{$name}/{$context}")->json;
+        $manifestPath = $this->bud->get('path.plugin') . $this->assets->get("{$name}/{$context}")->json;
 
         return $this->collection::make(
             (object) json_decode(file_get_contents($manifestPath))

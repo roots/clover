@@ -367,12 +367,17 @@ const bud = {
     observer.next(`Creating directories`);
     from(paths).pipe(concatMap(path => {
       return new Observable(async observer => {
-        await this.mkDir({
-          path
-        }, observer);
+        try {
+          await this.mkDir({
+            path
+          }, observer);
+        } catch (e) {
+          observer.error(e);
+        }
       });
     })).subscribe({
       next: next => observer.next(next),
+      error: error => observer.error(error),
       complete: () => observer.complete()
     });
   },
@@ -389,9 +394,14 @@ const bud = {
   }, observer) {
     const pathTemplate = this.handlebars.compile(path);
     const dirPath = join(this.projectDir, pathTemplate(this.getData()));
-    await fs.ensureDir(dirPath).then(() => {
-      observer.complete();
-    });
+
+    try {
+      await fs.ensureDir(dirPath).then(() => {
+        observer.complete();
+      });
+    } catch (e) {
+      observer.error(e);
+    }
   },
 
   /**
@@ -450,14 +460,18 @@ const bud = {
     path,
     template
   }, observer) {
-    const {
-      contents
-    } = await this.getTemplate(template);
-    const dest = join(this.projectDir, this.handlebars.compile(path)(this.getData()).replace('.hbs', ''));
-    observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`);
-    const compiled = this.handlebars.compile(contents)(this.getData());
-    const outputContents = parser ? this.format(compiled, parser) : compiled;
-    fs.outputFile(dest, outputContents).then(() => observer.complete());
+    try {
+      const {
+        contents
+      } = await this.getTemplate(template);
+      const dest = join(this.projectDir, this.handlebars.compile(path)(this.getData()).replace('.hbs', ''));
+      observer.next(`Writing ${dest.split('/')[dest.split('/').length - 1]}`);
+      const compiled = this.handlebars.compile(contents)(this.getData());
+      const outputContents = parser ? this.format(compiled, parser) : compiled;
+      fs.outputFile(dest, outputContents).then(() => observer.complete());
+    } catch (error) {
+      observer.error(error);
+    }
   },
 
   /**
@@ -471,21 +485,29 @@ const bud = {
   templateGlob: async function ({
     glob
   }, observer) {
-    observer.next(glob);
-    const templates = await globby([resolve(this.templateDir, glob)]);
-    from(templates).pipe(concatMap(template => {
-      return new Observable(async observer => {
-        const parser = await this.inferParser(template.replace('.hbs', ''));
-        await this.template({
-          parser,
-          template: template.replace(this.templateDir, ''),
-          path: template.replace(this.templateDir, '').replace('.hbs', '')
-        }, observer);
+    try {
+      const templates = await globby([resolve(this.templateDir, glob)]);
+      from(templates).pipe(concatMap(template => {
+        return new Observable(async observer => {
+          try {
+            const parser = await this.inferParser(template.replace('.hbs', ''));
+            await this.template({
+              parser,
+              template: template.replace(this.templateDir, ''),
+              path: template.replace(this.templateDir, '').replace('.hbs', '')
+            }, observer);
+          } catch (error) {
+            observer.error(error);
+          }
+        });
+      })).subscribe({
+        next: next => observer.next(next),
+        error: error => observer.error(error),
+        complete: () => observer.complete()
       });
-    })).subscribe({
-      next: next => observer.next(next),
-      complete: () => observer.complete()
-    });
+    } catch (error) {
+      observer.error(error);
+    }
   },
 
   /**
@@ -643,6 +665,7 @@ const BudCLI = ({
   } = (0, _ink.useApp)();
   const [data, setData] = (0, _react.useState)(null);
   const [status, setStatus] = (0, _react.useState)(null);
+  const [error, setError] = (0, _react.useState)(null);
   const [complete, setComplete] = (0, _react.useState)(false);
   const [budSubscription, setBudSubscription] = (0, _react.useState)(false);
   /**
@@ -677,6 +700,7 @@ const BudCLI = ({
       outDir
     }).actions().subscribe({
       next: next => setStatus(next),
+      error: error => setError(error),
       complete: () => setComplete(true)
     }));
   }, [data, status]);
@@ -706,13 +730,25 @@ const BudCLI = ({
     url: "https://roots.io/bud"
   }, /*#__PURE__*/_react.default.createElement(_ink.Color, {
     green: true
-  }, '  Bud'))))), /*#__PURE__*/_react.default.createElement(Tasks, {
+  }, '  Bud'))))), !error ? /*#__PURE__*/_react.default.createElement(Tasks, {
     data: data,
     status: status,
     complete: complete,
     noClear: noClear
+  }) : /*#__PURE__*/_react.default.createElement(Error, {
+    message: error
   }), children && children);
 };
+/**
+ * Error
+ */
+
+
+const Error = ({
+  message
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  red: true
+}, "\uD83D\uDCA5 ", JSON.stringify(message)));
 /**
  * Tasks
  */
