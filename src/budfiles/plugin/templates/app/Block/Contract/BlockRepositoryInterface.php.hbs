@@ -6,22 +6,15 @@ use Illuminate\Support\Collection;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 
 /**
- * Block repository.
+ * Block repository interface.
  */
 interface BlockRepositoryInterface
 {
-    /**
-     * Get block.
-     *
-     * @param string $handle
-     * @return Block
-     */
     public function get(string $handle): BlockInterface;
 
-    /**
-     * Get blocks.
-     *
-     * @return Collection
-     */
     public function all(): Collection;
+
+    public function add(BlockInterface $block): void;
+
+    public function remove(BlockInterface $block): void;
 }

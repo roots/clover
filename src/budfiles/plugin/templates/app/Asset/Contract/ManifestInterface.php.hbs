@@ -14,4 +14,6 @@ interface ManifestInterface
     public function getAsset(BlockInterface $block, string $context, string $ext): AssetInterface;
 
     public function getAssets(BlockInterface $block): Collection;
+
+    public function getDependencies(string $name, string $context): array;
 }

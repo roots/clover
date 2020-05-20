@@ -28,9 +28,8 @@ abstract class AbstractManifest implements ManifestInterface
     /**
      * Class constructor.
      *
-     * @param ContainerInterface
-     * @param Collection
-     * @param Collection
+     * @param ContainerInterface $bud
+     * @param Collection         $collection
      */
     public function __construct(
         ContainerInterface $bud,
@@ -45,7 +44,7 @@ abstract class AbstractManifest implements ManifestInterface
     }
 
     /**
-     * Return asset
+     * Get asset.
      *
      * @return AssetInterface
      */
@@ -67,6 +66,8 @@ abstract class AbstractManifest implements ManifestInterface
             $asset->setDependencies($dependencies);
         }
 
+        $this->assets->push($asset);
+
         return $asset;
     }
 
@@ -78,7 +79,7 @@ abstract class AbstractManifest implements ManifestInterface
         $manifestPath = $this->bud->get('path.plugin') . $this->assets->get("{$name}/{$context}")->json;
 
         return $this->collection::make(
-            (object) json_decode(file_get_contents($manifestPath))
+            (object) json_decode(file_get_contents($dependencyManifest))
         )->get('dependencies');
     }
 }

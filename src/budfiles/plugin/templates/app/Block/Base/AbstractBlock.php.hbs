@@ -15,23 +15,8 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
     /** @var string */
     public $name;
 
-    /** @var string */
-    public $editor_script;
-
-    /** @var string */
-    public $editor_style;
-
-    /** @var string */
-    public $script;
-
-    /** @var string */
-    public $style;
-
     /** @var Collection */
     public $assets;
-
-    /** @var Collection */
-    public $attributes;
 
     /**
      * Constructor.
@@ -44,18 +29,7 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
         ContainerInterface $bud
     ) {
         $this->bud = $bud;
-
         $this->assets = $collection::make([]);
-    }
-
-    /**
-     * Register block.
-     *
-     * @return void
-     */
-    public function register(): void
-    {
-        register_block_type($this);
     }
 
     /**
@@ -76,34 +50,16 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      */
     public function setName(string $name): void
     {
-        $this->name = "{$this->bud->get('plugin.namespace')}/{$name}";
+        $this->name = join('/', [
+            $this->bud->get('plugin.namespace'),
+            $name,
+        ]);
     }
 
     /**
-     * Get attributes.
+     * Get assets
      *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAttributes(): Collection
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * Set attributes.
-     *
-     * @param  string $attributesPath
-     * @return Block
-     */
-    public function setAttributes(Collection $attributes): void
-    {
-        $this->attributes = $attributes;
-    }
-
-    /**
-     * Get assets.
-     *
-     * @return Collection
+     * @return Collection $assets
      */
     public function getAssets(): Collection
     {
@@ -117,72 +73,28 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      */
     public function setAssets(Collection $assets): void
     {
-        $this->assets = $assets;
-
         $assets->each(function (AssetInterface $asset) {
-            if ($asset->getContext() == 'editor'
-            && $asset->getType() == 'script') {
-                $this->setEditorScript($asset);
+            if ($asset->getContext() == 'editor') {
+                $context = join('_', [$asset->getContext(), $asset->getType()]);
+            } else {
+                $context = $asset->getType();
             }
 
-            if ($asset->getContext() == 'editor'
-            && $asset->getType() == 'style') {
-                $this->setEditorStyle($asset);
-            }
-
-            if ($asset->getContext() == 'public'
-            && $asset->getType() == 'script') {
-                $this->setPublicScript($asset);
-            }
-
-            if ($asset->getContext() == 'public'
-            && $asset->getType() == 'style') {
-                $this->setPublicStyle($asset);
-            }
+            $this->assets->put($context, $asset);
         });
     }
 
     /**
-     * Set editor script
+     * Register block.
      *
-     * @param  Asset
      * @return void
      */
-    public function setEditorScript(AssetInterface $asset): void
-    {
-        $this->editor_script = $asset->getName();
-    }
+     public function register(): void
+     {
+         $this->assets->each(function (AssetInterface $asset, string $context) {
+             $this->{$context} = $asset->getName();
+         });
 
-    /**
-     * Set editor asset
-     *
-     * @param  Asset
-     * @return void
-     */
-    public function setEditorStyle(AssetInterface $asset): void
-    {
-        $this->editor_style = $asset->getName();
-    }
-
-    /**
-     * Set public asset
-     *
-     * @param  string
-     * @return void
-     */
-    public function setPublicScript(AssetInterface $asset): void
-    {
-        $this->script = $asset->getName();
-    }
-
-    /**
-     * Set public asset
-     *
-     * @param  string
-     * @return void
-     */
-    public function setPublicStyle(AssetInterface $asset): void
-    {
-        $this->style = $asset->getName();
-    }
+         register_block_type($this);
+     }
 }

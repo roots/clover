@@ -12,7 +12,17 @@ interface AssetInterface
 
     public function setUrl(string $url): void;
 
+    public function getType(): string;
+
+    public function setType(string $type): void;
+
+    public function getContext(): string;
+
+    public function setContext(string $context): void;
+
     public function getDependencies(): array;
 
     public function setDependencies(array $dependencies): void;
+
+    public function register(): void;
 }

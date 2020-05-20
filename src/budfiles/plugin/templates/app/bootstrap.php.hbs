@@ -9,6 +9,7 @@ namespace {{pascalcase namespace}};
 require __DIR__ . '/../vendor/autoload.php';
 
 use function DI\autowire;
+use function DI\create;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 
@@ -22,8 +23,8 @@ $builder->addDefinitions([
      * Plugin bindings
      */
     Plugin\Registration::class => autowire(Plugin\Registration::class),
-    Plugin\Activate::class => autowire(Plugin\Activate::class),
-    Plugin\Deactivate::class => autowire(Plugin\Deactivate::class),
+    Plugin\Activate::class => Plugin\Activate::class,
+    Plugin\Deactivate::class => Plugin\Deactivate::class,
     Asset\Contract\AssetInterface::class => autowire(Asset\Asset::class),
     Block\Contract\BlockInterface::class => autowire(Block\Block::class),
     Block\Contract\BlockRepositoryInterface::class => autowire(Block\BlockRepository::class),
@@ -32,8 +33,8 @@ $builder->addDefinitions([
     /**
      * Plugin aliases
      */
-    'plugin.activate' => autowire(Plugin\Activate::class),
-    'plugin.deactivate' => autowire(Plugin\Deactivate::class),
+    'plugin.activate' => create(Plugin\Activate::class),
+    'plugin.deactivate' => create(Plugin\Deactivate::class),
     'plugin.registration' => autowire(Plugin\Registration::class),
     'asset' => autowire(Asset\Asset::class),
     'block' => autowire(Block\Block::class),
@@ -80,6 +81,8 @@ $builder->addDefinitions([
     'path.plugin.src.blocks' => realpath(__DIR__ . '/../src/blocks'),
     'path.plugin.storage' => realpath(__DIR__ . '/../storage/'),
     'path.plugin.storage.cache' => realpath(__DIR__ . '/../storage/cache'),
+    'path.plugin.activate' => realpath(__DIR__ . '/Plugin/Activate.php'),
+    'path.plugin.deactivate' => realpath(__DIR__ . '/Plugin/Deactivate.php'),
 ]);
 
 return $builder->build();

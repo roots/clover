@@ -9,7 +9,7 @@ use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface;
 
 /**
- * Block repository implementation class.
+ * Block Repository class.
  */
 class BlockRepository implements BlockRepositoryInterface
 {
@@ -61,43 +61,11 @@ class BlockRepository implements BlockRepositoryInterface
     /**
      * Remove block.
      *
-     * @param  string $name
+     * @param  BlockInterface
      * @return void
      */
-    public function remove(string $name): void
+    public function remove(BlockInterface $block): void
     {
         $this->blocks->forget($name);
-    }
-
-    /**
-     * Register block.
-     *
-     * @param  string $name
-     * @return void
-     */
-    public function register(string $name): void
-    {
-        $block = $this->blocks->get($name);
-
-        $block->getAssets()->each(function (AssetInterface $asset) {
-            if (! in_array($asset->getType(), ['script','style'])) {
-                return;
-            }
-
-            $enqueueParams = [
-                $asset->getName(),
-                $asset->getUrl(),
-                $asset->getDependencies(),
-                null
-            ];
-
-            if ($asset->type == 'script') {
-                wp_register_script(...$enqueueParams);
-            }
-
-            wp_register_style(...$enqueueParams);
-        });
-
-        register_block_type($block);
     }
 }

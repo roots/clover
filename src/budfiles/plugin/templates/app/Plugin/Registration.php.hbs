@@ -4,6 +4,7 @@ namespace {{pascalcase namespace}}\Plugin;
 
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
+use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockRepositoryInterface;
 use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
@@ -78,14 +79,18 @@ class Registration
     }
 
     /**
-      * Register blocks and assets.
+      * Register blocks and their assets.
       *
       * @return void
       */
     protected function register(): void
     {
         $this->blocks->all()->each(function (BlockInterface $block) {
-            $this->blocks->register($block->getName());
+            $block->getAssets()->each(function (AssetInterface $asset) {
+                $asset->register();
+            });
+        })->each(function (BlockInterface $block) {
+            $block->register();
         });
     }
 }
