@@ -93,7 +93,7 @@ abstract class AbstractAsset implements AssetInterface
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -103,7 +103,7 @@ abstract class AbstractAsset implements AssetInterface
     }
 
     /**
-     * Set url
+     * Set url.
      *
      * @return string
      */
@@ -113,7 +113,7 @@ abstract class AbstractAsset implements AssetInterface
     }
 
     /**
-     * Get dependencies
+     * Get dependencies.
      *
      * @param  string
      * @return void
@@ -128,7 +128,7 @@ abstract class AbstractAsset implements AssetInterface
     }
 
     /**
-     * Set dependencies
+     * Set dependencies.
      *
      * @param  string
      * @param  string
@@ -137,5 +137,19 @@ abstract class AbstractAsset implements AssetInterface
     public function setDependencies(array $dependencies): void
     {
         $this->dependencies = $dependencies;
+    }
+
+    /**
+     * Register asset.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+         if ($this->getType() == 'script') {
+            wp_register_script($this->getName(), $this->getUrl(), $this->getDependencies(), null);
+         } else {
+            wp_register_style($this->getName(), $this->getUrl(), [], null);
+         }
     }
 }

@@ -66,12 +66,13 @@ class Registration
       *
       * @return void
       */
-    protected function load(): void
+    private function load(): void
     {
-        $this->bud->get('plugin.blocks')->each(function ($name) {
+        $this->globPluginBlocks()->each(function ($name) {
             $block = $this->bud->make(BlockInterface::class);
 
             $block->setName($name);
+
             $block->setAssets($this->manifest->getAssets($block));
 
             $this->blocks->add($block);
@@ -83,7 +84,7 @@ class Registration
       *
       * @return void
       */
-    protected function register(): void
+    private function register(): void
     {
         $this->blocks->all()->each(function (BlockInterface $block) {
             $block->getAssets()->each(function (AssetInterface $asset) {
@@ -93,4 +94,17 @@ class Registration
             $block->register();
         });
     }
+
+    /**
+     * Glob Plugin blocks.
+     */
+     private function globPluginBlocks()
+     {
+         return $this->collection::make(
+            glob($this->bud->get('path.plugin.src.blocks') . '/*', GLOB_ONLYDIR)
+        )
+        ->map(function ($path) {
+            return str_replace($this->bud->get('path.plugin.src.blocks') . '/', '', $path);
+        });
+     }
 }

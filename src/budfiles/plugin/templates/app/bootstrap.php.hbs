@@ -55,22 +55,6 @@ $builder->addDefinitions([
      * Config
      */
     'plugin.namespace' => '{{lowercase (dashcase namespace)}}',
-    'plugin.manifest' => function (ContainerInterface $bud) {
-        if (! $manifestPath = realpath(__DIR__ . '/../dist/assets.json')) {
-            return;
-        }
-
-        return $bud->get('collection')::make(
-            json_decode(file_get_contents($manifestPath))
-        );
-    },
-    'plugin.blocks' => function(ContainerInterface $bud) {
-        return $bud->get('collection')::make(
-            glob($bud->get('path.plugin.src.blocks') . '/*', GLOB_ONLYDIR)
-        )->map(function ($path) {
-            return str_replace($this->bud->get('path.plugin.src.blocks') . '/', '', $path);
-        });
-    },
     'plugin.url' => plugins_url('', __DIR__),
     'path.wp' => WP_CONTENT_DIR,
     'path.wp.plugins' => plugin_dir_path('', __DIR__),

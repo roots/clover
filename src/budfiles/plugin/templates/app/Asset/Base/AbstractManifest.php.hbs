@@ -5,8 +5,8 @@ namespace {{pascalcase namespace}}\Asset\Base;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
-use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Asset\Contract\ManifestInterface;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 
 /**
  * Abstract Manifest class.
@@ -28,8 +28,8 @@ abstract class AbstractManifest implements ManifestInterface
     /**
      * Class constructor.
      *
-     * @param ContainerInterface
-     * @param Collection
+     * @param ContainerInterface $bud
+     * @param Collection         $collection
      */
     public function __construct(
         ContainerInterface $bud,
@@ -38,11 +38,14 @@ abstract class AbstractManifest implements ManifestInterface
         $this->bud = $bud;
         $this->collection = $collection;
 
-        $this->assets = $collection::make([]);
-
-        $this->manifestContents = $collection::make(
-            $this->bud->get('plugin.manifest')
+        $manifestPath = realpath($bud->get('path.plugin.dist') . '/assets.json');
+        $this->assetsManifest = $collection::make(
+            $manifestPath
+                ? json_decode(file_get_contents($manifestPath))
+                : (object) []
         );
+
+        $this->assets = $collection::make([]);
     }
 
     /**
@@ -52,17 +55,16 @@ abstract class AbstractManifest implements ManifestInterface
      */
     public function getAsset(BlockInterface $block, string $context, string $ext): AssetInterface
     {
-        $blockName = str_replace($this->bud->get('plugin.namespace') . '/', '', $block->getName());
+        $name = explode('/', $block->getName())[1];
+        $entry = $this->assetsManifest->get("{$name}/{$context}");
+
         $asset = $this->bud->make(AssetInterface::class);
 
         $asset->setType($this->types[$ext]);
         $asset->setContext($context);
-        $asset->setName(join('/', [$blockName, $context, $asset->getType()]));
-        $asset->setUrl($this->bud->get('plugin.url') . $this->manifestContents->get("{$blockName}/{$context}")->{$ext});
-
-        if ($asset->getType() !== 'style') {
-            $asset->setDependencies($this->getDependencies($blockName, $context) ?: []);
-        }
+        $asset->setUrl($this->bud->get('plugin.url') . $entry->{$ext});
+        $asset->setName(join('/', [$block->getName(), $context, $asset->getType()]));
+        $asset->setDependencies($this->getDependencies($name, $context));
 
         $this->assets->push($asset);
 
@@ -96,7 +98,7 @@ abstract class AbstractManifest implements ManifestInterface
     {
         $dependencyManifest = join('', [
             $this->bud->get('path.plugin'),
-            $this->manifestContents->get("{$name}/{$context}")->json
+            $this->assetsManifest->get("{$name}/{$context}")->json
         ]);
 
         return $this->collection::make(
