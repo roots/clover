@@ -1,8 +1,5 @@
 /** @wordpress */
-import {
-  MediaUpload,
-  MediaUploadCheck,
-} from '@wordpress/block-editor'
+import {MediaUpload, MediaUploadCheck} from '@wordpress/block-editor'
 import {Button} from '@wordpress/components'
 
 /** Modules */
@@ -17,12 +14,24 @@ const ALLOWED_MEDIA_TYPES = ['image']
 /**
  * Media
  *
+ * Attributes.json example entry:
+ *
+ *  "media": {
+ *    "type": "object",
+ *    "selector": "img"
+ *  }
+ *
+ * @prop {array}    allowedMediaTypes
+ * @prop {bool}     multiple
  * @prop {object}   media
  * @prop {function} setAttributes
  */
-const Media = ({media, setAttributes, ...props}) => {
-  const {id, url} = media
-
+const MediaEdit = ({
+  allowedMediaTypes,
+  multiple,
+  media,
+  setAttributes,
+}) => {
   /**
    * Handle media attribute
    * @param {object} media
@@ -32,20 +41,24 @@ const Media = ({media, setAttributes, ...props}) => {
   return (
     <MediaUploadCheck>
       <MediaUpload
-        allowedMediaTypes={props.allowedMediaTypes || ALLOWED_MEDIA_TYPES}
-        multiple={props.multiple || false}
-        value={id || null}
+        allowedMediaTypes={allowedMediaTypes ?? ALLOWED_MEDIA_TYPES}
+        multiple={multiple ?? false}
+        value={media?.id ?? null}
         onSelect={setMedia}
         render={({open}) => (
           <>
-            {url && (
+            {media && (
               <figure>
-                <img alt="alt text" src={url} />
+                <img
+                  title={media.title}
+                  alt={media.alt}
+                  src={media.url}
+                />
               </figure>
             )}
 
             <Button isPrimary onClick={open}>
-              {id ? 'Replace' : 'Add'} image
+              {media?.id ? 'Replace' : 'Add'} image
             </Button>
           </>
         )}
@@ -54,11 +67,39 @@ const Media = ({media, setAttributes, ...props}) => {
   )
 }
 
-Media.propTypes = {
+/**
+ * Media (Save)
+ *
+ * @prop {object}   media
+ * @prop {function} setAttributes
+ */
+const MediaSave = ({media}) => {
+  return media ? (
+    <img
+      src={media.url}
+      alt={media.alt}
+      title={media.title}
+    />
+  ) : []
+}
+
+MediaEdit.propTypes = {
   allowedMediaTypes: PropTypes.array,
   multiple: PropTypes.bool,
-  media: PropTypes.object.isRequired,
+  media: PropTypes.object.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    title: PropTypes.string,
+  }).isRequired,
   setAttributes: PropTypes.func.isRequired,
 }
 
-export default Media
+MediaSave.propTypes = {
+  media: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    title: PropTypes.string,
+  }),
+}
+
+export {MediaEdit, MediaSave}
