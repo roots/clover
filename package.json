@@ -44,7 +44,7 @@
     "eslint": "^7.0.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4.0.2",
+    "eslint-plugin-react-hooks": "^4.0.4",
     "globby": "^11.0.0",
     "husky": "^4.2.5",
     "ink-divider": "^2.0.1",
