@@ -65,7 +65,7 @@ const bud = props => {
         },
         complete: () => observer.complete(),
       })
-  })
+    })
 }
 
 export default bud
