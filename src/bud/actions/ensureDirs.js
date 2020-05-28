@@ -4,13 +4,14 @@ import {concatMap} from 'rxjs/operators'
 /**
  * Scaffold directories
  *
- * @param  {array} paths
+ * @prop   {task array} dirs
  * @return {Observable}
  */
-const scaffold = ({task, observer, config, data, compiler, actions}) => {
+const ensureDirs = ({task, observer, config, data, compiler, actions}) => {
   observer.next(`Creating directories`)
 
-  return from(task.paths)
+  return new Observable(async observer => {
+    from(task.dirs)
     .pipe(
       concatMap(path => {
         return new Observable(async observer => {
@@ -22,11 +23,11 @@ const scaffold = ({task, observer, config, data, compiler, actions}) => {
               compiler,
               observer,
             })
-
-            observer.complete()
-          } catch (error) {
-            observer.error(`error: thrown in actions.scaffold`)
+          } catch {
+            observer.error()
           }
+
+          observer.next()
         })
       }),
     )
@@ -35,6 +36,7 @@ const scaffold = ({task, observer, config, data, compiler, actions}) => {
       error: error => observer.error(error),
       complete: () => observer.complete(),
     })
+  })
 }
 
-export default scaffold
+export default ensureDirs

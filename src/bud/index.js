@@ -4,6 +4,7 @@ import makeCompiler from './compiler'
 import makeConfig from './config'
 import makeData from './data'
 import makeUtil from './util'
+import pipes from './pipes'
 import actions from './actions'
 import prettier from './prettier'
 
@@ -19,10 +20,10 @@ import prettier from './prettier'
  * @return {Observable}
  */
 const bud = props => {
+  const {sprout} = props
+
   const config = makeConfig({...props})
   const data = makeData({...props})
-
-  const {sprout} = props
   const util = makeUtil({config})
   const compiler = makeCompiler({sprout, data})
 
@@ -32,31 +33,22 @@ const bud = props => {
     })
 
   return new Observable(observer => {
-    from(sprout.tasks)
-      .pipe(
-        concatMap(function (task) {
-          return new Observable(async observer => {
-            observer.next(task.action)
+    const props = {config, data, actions, compiler, prettier,  util}
 
-            actions[task.action]({
-              task,
-              observer,
-              config,
-              data,
-              actions,
-              compiler,
-              prettier,
-              util,
-            })
+    from(pipes)
+      .pipe(
+        concatMap(
+          job => new Observable(observer => {
+            job({observer, sprout, ...props})
           })
-        }),
+        )
       )
       .subscribe({
         next: next => observer.next(next),
         error: error => observer.error(error),
-        complete: complete => observer.complete(complete),
+        complete: () => observer.complete(),
       })
-  })
+    })
 }
 
 export default bud

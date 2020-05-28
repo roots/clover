@@ -1,5 +1,5 @@
 import {join} from 'path'
-import {ensureDir} from 'fs-extra'
+import fs from 'fs-extra'
 
 /**
  * Make directory
@@ -12,16 +12,13 @@ import {ensureDir} from 'fs-extra'
  *
  * @return {void}
  */
-const mkDir = async ({task, observer, config, data, compiler}) => {
+const ensureDir = async ({task, observer, config, data, compiler}) => {
   const path = join(config.projectDir, compiler.make(task.path)(data))
 
-  try {
-    await ensureDir(path).then(() => {
-      observer.next()
-    })
-  } catch (error) {
-    observer.error(`actions.mkDir: ${JSON.stringify(error)}`)
-  }
+  observer.next(`Writing dir: ${path}`)
+  await fs.ensureDir(path)
+
+  observer.complete()
 }
 
-export default mkDir
+export default ensureDir

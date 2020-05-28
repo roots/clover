@@ -27,8 +27,6 @@ const install = async ({task, observer, util}) => {
   installation.stdout.on('data', status => {
     observer.next(status)
   })
-
-  installation.then(() => observer.complete())
 }
 
 export default install

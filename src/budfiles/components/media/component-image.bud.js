@@ -6,7 +6,7 @@ module.exports = {
   description: 'Generate Image Component',
   tasks: [
     {
-      action: 'compile',
+      task: 'compile',
       src: 'Image.js.hbs',
       dest: 'src/components/Image.js',
       parser: 'babel',

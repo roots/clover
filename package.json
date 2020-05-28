@@ -19,7 +19,10 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write ."
   },
-  "files": ["build", "src"],
+  "files": [
+    "build",
+    "src"
+  ],
   "dependencies": {
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
@@ -32,8 +35,10 @@
     "ink-spinner": "^3.0.1",
     "ink-table": "^2.0.1",
     "ink-use-stdout-dimensions": "^1.0.5",
+    "next-pino": "^0.0.1",
     "node-fetch": "^2.6.0",
     "pastel": "^1.0.3",
+    "pino": "^6.3.0",
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

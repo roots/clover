@@ -43,29 +43,29 @@ module.exports = {
   ],
   tasks: [
     {
-      action: 'compile',
+      task: 'compile',
       src: '.bud/bud.config.json.hbs',
       dest: '.bud/bud.config.json',
       parser: 'json',
     },
     {
-      action: 'compile',
+      task: 'compile',
       src: 'package.json.hbs',
       dest: 'package.json',
       parser: 'json',
     },
     {
-      action: 'copy',
+      task: 'copy',
       src: '.bud/budfiles/example/example.bud.js.hbs',
       dest: '.bud/budfiles/example/example.bud.js',
     },
     {
-      action: 'copy',
+      task: 'copy',
       src: '.bud/budfiles/example/templates/Component.js.hbs',
       dest: '.bud/budfiles/example/templates/Component.js.hbs',
     },
     {
-      action: 'install',
+      task: 'install',
       repo: 'npm',
     },
   ],

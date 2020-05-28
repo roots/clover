@@ -1,22 +1,28 @@
 import addDependencies from './addDependencies'
 import compile from './compile'
 import copy from './copy'
+import ensureDir from './ensureDir'
+import ensureDirs from './ensureDirs'
+import git from './git'
 import install from './install'
 import json from './json'
-import mkDir from './mkDir'
-import scaffold from './scaffold'
+import touch from './touch'
 
 /**
  * Actions
+ *
+ * @type {object}
  */
 const actions = {
   addDependencies,
   compile,
   copy,
+  ensureDir,
+  ensureDirs,
+  git,
   install,
   json,
-  mkDir,
-  scaffold,
+  touch,
   register: function (action) {
     this[`${action.handle}`] = action.callback
   },
