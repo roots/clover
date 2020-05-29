@@ -20,10 +20,9 @@ module.exports = {
   ],
   tasks: [
     {
-      action: 'template',
-      src: 'Component.js.bud',
+      task: 'compile',
+      src: 'Component.js.hbs',
       dest: 'src/components/{{componentName}}.js',
-      parser: 'babel',
     },
   ],
 }

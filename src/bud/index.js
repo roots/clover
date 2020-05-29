@@ -34,7 +34,16 @@ const bud = props => {
     })
 
   return new Observable(observer => {
-    const props = {config, data, actions, compiler, prettier, util, sprout, logger}
+    const props = {
+      config,
+      data,
+      actions,
+      compiler,
+      prettier,
+      util,
+      sprout,
+      logger,
+    }
 
     from(pipes)
       .pipe(

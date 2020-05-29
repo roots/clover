@@ -13,7 +13,15 @@ import {outputFile, readFile} from 'fs-extra'
  * @param  {object}   compiler
  * @return {void}
  */
-const compile = async ({task, observer, logger, data, config, prettier, compiler}) => {
+const compile = async ({
+  task,
+  observer,
+  logger,
+  data,
+  config,
+  prettier,
+  compiler,
+}) => {
   const src = await readFile(join(config.templateDir, task.src), 'utf8')
   const dest = compiler.make(task.dest)(data)
   const template = compiler.make(src)(data)

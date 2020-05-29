@@ -48,7 +48,7 @@ const Image = ({
     <MediaPlaceholder
       allowedTypes={ALLOWED_MEDIA_TYPES}
       multiple={false}
-      labels={{title}}
+      labels={title ?? 'Add image'}
       className={className ? className : 'image-upload'}
       onSelect={onSelectImage}
     />

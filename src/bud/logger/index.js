@@ -7,12 +7,15 @@ const prettifier = require('pino-pretty')
  * @return {<Pino>()=>logger}
  */
 const makeLogger = ({projectDir}) => {
-  return pino({
-    prettyPrint: {
-      levelFirst: true,
+  return pino(
+    {
+      prettyPrint: {
+        levelFirst: true,
+      },
+      prettifier,
     },
-    prettifier,
-  }, pino.destination(`${projectDir}/.bud/bud.log`))
+    pino.destination(`${projectDir}/.bud/bud.log`),
+  )
 }
 
 export default makeLogger

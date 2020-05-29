@@ -100,6 +100,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - node-fetch
 - pastel
 - pino
+- pino-pretty
 - prettier
 - prop-types
 - react
