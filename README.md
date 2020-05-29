@@ -94,8 +94,10 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - ink-spinner
 - ink-table
 - ink-use-stdout-dimensions
+- next-pino
 - node-fetch
 - pastel
+- pino
 - prettier
 - prop-types
 - react

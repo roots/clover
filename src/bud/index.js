@@ -27,19 +27,19 @@ const bud = props => {
   const util = makeUtil({config})
   const compiler = makeCompiler({sprout, data})
 
-  sprout.registerActions &&
-    sprout.registerActions.forEach(action => {
-      actions.register(action)
+  sprout.registerActions
+    && sprout.registerActions.forEach(action => {
+      actions.register({action})
     })
 
   return new Observable(observer => {
-    const props = {config, data, actions, compiler, prettier,  util}
+    const props = {config, data, actions, compiler, prettier, util}
 
     from(pipes)
       .pipe(
         concatMap(
-          job => new Observable(observer => {
-            job({observer, sprout, ...props})
+          job => new Observable(async observer => {
+            await job({observer, sprout, ...props})
           })
         )
       )

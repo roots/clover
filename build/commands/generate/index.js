@@ -358,9 +358,10 @@ const actions = ({
   actions,
   ...props
 }) => {
-  (0, _rxjs.from)(sprout.tasks).pipe((0, _operators.concatMap)(task => new _rxjs.Observable(observer => {
+  (0, _rxjs.from)(sprout.tasks).pipe((0, _operators.concatMap)(task => new _rxjs.Observable(async observer => {
     actions[task.task]({
       task,
+      actions,
       observer,
       ...props
     });
@@ -416,7 +417,7 @@ const addDependencies = async ({
   util
 }) => {
   let installation;
-  observer.next(`Installing packages from ${task.repo}...`);
+  observer.next(`Installing packages`);
 
   if (task.repo !== 'npm' && task.repo !== 'packagist') {
     observer.error(`Incorrect package repo specified.`);
@@ -473,6 +474,7 @@ const compile = async ({
   const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
+  observer.next(`Writing file ${dest}`);
   await (0, _fsExtra.outputFile)(...[(0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template]);
   observer.complete();
 };
@@ -507,6 +509,7 @@ const copy = async ({
 }) => {
   const src = (0, _path.join)(config.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
+  observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
   observer.complete();
 };
@@ -546,7 +549,7 @@ const ensureDir = async ({
   compiler
 }) => {
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
-  observer.next(`Writing dir: ${path}`);
+  observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
 };
@@ -574,38 +577,25 @@ var _operators = require("rxjs/operators");
 const ensureDirs = ({
   task,
   observer,
+  actions,
   config,
   data,
-  compiler,
-  actions
-}) => {
-  observer.next(`Creating directories`);
-  return new _rxjs.Observable(async observer => {
-    (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => {
-      return new _rxjs.Observable(async observer => {
-        try {
-          await actions.mkDir({
-            task: {
-              path
-            },
-            config,
-            data,
-            compiler,
-            observer
-          });
-        } catch {
-          observer.error();
-        }
-
-        observer.next();
-      });
-    })).subscribe({
-      next: next => observer.next(next),
-      error: error => observer.error(error),
-      complete: () => observer.complete()
-    });
+  compiler
+}) => (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
+  actions.ensureDir({
+    task: {
+      path
+    },
+    config,
+    data,
+    compiler,
+    observer
   });
-};
+}))).subscribe({
+  next: next => observer.next(next),
+  error: error => observer.error(error),
+  complete: () => observer.complete()
+});
 
 var _default = ensureDirs;
 exports.default = _default;
@@ -690,15 +680,16 @@ const install = async ({
 
   if (task.repo == 'npm') {
     installation = util.command(`yarn`);
+    installation.stdout.on('data', status => {
+      observer.next(status);
+    });
+    installation.then(() => observer.complete());
   }
 
   if (task.repo == 'packagist') {
     installation = util.command(`composer install`);
+    installation.then(() => observer.complete());
   }
-
-  installation.stdout.on('data', status => {
-    observer.next(status);
-  });
 };
 
 var _default = install;
@@ -773,13 +764,12 @@ const touch = async ({
     await (0, _fsExtra.ensureFile)(path).then(() => {
       observer.next();
     });
+    observer.complete();
   } catch (error) {
-    observer.error(`touch error: ${JSON.stringify({
+    observer.error(`${JSON.stringify({
       task,
-      observer,
       config,
-      data,
-      compiler
+      data
     })}`);
   }
 };
@@ -829,7 +819,9 @@ const actions = {
   install: _install.default,
   json: _json.default,
   touch: _touch.default,
-  register: function (action) {
+  register: function ({
+    action
+  }) {
     this[`${action.handle}`] = action.callback;
   }
 };
@@ -1011,7 +1003,9 @@ const bud = props => {
     data
   });
   sprout.registerActions && sprout.registerActions.forEach(action => {
-    _actions.default.register(action);
+    _actions.default.register({
+      action
+    });
   });
   return new _rxjs.Observable(observer => {
     const props = {
@@ -1022,8 +1016,8 @@ const bud = props => {
       prettier: _prettier.default,
       util
     };
-    (0, _rxjs.from)(_pipes.default).pipe((0, _operators.concatMap)(job => new _rxjs.Observable(observer => {
-      job({
+    (0, _rxjs.from)(_pipes.default).pipe((0, _operators.concatMap)(job => new _rxjs.Observable(async observer => {
+      await job({
         observer,
         sprout,
         ...props

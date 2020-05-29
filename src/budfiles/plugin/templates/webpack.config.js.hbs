@@ -18,6 +18,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin')
  */
 const isProduction = process.env.NODE_ENV === 'production'
 const isHMR = process.env.NODE_ENV === 'hmr'
+const bud = require('./.bud/bud.config')
 
 /**
  * Return array of directories
@@ -35,19 +36,30 @@ const dirs = parentDir =>
  */
 module.exports = {
   entry: (assets = []) => {
+    /**
+     * Blocks
+     */
     dirs('src/blocks').forEach(asset => {
       assets = {
         ...assets,
-        [`${asset}/editor`]: [join(__dirname, `src/blocks/${asset}/editor.js`)],
-        [`${asset}/public`]: [join(__dirname, `src/blocks/${asset}/public.js`)],
+        [`editor/${bud.project.namespace}/${asset}`]: [
+          join(__dirname, `src/blocks/${asset}/editor.js`),
+        ],
+        [`public/${bud.project.namespace}/${asset}`]: [
+          join(__dirname, `src/blocks/${asset}/public.js`),
+        ],
       }
     })
 
-    dirs('src/extensions').forEach(asset => {
+    /**
+     * Plugin extensions
+     */
+    dirs('src/plugins').forEach(asset => {
       assets = {
         ...assets,
-        [`${asset}/editor`]: [join(__dirname, `src/blocks/${asset}/editor.js`)],
-        [`${asset}/public`]: [join(__dirname, `src/blocks/${asset}/public.js`)],
+        [`plugins/${asset}`]: [
+          join(__dirname, `src/plugins/${asset}/plugin.js`),
+        ],
       }
     })
 
@@ -62,7 +74,7 @@ module.exports = {
     publicPath: '/dist/',
     filename: '[name].[hash].js',
     chunkFilename: '[id].css',
-    sourceMapFilename: '[file].map',
+    sourceMapFilename: '[path].[file].map',
   },
   devtool: isProduction ? false : 'inline-source-map',
   mode: isProduction ? 'production' : 'development',

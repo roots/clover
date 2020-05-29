@@ -17,7 +17,7 @@ const compile = async ({task, observer, data, config, prettier, compiler}) => {
   const src = await readFile(join(config.templateDir, task.src), 'utf8')
   const dest = compiler.make(task.dest)(data)
   const template = compiler.make(src)(data)
-
+  observer.next(`Writing file ${dest}`)
   await outputFile(
     ...[
       join(config.projectDir, dest),

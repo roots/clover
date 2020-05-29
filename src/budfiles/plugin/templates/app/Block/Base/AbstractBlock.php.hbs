@@ -4,7 +4,6 @@ namespace {{pascalcase namespace}}\Block\Base;
 
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use {{pascalcase namespace}}\Asset\Contract\AssetInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 
 /**
@@ -14,6 +13,9 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
 {
     /** @var string */
     public $name;
+
+    /** @var string */
+    public $namespace;
 
     /** @var Collection */
     public $assets;
@@ -50,20 +52,17 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      */
     public function setName(string $name): void
     {
-        $this->name = join('/', [
-            $this->bud->get('plugin.namespace'),
-            $name,
-        ]);
+        $this->name = join('/', [$this->getNamespace(), $name]);
     }
 
     /**
-     * Get assets
+     * Get namespace.
      *
-     * @return Collection $assets
+     * @return string
      */
-    public function getAssets(): Collection
+    public function getNamespace(): string
     {
-        return $this->assets;
+        return $this->bud->get('plugin.namespace');
     }
 
     /**
@@ -73,15 +72,76 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      */
     public function setAssets(Collection $assets): void
     {
-        $assets->each(function (AssetInterface $asset) {
-            if ($asset->getContext() == 'editor') {
-                $context = join('_', [$asset->getContext(), $asset->getType()]);
-            } else {
-                $context = $asset->getType();
+        $this->assets = $assets->each(function ($asset, $handle) {
+            if (
+                $handle == 'editor_dependencies' ||
+                $handle == 'dependencies'
+            ) {
+                return $this->{$handle} = $asset;
             }
 
-            $this->assets->put($context, $asset);
+            $this->{$handle} = $this->getName() . '/' . $handle;
         });
+    }
+
+    /**
+     * Get editor script.
+     *
+     * @return array
+     */
+    public function getEditorScript(): array
+    {
+        return [
+            $this->editor_script,
+            $this->assets->get('editor_script'),
+            $this->assets->get('editor_dependencies'),
+            null,
+        ];
+    }
+
+    /**
+     * Get editor style.
+     *
+     * @return array
+     */
+    public function getEditorStyle(): array
+    {
+        return [
+            $this->editor_style,
+            $this->assets->get('editor_style'),
+            [],
+            null,
+        ];
+    }
+
+    /**
+     * Get script.
+     *
+     * @return array
+     */
+    public function getScript(): array
+    {
+        return [
+            $this->script,
+            $this->assets->get('script'),
+            $this->assets->get('dependencies'),
+            null,
+        ];
+    }
+
+    /**
+     * Get style.
+     *
+     * @return array
+     */
+    public function getStyle(): array
+    {
+        return [
+            $this->style,
+            $this->assets->get('style'),
+            [],
+            null,
+        ];
     }
 
     /**
@@ -91,10 +151,6 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      */
      public function register(): void
      {
-         $this->assets->each(function (AssetInterface $asset, string $context) {
-             $this->{$context} = $asset->getName();
-         });
-
          register_block_type($this);
      }
 }

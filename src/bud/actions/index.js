@@ -23,8 +23,8 @@ const actions = {
   install,
   json,
   touch,
-  register: function (action) {
-    this[`${action.handle}`] = action.callback
+  register: function ({action}) {
+      this[`${action.handle}`] = action.callback
   },
 }
 

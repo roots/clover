@@ -10,7 +10,7 @@
 const addDependencies = async ({task, observer, util}) => {
   let installation
 
-  observer.next(`Installing packages from ${task.repo}...`)
+  observer.next(`Installing packages`)
 
   if (task.repo !== 'npm' && task.repo !== 'packagist') {
     observer.error(`Incorrect package repo specified.`)

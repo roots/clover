@@ -18,15 +18,16 @@ const install = async ({task, observer, util}) => {
 
   if (task.repo == 'npm') {
     installation = util.command(`yarn`)
+    installation.stdout.on('data', status => {
+      observer.next(status)
+    })
+    installation.then(() => observer.complete())
   }
 
   if (task.repo == 'packagist') {
     installation = util.command(`composer install`)
+    installation.then(() => observer.complete())
   }
-
-  installation.stdout.on('data', status => {
-    observer.next(status)
-  })
 }
 
 export default install

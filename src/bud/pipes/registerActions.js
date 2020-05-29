@@ -2,19 +2,18 @@ import {Observable, from} from 'rxjs'
 import {concatMap} from 'rxjs/operators'
 
 /**
- * Curried actions
+ * Curry ensureDirs
  *
  * @prop {Observer} observer
  * @prop {object}   sprout
- * @prop {object}   task
- * @prop {object}   actionProps
+ * @prop {object}   actions
  */
-const actions = ({observer, sprout, actions, ...props}) => {
-  from(sprout.tasks)
+const registerActions = ({observer, sprout, actions}) => {
+  sprout.registerActions && from(sprout.registerActions)
     .pipe(
       concatMap(
-        task => new Observable(async observer => {
-          actions[task.task]({task, actions, observer, ...props})
+        action => new Observable(observer => {
+          actions.register({observer, action})
         })
       )
     )
@@ -25,4 +24,4 @@ const actions = ({observer, sprout, actions, ...props}) => {
     })
 }
 
-export default actions
+export default registerActions

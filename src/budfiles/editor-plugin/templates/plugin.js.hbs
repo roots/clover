@@ -1,0 +1,15 @@
+import {registerPlugin} from '@wordpress/plugins'
+
+/**
+ * Plugin: {{pluginName}}
+ *
+ * @param {string} name
+ * @param {object} settings
+ */
+const {{camelcase pluginName}} = registerPlugin('{{dashcase (lowercase pluginName)}}', {
+  render: () => {
+    return null
+  },
+})
+
+export default {{camelcase pluginName}}

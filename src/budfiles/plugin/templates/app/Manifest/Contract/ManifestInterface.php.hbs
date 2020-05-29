@@ -1,0 +1,16 @@
+<?php
+
+namespace {{pascalcase namespace}}\Manifest\Contract;
+
+use Illuminate\Support\Collection;
+use {{pascalcase namespace}}\Block\Contract\BlockInterface;
+
+/**
+ * Asset Manifest interface.
+ */
+interface ManifestInterface
+{
+    public function getAssets(BlockInterface $block): Collection;
+
+    public function getDependencies(string $path): array;
+}

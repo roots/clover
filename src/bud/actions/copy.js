@@ -14,6 +14,7 @@ const copy = async ({task, observer, config}) => {
   const src = join(config.templateDir, task.src)
   const dest = join(config.projectDir, task.dest)
 
+  observer.next(`Copying file`)
   await fsCopy(src, dest)
 
   observer.complete()

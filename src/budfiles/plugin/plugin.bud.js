@@ -113,33 +113,18 @@ module.exports = {
     },
     {
       task: 'compile',
-      src: 'app/Asset/Asset.php.hbs',
-      dest: 'app/Asset/Asset.php',
+      src: 'app/Manifest/Manifest.php.hbs',
+      dest: 'app/Manifest/Manifest.php',
     },
     {
       task: 'compile',
-      src: 'app/Asset/Base/AbstractAsset.php.hbs',
-      dest: 'app/Asset/Base/AbstractAsset.php',
+      src: 'app/Manifest/Base/AbstractManifest.php.hbs',
+      dest: 'app/Manifest/Base/AbstractManifest.php',
     },
     {
       task: 'compile',
-      src: 'app/Asset/Contract/AssetInterface.php.hbs',
-      dest: 'app/Asset/Contract/AssetInterface.php',
-    },
-    {
-      task: 'compile',
-      src: 'app/Asset/Manifest.php.hbs',
-      dest: 'app/Asset/Manifest.php',
-    },
-    {
-      task: 'compile',
-      src: 'app/Asset/Base/AbstractManifest.php.hbs',
-      dest: 'app/Asset/Base/AbstractManifest.php',
-    },
-    {
-      task: 'compile',
-      src: 'app/Asset/Contract/ManifestInterface.php.hbs',
-      dest: 'app/Asset/Contract/ManifestInterface.php',
+      src: 'app/Manifest/Contract/ManifestInterface.php.hbs',
+      dest: 'app/Manifest/Contract/ManifestInterface.php',
     },
     {
       task: 'compile',
@@ -157,18 +142,8 @@ module.exports = {
       dest: 'app/Block/Contract/BlockInterface.php',
     },
     {
-      task: 'compile',
-      src: 'app/Block/BlockRepository.php.hbs',
-      dest: 'app/Block/BlockRepository.php',
-    },
-    {
-      task: 'compile',
-      src: 'app/Block/Contract/BlockRepositoryInterface.php.hbs',
-      dest: 'app/Block/Contract/BlockRepositoryInterface.php',
-    },
-    {
       task: 'ensureDirs',
-      dirs: ['src/extensions'],
+      dirs: ['src/blocks', 'src/plugins'],
     },
     {
       task: 'addDependencies',

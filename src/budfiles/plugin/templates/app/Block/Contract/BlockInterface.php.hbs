@@ -13,9 +13,15 @@ interface BlockInterface
 
     public function setName(string $name): void;
 
-    public function getAssets(): Collection;
-
     public function setAssets(Collection $assets): void;
+
+    public function getEditorScript(): array;
+
+    public function getEditorStyle(): array;
+
+    public function getScript(): array;
+
+    public function getStyle(): array;
 
     public function register(): void;
 }

@@ -15,6 +15,8 @@ const touch = async ({task, config, compiler, data, observer}) => {
     await ensureFile(path).then(() => {
       observer.next()
     })
+
+    observer.complete()
   } catch (error) {
     observer.error(
       `${JSON.stringify({

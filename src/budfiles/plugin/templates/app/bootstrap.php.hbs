@@ -11,24 +11,19 @@ require __DIR__ . '/../vendor/autoload.php';
 use function DI\autowire;
 use function DI\create;
 use DI\ContainerBuilder;
-use Psr\Container\ContainerInterface;
-
-$builder = new ContainerBuilder;
 
 /**
  * Build the container instance
  */
-$builder->addDefinitions([
+return (new ContainerBuilder)->addDefinitions([
     /**
      * Plugin bindings
      */
     Plugin\Registration::class => autowire(Plugin\Registration::class),
     Plugin\Activate::class => Plugin\Activate::class,
     Plugin\Deactivate::class => Plugin\Deactivate::class,
-    Asset\Contract\AssetInterface::class => autowire(Asset\Asset::class),
     Block\Contract\BlockInterface::class => autowire(Block\Block::class),
-    Block\Contract\BlockRepositoryInterface::class => autowire(Block\BlockRepository::class),
-    Asset\Contract\ManifestInterface::class => autowire(Asset\Manifest::class),
+    Manifest\Contract\ManifestInterface::class => autowire(Manifest\Manifest::class),
 
     /**
      * Plugin aliases
@@ -36,10 +31,8 @@ $builder->addDefinitions([
     'plugin.activate' => create(Plugin\Activate::class),
     'plugin.deactivate' => create(Plugin\Deactivate::class),
     'plugin.registration' => autowire(Plugin\Registration::class),
-    'asset' => autowire(Asset\Asset::class),
     'block' => autowire(Block\Block::class),
-    'manifest' => autowire(Asset\Manifest::class),
-    'blocks' => autowire(Block\BlockRepository::class),
+    'manifest' => autowire(Manifest\Manifest::class),
 
     /**
      * Vendor bindings
@@ -63,10 +56,9 @@ $builder->addDefinitions([
     'path.plugin.dist' => realpath(__DIR__ . '/../dist/'),
     'path.plugin.src' => realpath(__DIR__ . '/../src/'),
     'path.plugin.src.blocks' => realpath(__DIR__ . '/../src/blocks'),
+    'path.plugin.src.plugins' => realpath(__DIR__ . '/../src/plugins'),
     'path.plugin.storage' => realpath(__DIR__ . '/../storage/'),
     'path.plugin.storage.cache' => realpath(__DIR__ . '/../storage/cache'),
     'path.plugin.activate' => realpath(__DIR__ . '/Plugin/Activate.php'),
     'path.plugin.deactivate' => realpath(__DIR__ . '/Plugin/Deactivate.php'),
-]);
-
-return $builder->build();
+])->build();
