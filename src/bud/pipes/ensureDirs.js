@@ -12,17 +12,18 @@ const ensureDirs = ({observer, sprout, actions, ...props}) => {
   from(sprout.tasks)
     .pipe(
       concatMap(
-        task => new Observable(observer => {
-          actions.ensureDir({
-            observer,
-            task: {
-              ...task,
-              path: task.dest,
-            },
-            ...props,
-          })
-        })
-      )
+        task =>
+          new Observable(observer => {
+            actions.ensureDir({
+              observer,
+              task: {
+                ...task,
+                path: task.dest,
+              },
+              ...props,
+            })
+          }),
+      ),
     )
     .subscribe({
       next: next => observer.next(next),

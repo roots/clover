@@ -8,18 +8,19 @@ import {concatMap} from 'rxjs/operators'
  * @return {Observable}
  */
 const ensureDirs = ({task, observer, actions, config, data, compiler}) =>
-    from(task.dirs)
+  from(task.dirs)
     .pipe(
-      concatMap(path =>
-        new Observable(observer => {
-          actions.ensureDir({
-            task: {path},
-            config,
-            data,
-            compiler,
-            observer,
-          })
-        })
+      concatMap(
+        path =>
+          new Observable(observer => {
+            actions.ensureDir({
+              task: {path},
+              config,
+              data,
+              compiler,
+              observer,
+            })
+          }),
       ),
     )
     .subscribe({

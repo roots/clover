@@ -27,8 +27,8 @@ const bud = props => {
   const util = makeUtil({config})
   const compiler = makeCompiler({sprout, data})
 
-  sprout.registerActions
-    && sprout.registerActions.forEach(action => {
+  sprout.registerActions &&
+    sprout.registerActions.forEach(action => {
       actions.register({action})
     })
 
@@ -38,17 +38,18 @@ const bud = props => {
     from(pipes)
       .pipe(
         concatMap(
-          job => new Observable(async observer => {
-            await job({observer, sprout, ...props})
-          })
-        )
+          job =>
+            new Observable(async observer => {
+              await job({observer, sprout, ...props})
+            }),
+        ),
       )
       .subscribe({
         next: next => observer.next(next),
         error: error => observer.error(error),
         complete: () => observer.complete(),
       })
-    })
+  })
 }
 
 export default bud

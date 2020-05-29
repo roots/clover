@@ -24,7 +24,7 @@ const actions = {
   json,
   touch,
   register: function ({action}) {
-      this[`${action.handle}`] = action.callback
+    this[`${action.handle}`] = action.callback
   },
 }
 

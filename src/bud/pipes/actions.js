@@ -13,10 +13,11 @@ const actions = ({observer, sprout, actions, ...props}) => {
   from(sprout.tasks)
     .pipe(
       concatMap(
-        task => new Observable(async observer => {
-          actions[task.task]({task, actions, observer, ...props})
-        })
-      )
+        task =>
+          new Observable(async observer => {
+            actions[task.task]({task, actions, observer, ...props})
+          }),
+      ),
     )
     .subscribe({
       next: next => observer.next(next),

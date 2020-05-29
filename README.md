@@ -9,6 +9,8 @@
 
   <img alt="Build Status" src="https://img.shields.io/circleci/project/github/roots/bud/master.svg?style=flat-square">
 
+  <img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/a7209502e433ea3571b1/maintainability">
+
   <a href="https://twitter.com/rootswp">
     <img alt="Follow Roots" src="https://img.shields.io/twitter/follow/rootswp.svg?style=flat-square&color=1da1f2" />
   </a>
@@ -53,7 +55,7 @@ Bud is an extendable, zero configuration scaffolding CLI for WordPress editor bl
 Bud is currently pre-release. But, you can try it out now:
 
 ```sh
-npx @roots/bud@1.0.0-rc.1 init [project-dir]
+npx @roots/bud@1.0.0-rc.2 init [project-dir]
 ```
 
 This will initialize your project and install `@roots/bud` as a local dev dependency.

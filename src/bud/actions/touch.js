@@ -23,7 +23,7 @@ const touch = async ({task, config, compiler, data, observer}) => {
         task,
         config,
         data,
-      })}`
+      })}`,
     )
   }
 }

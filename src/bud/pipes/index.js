@@ -5,8 +5,6 @@ import actions from './actions'
  *
  * @return {object}
  */
-const pipes = [
-  actions,
-]
+const pipes = [actions]
 
 export default pipes
