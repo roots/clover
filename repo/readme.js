@@ -49,7 +49,11 @@ writeFileSync(
     '',
   )}/master.svg?style=flat-square">
 
+<<<<<<< HEAD
   <img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/a7209502e433ea3571b1/maintainability">
+=======
+  [![Maintainability](https://api.codeclimate.com/v1/badges/a7209502e433ea3571b1/maintainability)](https://codeclimate.com/github/roots/bud/maintainability)
+>>>>>>> readme
 
   <a href="https://twitter.com/rootswp">
     <img alt="Follow Roots" src="https://img.shields.io/twitter/follow/rootswp.svg?style=flat-square&color=1da1f2" />

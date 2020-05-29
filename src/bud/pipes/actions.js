@@ -14,17 +14,23 @@ const actions = ({observer, sprout, actions, ...props}) => {
     .pipe(
       concatMap(
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> readme
         task =>
           new Observable(async observer => {
             actions[task.task]({task, actions, observer, ...props})
           }),
       ),
+<<<<<<< HEAD
 =======
         task => new Observable(async observer => {
           actions[task.task]({task, actions, observer, ...props})
         })
       )
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+>>>>>>> readme
     )
     .subscribe({
       next: next => observer.next(next),

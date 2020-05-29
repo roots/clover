@@ -25,10 +25,14 @@ const actions = {
   touch,
   register: function ({action}) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     this[`${action.handle}`] = action.callback
 =======
       this[`${action.handle}`] = action.callback
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+    this[`${action.handle}`] = action.callback
+>>>>>>> readme
   },
 }
 

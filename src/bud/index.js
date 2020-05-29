@@ -28,18 +28,12 @@ const bud = props => {
   const util = makeUtil({config})
   const compiler = makeCompiler({sprout, data})
 
-<<<<<<< HEAD
   sprout.registerActions &&
     sprout.registerActions.forEach(action => {
-=======
-  sprout.registerActions
-    && sprout.registerActions.forEach(action => {
->>>>>>> [wip] fix css enqueues. update plugin generator
       actions.register({action})
     })
 
   return new Observable(observer => {
-<<<<<<< HEAD
     const props = {
       config,
       data,
@@ -50,25 +44,15 @@ const bud = props => {
       sprout,
       logger,
     }
-=======
-    const props = {config, data, actions, compiler, prettier, util}
->>>>>>> [wip] fix css enqueues. update plugin generator
 
     from(pipes)
       .pipe(
         concatMap(
-<<<<<<< HEAD
           job =>
             new Observable(async observer => {
               await job({observer, ...props})
             }),
         ),
-=======
-          job => new Observable(async observer => {
-            await job({observer, sprout, ...props})
-          })
-        )
->>>>>>> [wip] fix css enqueues. update plugin generator
       )
       .subscribe({
         next: next => {
