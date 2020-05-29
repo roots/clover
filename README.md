@@ -100,7 +100,10 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - node-fetch
 - pastel
 - pino
+<<<<<<< HEAD
 - pino-pretty
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
 - prettier
 - prop-types
 - react

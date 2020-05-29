@@ -7,36 +7,25 @@ import {concatMap} from 'rxjs/operators'
  * @prop   {task array} dirs
  * @return {Observable}
  */
-const ensureDirs = ({task, observer, config, data, compiler, actions}) => {
-  observer.next(`Creating directories`)
-
-  return new Observable(async observer => {
+const ensureDirs = ({task, observer, actions, config, data, compiler}) =>
     from(task.dirs)
     .pipe(
-      concatMap(path => {
-        return new Observable(async observer => {
-          try {
-            await actions.mkDir({
-              task: {path},
-              config,
-              data,
-              compiler,
-              observer,
-            })
-          } catch {
-            observer.error()
-          }
-
-          observer.next()
+      concatMap(path =>
+        new Observable(observer => {
+          actions.ensureDir({
+            task: {path},
+            config,
+            data,
+            compiler,
+            observer,
+          })
         })
-      }),
+      ),
     )
     .subscribe({
       next: next => observer.next(next),
       error: error => observer.error(error),
       complete: () => observer.complete(),
     })
-  })
-}
 
 export default ensureDirs

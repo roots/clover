@@ -15,7 +15,10 @@ import fs from 'fs-extra'
 const ensureDir = async ({task, observer, logger, config, data, compiler}) => {
   const path = join(config.projectDir, compiler.make(task.path)(data))
 
+<<<<<<< HEAD
   logger.info({emitter: 'ensureDir', task, path})
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
   observer.next(`Writing directory ${path}`)
   await fs.ensureDir(path)
 

@@ -14,7 +14,10 @@ const copy = async ({task, observer, logger, config}) => {
   const src = join(config.templateDir, task.src)
   const dest = join(config.projectDir, task.dest)
 
+<<<<<<< HEAD
   logger.info({emitter: 'copy', task})
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
   observer.next(`Copying file`)
   await fsCopy(src, dest)
 

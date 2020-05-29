@@ -9,6 +9,7 @@ import {concatMap} from 'rxjs/operators'
  * @prop {object}   actions
  */
 const registerActions = ({observer, sprout, actions}) => {
+<<<<<<< HEAD
   sprout.registerActions &&
     from(sprout.registerActions)
       .pipe(
@@ -24,6 +25,21 @@ const registerActions = ({observer, sprout, actions}) => {
         error: error => observer.error(error),
         complete: () => observer.complete(),
       })
+=======
+  sprout.registerActions && from(sprout.registerActions)
+    .pipe(
+      concatMap(
+        action => new Observable(observer => {
+          actions.register({observer, action})
+        })
+      )
+    )
+    .subscribe({
+      next: next => observer.next(next),
+      error: error => observer.error(error),
+      complete: () => observer.complete(),
+    })
+>>>>>>> [wip] fix css enqueues. update plugin generator
 }
 
 export default registerActions

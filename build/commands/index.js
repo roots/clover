@@ -484,12 +484,15 @@ const compile = async ({
   const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
+<<<<<<< HEAD
   logger.info({
     emitter: 'compile',
     task,
     template: task.src,
     dest
   });
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
   observer.next(`Writing file ${dest}`);
   await (0, _fsExtra.outputFile)(...[(0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template]);
   observer.complete();
@@ -526,10 +529,13 @@ const copy = async ({
 }) => {
   const src = (0, _path.join)(config.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
+<<<<<<< HEAD
   logger.info({
     emitter: 'copy',
     task
   });
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
   observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
   observer.complete();
@@ -571,11 +577,14 @@ const ensureDir = async ({
   compiler
 }) => {
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
+<<<<<<< HEAD
   logger.info({
     emitter: 'ensureDir',
     task,
     path
   });
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -604,11 +613,15 @@ var _operators = require("rxjs/operators");
 const ensureDirs = ({
   task,
   observer,
+<<<<<<< HEAD
   logger,
+=======
+>>>>>>> [wip] fix css enqueues. update plugin generator
   actions,
   config,
   data,
   compiler
+<<<<<<< HEAD
 }) => {
   logger.info({
     emitter: 'ensureDirs',
@@ -629,8 +642,23 @@ const ensureDirs = ({
     next: next => observer.next(next),
     error: error => observer.error(error),
     complete: () => observer.complete()
+=======
+}) => (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
+  actions.ensureDir({
+    task: {
+      path
+    },
+    config,
+    data,
+    compiler,
+    observer
+>>>>>>> [wip] fix css enqueues. update plugin generator
   });
-};
+}))).subscribe({
+  next: next => observer.next(next),
+  error: error => observer.error(error),
+  complete: () => observer.complete()
+});
 
 var _default = ensureDirs;
 exports.default = _default;
