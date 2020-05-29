@@ -16,9 +16,13 @@ const ensureDir = async ({task, observer, logger, config, data, compiler}) => {
   const path = join(config.projectDir, compiler.make(task.path)(data))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   logger.info({emitter: 'ensureDir', task, path})
 =======
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+  logger.info({emitter: 'ensureDir', task, path})
+>>>>>>> add bud.log (pino)
   observer.next(`Writing directory ${path}`)
   await fs.ensureDir(path)
 

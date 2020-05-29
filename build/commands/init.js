@@ -485,14 +485,20 @@ const compile = async ({
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> add bud.log (pino)
   logger.info({
     emitter: 'compile',
     task,
     template: task.src,
     dest
   });
+<<<<<<< HEAD
 =======
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+>>>>>>> add bud.log (pino)
   observer.next(`Writing file ${dest}`);
   await (0, _fsExtra.outputFile)(...[(0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template]);
   observer.complete();
@@ -530,12 +536,18 @@ const copy = async ({
   const src = (0, _path.join)(config.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> add bud.log (pino)
   logger.info({
     emitter: 'copy',
     task
   });
+<<<<<<< HEAD
 =======
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+>>>>>>> add bud.log (pino)
   observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
   observer.complete();
@@ -578,13 +590,19 @@ const ensureDir = async ({
 }) => {
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> add bud.log (pino)
   logger.info({
     emitter: 'ensureDir',
     task,
     path
   });
+<<<<<<< HEAD
 =======
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+>>>>>>> add bud.log (pino)
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -614,18 +632,26 @@ const ensureDirs = ({
   task,
   observer,
 <<<<<<< HEAD
+<<<<<<< HEAD
   logger,
 =======
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+  logger,
+>>>>>>> add bud.log (pino)
   actions,
   config,
   data,
   compiler
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> add bud.log (pino)
 }) => {
   logger.info({
     emitter: 'ensureDirs',
     task
+<<<<<<< HEAD
   });
   (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
     actions.ensureDir({
@@ -653,12 +679,26 @@ const ensureDirs = ({
     compiler,
     observer
 >>>>>>> [wip] fix css enqueues. update plugin generator
+=======
+>>>>>>> add bud.log (pino)
   });
-}))).subscribe({
-  next: next => observer.next(next),
-  error: error => observer.error(error),
-  complete: () => observer.complete()
-});
+  (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
+    actions.ensureDir({
+      task: {
+        path
+      },
+      config,
+      data,
+      compiler,
+      observer,
+      logger
+    });
+  }))).subscribe({
+    next: next => observer.next(next),
+    error: error => observer.error(error),
+    complete: () => observer.complete()
+  });
+};
 
 var _default = ensureDirs;
 exports.default = _default;
