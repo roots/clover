@@ -7,6 +7,7 @@ import makeUtil from './util'
 import pipes from './pipes'
 import actions from './actions'
 import prettier from './prettier'
+import makeLogger from './logger'
 
 /**
  * 🌱 bud starter
@@ -21,7 +22,7 @@ import prettier from './prettier'
  */
 const bud = props => {
   const {sprout} = props
-
+  const logger = makeLogger({...props})
   const config = makeConfig({...props})
   const data = makeData({...props})
   const util = makeUtil({config})
@@ -33,20 +34,26 @@ const bud = props => {
     })
 
   return new Observable(observer => {
-    const props = {config, data, actions, compiler, prettier, util}
+    const props = {config, data, actions, compiler, prettier, util, sprout, logger}
 
     from(pipes)
       .pipe(
         concatMap(
           job =>
             new Observable(async observer => {
-              await job({observer, sprout, ...props})
+              await job({observer, ...props})
             }),
         ),
       )
       .subscribe({
-        next: next => observer.next(next),
-        error: error => observer.error(error),
+        next: next => {
+          next && logger.info({emitter: 'bud', emitted: 'next'})
+          observer.next(next)
+        },
+        error: error => {
+          error && logger.error({emitter: 'bud', emitted: 'error'})
+          observer.error(error)
+        },
         complete: () => observer.complete(),
       })
   })

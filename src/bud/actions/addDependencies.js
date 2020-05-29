@@ -7,7 +7,7 @@
  *
  * @return {void}
  */
-const addDependencies = async ({task, observer, util}) => {
+const addDependencies = async ({task, logger, observer, util}) => {
   let installation
 
   observer.next(`Installing packages`)
@@ -17,12 +17,14 @@ const addDependencies = async ({task, observer, util}) => {
   }
 
   if (task.repo == 'npm') {
+    logger.info({emitter: 'addDependencies', task})
     installation = util.command(
       `yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`,
     )
   }
 
   if (task.repo == 'packagist') {
+    logger.info({emitter: 'addDependencies', task})
     installation = util.command(
       `composer require ${task.pkgs.join(' ')} ${
         task.dev ? `--development` : ``

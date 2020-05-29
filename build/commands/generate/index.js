@@ -413,6 +413,7 @@ exports.default = void 0;
  */
 const addDependencies = async ({
   task,
+  logger,
   observer,
   util
 }) => {
@@ -424,10 +425,18 @@ const addDependencies = async ({
   }
 
   if (task.repo == 'npm') {
+    logger.info({
+      emitter: 'addDependencies',
+      task
+    });
     installation = util.command(`yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`);
   }
 
   if (task.repo == 'packagist') {
+    logger.info({
+      emitter: 'addDependencies',
+      task
+    });
     installation = util.command(`composer require ${task.pkgs.join(' ')} ${task.dev ? `--development` : ``}`);
   }
 
@@ -466,6 +475,7 @@ var _fsExtra = require("fs-extra");
 const compile = async ({
   task,
   observer,
+  logger,
   data,
   config,
   prettier,
@@ -474,6 +484,12 @@ const compile = async ({
   const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
+  logger.info({
+    emitter: 'compile',
+    task,
+    template: task.src,
+    dest
+  });
   observer.next(`Writing file ${dest}`);
   await (0, _fsExtra.outputFile)(...[(0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template]);
   observer.complete();
@@ -505,10 +521,15 @@ var _fsExtra = require("fs-extra");
 const copy = async ({
   task,
   observer,
+  logger,
   config
 }) => {
   const src = (0, _path.join)(config.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
+  logger.info({
+    emitter: 'copy',
+    task
+  });
   observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
   observer.complete();
@@ -544,11 +565,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const ensureDir = async ({
   task,
   observer,
+  logger,
   config,
   data,
   compiler
 }) => {
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
+  logger.info({
+    emitter: 'ensureDir',
+    task,
+    path
+  });
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -577,25 +604,33 @@ var _operators = require("rxjs/operators");
 const ensureDirs = ({
   task,
   observer,
+  logger,
   actions,
   config,
   data,
   compiler
-}) => (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
-  actions.ensureDir({
-    task: {
-      path
-    },
-    config,
-    data,
-    compiler,
-    observer
+}) => {
+  logger.info({
+    emitter: 'ensureDirs',
+    task
   });
-}))).subscribe({
-  next: next => observer.next(next),
-  error: error => observer.error(error),
-  complete: () => observer.complete()
-});
+  (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
+    actions.ensureDir({
+      task: {
+        path
+      },
+      config,
+      data,
+      compiler,
+      observer,
+      logger
+    });
+  }))).subscribe({
+    next: next => observer.next(next),
+    error: error => observer.error(error),
+    complete: () => observer.complete()
+  });
+};
 
 var _default = ensureDirs;
 exports.default = _default;
@@ -616,9 +651,14 @@ exports.default = void 0;
  */
 const clone = async ({
   observer,
+  logger,
   task,
   util
 }) => {
+  logger.next({
+    emitter: 'clone',
+    task
+  });
   observer.next(`Cloning ${task.repo} to ${task.dest}`);
   const clone = util.command(`git clone git@github.com:${task.repo} ${task.dest}`);
   clone.stdout.on('data', () => observer.next(observer.next(`Cloning ${task.repo} to ${task.dest}}`)));
@@ -636,8 +676,14 @@ const clone = async ({
 const git = async ({
   task,
   observer,
+  logger,
   ...props
 }) => {
+  logger.info({
+    emitter: 'gite',
+    task
+  });
+
   if (task.action == 'clone') {
     clone({
       task,
@@ -948,7 +994,38 @@ const prettier = {
 };
 var _default = prettier;
 exports.default = _default;
-},{"./inferParser":"../src/bud/prettier/inferParser.js","./format":"../src/bud/prettier/format.js"}],"../src/bud/index.js":[function(require,module,exports) {
+},{"./inferParser":"../src/bud/prettier/inferParser.js","./format":"../src/bud/prettier/format.js"}],"../src/bud/logger/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+const pino = require('pino');
+
+const prettifier = require('pino-pretty');
+/**
+ * Make logger
+ *
+ * @return {<Pino>()=>logger}
+ */
+
+
+const makeLogger = ({
+  projectDir
+}) => {
+  return pino({
+    prettyPrint: {
+      levelFirst: true
+    },
+    prettifier
+  }, pino.destination(`${projectDir}/.bud/bud.log`));
+};
+
+var _default = makeLogger;
+exports.default = _default;
+},{}],"../src/bud/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -974,6 +1051,8 @@ var _actions = _interopRequireDefault(require("./actions"));
 
 var _prettier = _interopRequireDefault(require("./prettier"));
 
+var _logger = _interopRequireDefault(require("./logger"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -991,6 +1070,8 @@ const bud = props => {
   const {
     sprout
   } = props;
+  const logger = (0, _logger.default)({ ...props
+  });
   const config = (0, _config.default)({ ...props
   });
   const data = (0, _data.default)({ ...props
@@ -1014,17 +1095,30 @@ const bud = props => {
       actions: _actions.default,
       compiler,
       prettier: _prettier.default,
-      util
+      util,
+      sprout,
+      logger
     };
     (0, _rxjs.from)(_pipes.default).pipe((0, _operators.concatMap)(job => new _rxjs.Observable(async observer => {
       await job({
         observer,
-        sprout,
         ...props
       });
     }))).subscribe({
-      next: next => observer.next(next),
-      error: error => observer.error(error),
+      next: next => {
+        next && logger.info({
+          emitter: 'bud',
+          emitted: 'next'
+        });
+        observer.next(next);
+      },
+      error: error => {
+        error && logger.error({
+          emitter: 'bud',
+          emitted: 'error'
+        });
+        observer.error(error);
+      },
       complete: () => observer.complete()
     });
   });
@@ -1032,7 +1126,7 @@ const bud = props => {
 
 var _default = bud;
 exports.default = _default;
-},{"./compiler":"../src/bud/compiler/index.js","./config":"../src/bud/config/index.js","./data":"../src/bud/data/index.js","./util":"../src/bud/util/index.js","./pipes":"../src/bud/pipes/index.js","./actions":"../src/bud/actions/index.js","./prettier":"../src/bud/prettier/index.js"}],"../src/components/Banner.js":[function(require,module,exports) {
+},{"./compiler":"../src/bud/compiler/index.js","./config":"../src/bud/config/index.js","./data":"../src/bud/data/index.js","./util":"../src/bud/util/index.js","./pipes":"../src/bud/pipes/index.js","./actions":"../src/bud/actions/index.js","./prettier":"../src/bud/prettier/index.js","./logger":"../src/bud/logger/index.js"}],"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
