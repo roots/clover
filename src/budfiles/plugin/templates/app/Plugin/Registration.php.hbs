@@ -5,7 +5,7 @@ namespace {{pascalcase namespace}}\Plugin;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
-use {{pascalcase namespace}}\Manifest\Contract\ManifestInterface;
+use {{pascalcase namespace}}\Asset\Contract\CollectionInterface;
 
 /**
  * Register {{lowercase (dashcase namespace)}}/{{lowercase (dashcase name)}} block assets
@@ -18,153 +18,77 @@ class Registration
     /** @var ContainerInterface */
     public $bud;
 
-    /** @var Collection */
-    public $collection;
-
-    /** @var ManifestInterface */
-    public $manifest;
+    /** @var CollectionInterface */
+    public $assets;
 
     /**
       * Class constructor.
       *
-      * @param ContainerInterface bud
-      * @param Collection         collection
-      * @param ManifestInterface  manifest
+      * @param ContainerInterface  bud
+      * @param CollectionInterface manifest
       */
     public function __construct(
         ContainerInterface $bud,
-        Collection $collection,
-        ManifestInterface $manifest
+        CollectionInterface $assets
     ) {
         $this->bud = $bud;
-        $this->collection = $collection;
-        $this->manifest = $manifest;
+        $this->assets = $assets;
     }
 
     /**
       * Class invocation.
       *
-      * @throws \WP_Error
       * @return void
       */
     public function __invoke(): void
     {
-        $this->globBlocks()->map(function ($name) {
-            return $this->makeBlock($name);
-        })->each(function (BlockInterface $block) {
-            $this->registerBlock($block);
+        /** Register client assets */
+        $this->assets->map(function ($asset) {
+            $this->registerAsset($asset);
         });
 
-        $this->globPlugins()->map(function ($plugin) {
-            return [
-                'name' => $plugin,
-                'assets' => $this->manifest->getPluginAssets($plugin),
-            ];
-        })->each(function ($plugin) {
-            $this->registerPlugin($plugin);
+        /** Register blocks */
+        $this->assets->ofType('block')->map(function ($assets) {
+            $this->registerBlock($assets);
         });
     }
 
     /**
-     * Make block.
+     * Register asset.
      *
-     * @param  string         name
-     * @return BlockInterface block
-     */
-    public function makeBlock(string $name): BlockInterface
-    {
-        $block = $this->bud->make(BlockInterface::class);
-        $block->setName($name);
-
-        $assets = $this->manifest->getAssets($block);
-        $block->setAssets($assets);
-
-        return $block;
-    }
-
-    /**
-     * Register block.
-     *
-     * @param  BlockInterface block
+     * @param  asset
      * @return void
      */
-    public function registerBlock(BlockInterface $block): void
+    public function registerAsset($asset)
     {
-        $block->getEditorScript() && wp_register_script(
-            ...$block->getEditorScript()
-        );
+        $asset->contains('js')
+            ? wp_register_script(...$asset->registration()->toArray())
+            : wp_register_style(...$asset->registration()->toArray());
 
-        $block->getEditorStyle() && wp_register_style(
-            ...$block->getEditorStyle()
-        );
-
-        $block->getScript() && wp_register_script(
-            ...$block->getScript()
-        );
-
-        $block->getStyle() && wp_register_style(
-            ...$block->getStyle()
-        );
-
-        $block->register();
+        $asset->put('registered', true);
     }
 
     /**
-     * Register plugin
-     */
-    public function registerPlugin($entry)
-    {
-        add_action('enqueue_block_editor_assets', function () use ($entry) {
-            wp_enqueue_script(
-                $entry['name'],
-                $entry['assets']->get('script'),
-                $entry['assets']->get('dependencies'),
-                null,
-            );
-        });
-    }
-
-    /**
-     * Glob blocks
+     * Register block assets.
      *
-     * @return Collection
+     * @param  CollectionInterface assets
+     * @return void
      */
-     private function globBlocks(): Collection
-     {
-         return $this->collection::make(
-            glob(
-                $this->bud->get('path.plugin.src.blocks') . '/*',
-                GLOB_ONLYDIR
-            )
-        )
-        ->map(function ($path) {
-            return str_replace(
-                $this->bud->get('path.plugin.src.blocks') . '/',
-                '',
-                $path
-            );
-        });
-     }
-
-     /**
-     * Glob plugins
-     *
-     * @return Collection
-     */
-    private function globPlugins(): Collection
+    public function registerBlock(CollectionInterface $assets): void
     {
-        return $this->collection::make(
-           glob(
-               $this->bud->get('path.plugin.src.plugins') . '/*',
-               GLOB_ONLYDIR
-           )
-       )
-       ->map(function ($path) {
-           return str_replace(
-               $this->bud->get('path.plugin.src.plugins') . '/',
-               '',
-               $path
-           );
-       });
+        /** Make a new block object. */
+        $block = $this->bud->make(
+            BlockInterface::class,
+            ['name' => $assets->pluck('block')->first()]
+        );
+
+        /** Set assets. */
+        $assets->each(function ($asset) use ($block) {
+            $block->set($asset->get('hook'), $asset->get('name'));
+        });
+
+        /** Register the object */
+        register_block_type($block)
+            && $assets->put('registered', true);
     }
 }

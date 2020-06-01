@@ -2,6 +2,7 @@
 
 namespace {{pascalcase namespace}}\Block\Base;
 
+use \WP_Block_Type;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
@@ -9,16 +10,27 @@ use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 /**
  * Block class.
  */
-abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
-{
+abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, ContainerInterface {
     /** @var string */
-    public $name;
+    public $name = null;
 
     /** @var string */
-    public $namespace;
+    public $script = null;
 
-    /** @var Collection */
-    public $assets;
+    /** @var string */
+    public $style = null;
+
+    /** @var string */
+    public $editor_script = null;
+
+    /** @var string */
+    public $editor_style = null;
+
+    /** @var array */
+    public $attributes = [];
+
+    /** @var string */
+    public $render_callback = null;
 
     /**
      * Constructor.
@@ -27,130 +39,43 @@ abstract class AbstractBlock extends \WP_Block_Type implements BlockInterface
      * @param ContainerInterface
      */
     public function __construct(
-        Collection $collection,
-        ContainerInterface $bud
+        ContainerInterface $bud,
+        string $name
     ) {
         $this->bud = $bud;
-        $this->assets = $collection::make([]);
+        $this->name = $name;
     }
 
     /**
-     * Get name.
+     * Get a block property.
      *
-     * @return string
+     * @param  string id
+     * @return mixed
      */
-    public function getName(): string
+    public function get($id)
     {
-        return $this->name;
+        return $this->{$property};
     }
 
     /**
-     * Set the block name.
+     * Set a block asset
      *
      * @param  string
      * @return void
      */
-    public function setName(string $name): void
+    public function set(string $property, string $name): void
     {
-        $this->name = join('/', [$this->getNamespace(), $name]);
+        $this->{$property} = $name;
     }
 
     /**
-     * Get namespace.
+     * Has a block asset
      *
-     * @return string
+     * @param  string
+     * @return bool
      */
-    public function getNamespace(): string
-    {
-        return $this->bud->get('plugin.namespace');
-    }
-
-    /**
-     * Set assets
-     *
-     * @return void
-     */
-    public function setAssets(Collection $assets): void
-    {
-        $this->assets = $assets->each(function ($asset, $handle) {
-            if (
-                $handle == 'editor_dependencies' ||
-                $handle == 'dependencies'
-            ) {
-                return $this->{$handle} = $asset;
-            }
-
-            $this->{$handle} = $this->getName() . '/' . $handle;
-        });
-    }
-
-    /**
-     * Get editor script.
-     *
-     * @return array
-     */
-    public function getEditorScript(): array
-    {
-        return [
-            $this->editor_script,
-            $this->assets->get('editor_script'),
-            $this->assets->get('editor_dependencies'),
-            null,
-        ];
-    }
-
-    /**
-     * Get editor style.
-     *
-     * @return array
-     */
-    public function getEditorStyle(): array
-    {
-        return [
-            $this->editor_style,
-            $this->assets->get('editor_style'),
-            [],
-            null,
-        ];
-    }
-
-    /**
-     * Get script.
-     *
-     * @return array
-     */
-    public function getScript(): array
-    {
-        return [
-            $this->script,
-            $this->assets->get('script'),
-            $this->assets->get('dependencies'),
-            null,
-        ];
-    }
-
-    /**
-     * Get style.
-     *
-     * @return array
-     */
-    public function getStyle(): array
-    {
-        return [
-            $this->style,
-            $this->assets->get('style'),
-            [],
-            null,
-        ];
-    }
-
-    /**
-     * Register block.
-     *
-     * @return void
-     */
-     public function register(): void
+     public function has($id): bool
      {
-         register_block_type($this);
+         return property_exists($this, $property);
      }
 }

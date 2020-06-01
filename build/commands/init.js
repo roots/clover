@@ -1073,6 +1073,10 @@ exports.default = void 0;
 const pino = require('pino');
 
 const prettifier = require('pino-pretty');
+
+const {
+  existsSync
+} = require('fs-extra');
 /**
  * Make logger
  *
@@ -1088,7 +1092,7 @@ const makeLogger = ({
       levelFirst: true
     },
     prettifier
-  }, pino.destination(`${projectDir}/.bud/bud.log`));
+  }, existsSync(`${projectDir}/.bud/bud.log`) ? pino.destination(`${projectDir}/.bud/bud.log`) : null);
 };
 
 var _default = makeLogger;

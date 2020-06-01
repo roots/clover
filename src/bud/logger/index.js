@@ -1,5 +1,6 @@
 const pino = require('pino')
 const prettifier = require('pino-pretty')
+const {existsSync} = require('fs-extra')
 
 /**
  * Make logger
@@ -14,7 +15,9 @@ const makeLogger = ({projectDir}) => {
       },
       prettifier,
     },
-    pino.destination(`${projectDir}/.bud/bud.log`),
+    existsSync(`${projectDir}/.bud/bud.log`)
+      ? pino.destination(`${projectDir}/.bud/bud.log`)
+      : null,
   )
 }
 
