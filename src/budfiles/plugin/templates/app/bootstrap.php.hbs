@@ -11,41 +11,36 @@ require __DIR__ . '/../vendor/autoload.php';
 use function DI\autowire;
 use function DI\create;
 use DI\ContainerBuilder;
+use Psr\Container\ContainerInterface;
 
 /**
  * Build the container instance
  */
 return (new ContainerBuilder)->addDefinitions([
-    /**
-     * Plugin bindings
-     */
+    /** Bindings */
     Plugin\Registration::class => autowire(Plugin\Registration::class),
     Plugin\Activate::class => Plugin\Activate::class,
     Plugin\Deactivate::class => Plugin\Deactivate::class,
     Block\Contract\BlockInterface::class => autowire(Block\Block::class),
-    Manifest\Contract\ManifestInterface::class => autowire(Manifest\Manifest::class),
+    Asset\Contract\CollectionInterface::class => function (ContainerInterface $bud) {
+        return Asset\Collection::make()->fromFile($bud, '/dist/manifest.json');
+    },
 
-    /**
-     * Plugin aliases
-     */
+    /** Aliases */
     'plugin.activate' => create(Plugin\Activate::class),
     'plugin.deactivate' => create(Plugin\Deactivate::class),
     'plugin.registration' => autowire(Plugin\Registration::class),
     'block' => autowire(Block\Block::class),
-    'manifest' => autowire(Manifest\Manifest::class),
+    'asset' => autowire(Asset\Collection::class),
 
-    /**
-     * Vendor bindings
-     */
+    /** Vendor */
     Illuminate\Support\Collection::class => autowire(Illuminate\Support\Collection::class),
 
-    /**
-     * Vendor aliases
-     */
+    /** Vendor aliases */
     'collection' => autowire('Illuminate\Support\Collection'),
 
     /**
-     * Config
+     * Reference
      */
     'plugin.namespace' => '{{lowercase (dashcase namespace)}}',
     'plugin.url' => plugins_url('', __DIR__),

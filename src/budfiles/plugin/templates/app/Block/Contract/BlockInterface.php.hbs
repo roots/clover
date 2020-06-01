@@ -2,26 +2,14 @@
 
 namespace {{pascalcase namespace}}\Block\Contract;
 
-use Illuminate\Support\Collection;
-
 /**
  * Block class interface.
  */
 interface BlockInterface
 {
-    public function getName(): string;
+    public function get($id);
 
-    public function setName(string $name): void;
+    public function set(string $property, string $name): void;
 
-    public function setAssets(Collection $assets): void;
-
-    public function getEditorScript(): array;
-
-    public function getEditorStyle(): array;
-
-    public function getScript(): array;
-
-    public function getStyle(): array;
-
-    public function register(): void;
+    public function has($id): bool;
 }
