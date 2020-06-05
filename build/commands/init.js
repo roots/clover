@@ -117,7 +117,210 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/bud/compiler/helpers/index.js":[function(require,module,exports) {
+})({"../src/components/Banner.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkLink = _interopRequireDefault(require("ink-link"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Banner component.
+ *
+ * @prop {string} label
+ */
+const Banner = ({
+  label
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  marginBottom: 1,
+  flexDirection: "row",
+  justifyContent: "space-between"
+}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, null, label), /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "row"
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, `🌱`), /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  bold: true
+}, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
+  url: "https://roots.io/bud"
+}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  green: true
+}, '  Bud')))));
+
+var _default = Banner;
+exports.default = _default;
+},{}],"../src/components/Tasks.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _ink = require("ink");
+
+var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+/**
+ * Tasks
+ *
+ * @prop {object} status
+ * @prop {bool}   complete
+ */
+const Tasks = ({
+  data,
+  status,
+  complete
+}) => {
+  const {
+    stdout
+  } = (0, _ink.useStdout)();
+  (0, _react.useEffect)(() => {
+    data && stdout.write('\x1B[2J\x1B[0f');
+  }, [data]);
+
+  if (complete) {
+    return /*#__PURE__*/_react.default.createElement(_ink.Color, {
+      green: true
+    }, "\u26A1\uFE0F All set.");
+  }
+
+  if (status) {
+    return /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+      green: true
+    }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, {
+      type: "dots"
+    })), ` ${status}`);
+  }
+
+  return [];
+};
+
+var _default = Tasks;
+exports.default = _default;
+},{}],"../src/components/Error.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Error
+ */
+const Error = ({
+  message
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  red: true
+}, "\uD83D\uDCA5 ", JSON.stringify(message)));
+
+var _default = Error;
+exports.default = _default;
+},{}],"../src/components/hooks/useConfig.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _path = require("path");
+
+var _fsExtra = require("fs-extra");
+
+/**
+ * Use config
+ */
+const useConfig = cwd => {
+  const configFile = (0, _path.join)(cwd, '.bud/bud.config.json');
+  const config = (0, _fsExtra.existsSync)(configFile) ? require(configFile) : null;
+  return {
+    config
+  };
+};
+
+var _default = useConfig;
+exports.default = _default;
+},{}],"../src/components/hooks/useData.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+var _enquirer = require("enquirer");
+
+/**
+ * Use prompts
+ */
+const useData = sprout => {
+  const [data, setData] = (0, _react.useState)(null);
+  (0, _react.useEffect)(() => {
+    if (sprout && !data) {
+      sprout.prompts ? (0, _enquirer.prompt)(sprout.prompts).then(data => setData(data)) : setData({});
+    }
+  }, [sprout]);
+  return {
+    data
+  };
+};
+
+var _default = useData;
+exports.default = _default;
+},{}],"../src/components/hooks/useSprout.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _path = require("path");
+
+var _fs = require("fs");
+
+const makeSprout = budfile => (0, _fs.existsSync)(budfile) ? require(budfile) : null;
+
+const makeTemplateDir = budfile => (0, _path.join)((0, _path.dirname)(budfile), 'templates');
+/**
+ * Use Sprout
+ */
+
+
+const useSprout = budfile => ({
+  sprout: { ...makeSprout(budfile),
+    templateDir: makeTemplateDir(budfile)
+  }
+});
+
+var _default = useSprout;
+exports.default = _default;
+},{}],"../src/bud/compiler/helpers/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -234,7 +437,9 @@ exports.default = void 0;
  */
 const makeConfig = ({
   projectDir,
-  templateDir,
+  sprout: {
+    templateDir
+  },
   config
 }) => ({
   projectDir,
@@ -634,7 +839,7 @@ const ensureDirs = ({
 
 var _default = ensureDirs;
 exports.default = _default;
-},{}],"../src/bud/actions/git.js":[function(require,module,exports) {
+},{}],"../src/bud/actions/git/clone.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -664,6 +869,21 @@ const clone = async ({
   clone.stdout.on('data', () => observer.next(observer.next(`Cloning ${task.repo} to ${task.dest}}`)));
   clone.then(() => observer.complete());
 };
+
+var _default = clone;
+exports.default = _default;
+},{}],"../src/bud/actions/git/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _clone = _interopRequireDefault(require("./clone"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Action: Github
  *
@@ -671,8 +891,6 @@ const clone = async ({
  * @prop   {Observer} observer
  * @prop   {object}   util
  */
-
-
 const git = async ({
   task,
   observer,
@@ -680,12 +898,12 @@ const git = async ({
   ...props
 }) => {
   logger.info({
-    emitter: 'gite',
+    emitter: 'git',
     task
   });
 
   if (task.action == 'clone') {
-    clone({
+    (0, _clone.default)({
       task,
       observer,
       ...props
@@ -695,7 +913,7 @@ const git = async ({
 
 var _default = git;
 exports.default = _default;
-},{}],"../src/bud/actions/install.js":[function(require,module,exports) {
+},{"./clone":"../src/bud/actions/git/clone.js"}],"../src/bud/actions/install.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -812,11 +1030,7 @@ const touch = async ({
     });
     observer.complete();
   } catch (error) {
-    observer.error(`${JSON.stringify({
-      task,
-      config,
-      data
-    })}`);
+    observer.error();
   }
 };
 
@@ -873,7 +1087,7 @@ const actions = {
 };
 var _default = actions;
 exports.default = _default;
-},{"./addDependencies":"../src/bud/actions/addDependencies.js","./compile":"../src/bud/actions/compile.js","./copy":"../src/bud/actions/copy.js","./ensureDir":"../src/bud/actions/ensureDir.js","./ensureDirs":"../src/bud/actions/ensureDirs.js","./git":"../src/bud/actions/git.js","./install":"../src/bud/actions/install.js","./json":"../src/bud/actions/json.js","./touch":"../src/bud/actions/touch.js"}],"../src/bud/prettier/inferParser.js":[function(require,module,exports) {
+},{"./addDependencies":"../src/bud/actions/addDependencies.js","./compile":"../src/bud/actions/compile.js","./copy":"../src/bud/actions/copy.js","./ensureDir":"../src/bud/actions/ensureDir.js","./ensureDirs":"../src/bud/actions/ensureDirs.js","./git":"../src/bud/actions/git/index.js","./install":"../src/bud/actions/install.js","./json":"../src/bud/actions/json.js","./touch":"../src/bud/actions/touch.js"}],"../src/bud/prettier/inferParser.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -921,7 +1135,7 @@ module.exports = {
   arrowParens: 'avoid',
   bracketSpacing: false,
   tabWidth: 2,
-  printWidth: 80,
+  printWidth: 90,
   singleQuote: true,
   jsxBracketSameLine: true,
   useTabs: false,
@@ -994,7 +1208,7 @@ const prettier = {
 };
 var _default = prettier;
 exports.default = _default;
-},{"./inferParser":"../src/bud/prettier/inferParser.js","./format":"../src/bud/prettier/format.js"}],"../src/bud/logger/index.js":[function(require,module,exports) {
+},{"./inferParser":"../src/bud/prettier/inferParser.js","./format":"../src/bud/prettier/format.js"}],"../src/bud/status/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1009,6 +1223,15 @@ const prettifier = require('pino-pretty');
 const {
   existsSync
 } = require('fs-extra');
+
+const options = {
+  prettyPrint: {
+    levelFirst: true
+  },
+  prettifier
+};
+
+const destination = projectDir => existsSync(`${projectDir}/.bud/bud.log`) ? pino.destination(`${projectDir}/.bud/bud.log`) : null;
 /**
  * Make logger
  *
@@ -1018,16 +1241,27 @@ const {
 
 const makeLogger = ({
   projectDir
+}) => pino(options, destination(projectDir));
+/**
+ * Make status
+ */
+
+
+const makeStatus = ({
+  projectDir,
+  logging
 }) => {
-  return pino({
-    prettyPrint: {
-      levelFirst: true
-    },
-    prettifier
-  }, existsSync(`${projectDir}/.bud/bud.log`) ? pino.destination(`${projectDir}/.bud/bud.log`) : null);
+  const logger = makeLogger(projectDir);
+  return logging ? {
+    info: info => logger.info(info),
+    error: error => logger.error(error)
+  } : {
+    info: () => null,
+    error: () => null
+  };
 };
 
-var _default = makeLogger;
+var _default = makeStatus;
 exports.default = _default;
 },{}],"../src/bud/index.js":[function(require,module,exports) {
 "use strict";
@@ -1055,7 +1289,7 @@ var _actions = _interopRequireDefault(require("./actions"));
 
 var _prettier = _interopRequireDefault(require("./prettier"));
 
-var _logger = _interopRequireDefault(require("./logger"));
+var _status = _interopRequireDefault(require("./status"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1063,10 +1297,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * 🌱 bud starter
  *
  * @prop {string} projectDir
- * @prop {object} projectConfig
+ * @prop {object} config
  * @prop {object} data
  * @prop {object} sprout
  * @prop {string} templateDir
+ * @prop {bool}   logging
  *
  * @return {Observable}
  */
@@ -1074,7 +1309,7 @@ const bud = props => {
   const {
     sprout
   } = props;
-  const logger = (0, _logger.default)({ ...props
+  const status = (0, _status.default)({ ...props
   });
   const config = (0, _config.default)({ ...props
   });
@@ -1101,7 +1336,8 @@ const bud = props => {
       prettier: _prettier.default,
       util,
       sprout,
-      logger
+      status,
+      logger: status
     };
     (0, _rxjs.from)(_pipes.default).pipe((0, _operators.concatMap)(job => new _rxjs.Observable(async observer => {
       await job({
@@ -1110,27 +1346,29 @@ const bud = props => {
       });
     }))).subscribe({
       next: next => {
-        next && logger.info({
+        next && status.info({
           emitter: 'bud',
-          emitted: 'next'
+          emitted: next
         });
         observer.next(next);
       },
       error: error => {
-        error && logger.error({
+        error && status.error({
           emitter: 'bud',
-          emitted: 'error'
+          emitted: error
         });
         observer.error(error);
       },
-      complete: () => observer.complete()
+      complete: () => {
+        observer.complete();
+      }
     });
   });
 };
 
 var _default = bud;
 exports.default = _default;
-},{"./compiler":"../src/bud/compiler/index.js","./config":"../src/bud/config/index.js","./data":"../src/bud/data/index.js","./util":"../src/bud/util/index.js","./pipes":"../src/bud/pipes/index.js","./actions":"../src/bud/actions/index.js","./prettier":"../src/bud/prettier/index.js","./logger":"../src/bud/logger/index.js"}],"../src/components/Banner.js":[function(require,module,exports) {
+},{"./compiler":"../src/bud/compiler/index.js","./config":"../src/bud/config/index.js","./data":"../src/bud/data/index.js","./util":"../src/bud/util/index.js","./pipes":"../src/bud/pipes/index.js","./actions":"../src/bud/actions/index.js","./prettier":"../src/bud/prettier/index.js","./status":"../src/bud/status/index.js"}],"../src/components/hooks/useSubscription.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1138,89 +1376,60 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = require("react");
 
 var _ink = require("ink");
 
-var _inkLink = _interopRequireDefault(require("ink-link"));
+var _bud = _interopRequireDefault(require("../../bud"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Banner component.
- *
- * @prop {string} label
+ * Use subscription.
  */
-const Banner = ({
-  label
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  marginBottom: 1,
-  flexDirection: "row",
-  justifyContent: "space-between"
-}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, null, label), /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "row"
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, `🌱`), /*#__PURE__*/_react.default.createElement(_ink.Text, {
-  bold: true
-}, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://roots.io/bud"
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, '  Bud')))));
-
-var _default = Banner;
-exports.default = _default;
-},{}],"../src/components/Tasks.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _ink = require("ink");
-
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-/**
- * Tasks
- *
- * @prop {object} data
- * @prop {object} status
- * @prop {bool}   complete
- * @prop {bool}   noClear
- */
-const Tasks = ({
+const useSubscription = ({
+  config,
   data,
-  status,
-  complete,
-  noClear
+  projectDir,
+  sprout
 }) => {
   const {
-    stdout
-  } = (0, _ink.useStdout)();
+    exit
+  } = (0, _ink.useApp)();
+  const [subscription, setSubscription] = (0, _react.useState)(false);
+  const [status, setStatus] = (0, _react.useState)(null);
+  const [error, setError] = (0, _react.useState)(null);
+  const [complete, setComplete] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
-    data && !noClear && stdout.write('\x1B[2J\x1B[0f');
+    if (sprout && data && !subscription) {
+      setSubscription((0, _bud.default)({
+        config,
+        data,
+        sprout,
+        projectDir
+      }).subscribe({
+        next: next => setStatus(next),
+        error: error => setError(error),
+        complete: () => setComplete(true)
+      }));
+    }
   }, [data]);
-  return status ? /*#__PURE__*/_react.default.createElement(_ink.Box, null, complete ? /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    green: true
-  }, "\u26A1\uFE0F All set.") : /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    green: true
-  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, {
-    type: "dots"
-  })), ` ${status}`)) : null;
+  (0, _react.useEffect)(() => {
+    complete && (() => {
+      subscription.unsubscribe();
+      exit();
+    })();
+  }, [complete]);
+  return {
+    status,
+    error,
+    complete
+  };
 };
 
-var _default = Tasks;
+var _default = useSubscription;
 exports.default = _default;
-},{}],"../src/components/Error.js":[function(require,module,exports) {
+},{"../../bud":"../src/bud/index.js"}],"../src/components/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1229,43 +1438,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Error
- */
-const Error = ({
-  message
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  red: true
-}, "\uD83D\uDCA5 ", JSON.stringify(message)));
-
-var _default = Error;
-exports.default = _default;
-},{}],"../src/components/App.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _path = require("path");
-
-var _fs = require("fs");
-
-var _react = _interopRequireWildcard(require("react"));
 
 var _ink = require("ink");
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _enquirer = require("enquirer");
-
-var _bud = _interopRequireDefault(require("../bud"));
 
 var _Banner = _interopRequireDefault(require("./Banner"));
 
@@ -1273,126 +1449,72 @@ var _Tasks = _interopRequireDefault(require("./Tasks"));
 
 var _Error = _interopRequireDefault(require("./Error"));
 
+var _useConfig = _interopRequireDefault(require("./hooks/useConfig"));
+
+var _useData = _interopRequireDefault(require("./hooks/useData"));
+
+var _useSprout = _interopRequireDefault(require("./hooks/useSprout"));
+
+var _useSubscription = _interopRequireDefault(require("./hooks/useSubscription"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-const cwd = process.cwd();
 /**
- * App
+ * Bud application
  *
- * @prop {string} label
- * @prop {string} templateDir
- * @prop {object} sprout
- * @prop {string} outDir
- * @prop {object} values
- * @prop {object} children
- * @prop {bool}   noClear
+ * @prop {string} budfile
+ * @prop {string} output
+ * @prop {bool}   logging
  */
-
 const App = ({
-  label,
-  templateDir,
-  sprout,
-  outDir,
-  noClear
+  budfile,
+  output,
+  logging
 }) => {
-  /**
-   * source bud.config.json
-   */
-  const configFile = (0, _path.join)(cwd, '.bud/bud.config.json');
-  const [config] = (0, _react.useState)((0, _fs.existsSync)(configFile) ? require(configFile) : null);
-  /**
-   * Assemble data from prompts
-   */
-
-  const [data, setData] = (0, _react.useState)(null);
-  const [prompts, setPrompts] = (0, _react.useState)(sprout.prompts ? sprout.prompts : null);
-  (0, _react.useEffect)(() => {
-    if (prompts) {
-      (0, _enquirer.prompt)(prompts).then(data => {
-        setPrompts(null);
-        setData(data);
-      });
-    } else {
-      setPrompts(null);
-      setData({});
-    }
-  }, []);
-  /**
-   * Observer subscribe
-   */
-
-  const [status, setStatus] = (0, _react.useState)(null);
-  const [error, setError] = (0, _react.useState)(null);
-  const [complete, setComplete] = (0, _react.useState)(false);
-  const [subscription, setSubscription] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    data && !subscription && setSubscription((0, _bud.default)({
-      sprout,
-      data,
-      config,
-      templateDir,
-      projectDir: (0, _path.join)(cwd, outDir)
-    }).subscribe({
-      next: next => setStatus(next),
-      error: error => setError(error),
-      complete: () => setComplete(true)
-    }));
-  }, [config, data, status]);
-  /**
-   * Observer unsubscribe.
-   */
-
   const {
-    exit
-  } = (0, _ink.useApp)();
-  (0, _react.useEffect)(() => {
-    const unsubscribe = async () => {
-      await subscription.unsubscribe();
-      exit();
-    };
-
-    complete && unsubscribe();
-  }, [complete, subscription]);
-  /**
-   * Render observable updates and errors
-   */
-
+    config
+  } = (0, _useConfig.default)(process.cwd());
+  const {
+    sprout
+  } = (0, _useSprout.default)(budfile);
+  const {
+    data
+  } = (0, _useData.default)(sprout);
+  const {
+    status,
+    error,
+    complete
+  } = (0, _useSubscription.default)({
+    config,
+    data,
+    sprout,
+    logging,
+    projectDir: output ? output : process.cwd()
+  });
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
     flexDirection: "column",
     justifyContent: "flex-start",
     padding: 1
   }, /*#__PURE__*/_react.default.createElement(_Banner.default, {
-    label: label
+    label: 'Bud'
   }), /*#__PURE__*/_react.default.createElement(_Tasks.default, {
-    data: data,
     status: status,
-    complete: complete,
-    noClear: noClear
+    data: data,
+    complete: complete
   }), error && /*#__PURE__*/_react.default.createElement(_Error.default, {
     message: error
   }));
 };
 
 App.propTypes = {
-  label: _propTypes.default.string,
-  sprout: _propTypes.default.object,
-  noClear: _propTypes.default.bool
+  budfile: _propTypes.default.string
 };
-App.defaultProps = {
-  sprout: {
-    actions: [],
-    label: 'Bud',
-    prompts: []
-  },
-  noClear: false
+App.propDefaults = {
+  output: null
 };
 var _default = App;
 exports.default = _default;
-},{"../bud":"../src/bud/index.js","./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./Error":"../src/components/Error.js"}],"init.js":[function(require,module,exports) {
+},{"./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./Error":"../src/components/Error.js","./hooks/useConfig":"../src/components/hooks/useConfig.js","./hooks/useData":"../src/components/hooks/useData.js","./hooks/useSprout":"../src/components/hooks/useSprout.js","./hooks/useSubscription":"../src/components/hooks/useSubscription.js"}],"init.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1402,76 +1524,35 @@ exports.default = void 0;
 
 var _path = require("path");
 
-var _react = _interopRequireWildcard(require("react"));
-
-var _ink = require("ink");
+var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
 
 var _App = _interopRequireDefault(require("./../src/components/App"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /** Constants */
 const budfileDir = (0, _path.resolve)(__dirname, './../../src/budfiles/init');
 /** Command: bud init */
 /// Create a new project
 
-const Init = props => {
-  /**
-   * Directories
-   */
-  const [projectDir] = (0, _react.useState)(props.projectDir);
-  const [budfile, setBudfile] = (0, _react.useState)(null);
-  const [templateDir, setTemplateDir] = (0, _react.useState)(null);
-  (0, _react.useEffect)(() => {
-    if (budfileDir) {
-      setBudfile(`${budfileDir}/init.bud`);
-      setTemplateDir(`${budfileDir}/templates`);
-    }
-  }, [budfileDir]);
-  /**
-   * Sprout.
-   */
-
-  const [sprout, setSprout] = (0, _react.useState)(null);
-  (0, _react.useEffect)(() => {
-    budfile && setSprout(require(budfile));
-  }, [budfile]);
-  /**
-   * Label.
-   */
-
-  const [label, setLabel] = (0, _react.useState)('Bud CLI');
-  (0, _react.useEffect)(() => {
-    sprout && setLabel(sprout.label);
-  }, [sprout]);
-  /**
-   * Render.
-   */
-
-  return sprout ? /*#__PURE__*/_react.default.createElement(_App.default, {
-    label: label,
-    outDir: projectDir || '',
-    sprout: sprout,
-    templateDir: templateDir
-  }) : /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null), " Loading");
-};
+const Init = props => /*#__PURE__*/_react.default.createElement(_App.default, {
+  budfile: (0, _path.join)(budfileDir, 'init.bud.js'),
+  logging: props.logging,
+  output: props.output
+});
 
 Init.propTypes = {
   /// Output directory
-  projectDir: _propTypes.default.string
+  output: _propTypes.default.string,
+  /// Enable logging
+  logging: _propTypes.default.bool
 };
 Init.defaultProps = {
-  budfileDir: budfileDir
+  logging: false
 };
-Init.positionalArgs = ['projectDir'];
+Init.positionalArgs = ['output'];
 var _default = Init;
 exports.default = _default;
 },{"./../src/components/App":"../src/components/App.js"}]},{},["init.js"], null)

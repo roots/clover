@@ -114,11 +114,7 @@ const List = () => {
       <Divider padding={0} width={100} />
 
       {buds.map((bud, id) => (
-        <Box
-          key={id}
-          flexDirection="row"
-          flexGrow={1}
-          justifyContent="flex-start">
+        <Box key={id} flexDirection="row" flexGrow={1} justifyContent="flex-start">
           <Box width={40}>{bud.command}</Box>
           <Box width={40} marginLeft={1}>
             {bud.source}

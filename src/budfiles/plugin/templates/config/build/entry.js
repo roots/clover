@@ -28,7 +28,22 @@ const plugins = {
  */
 const entry = ({config}) => ({
   entry: {
-    ...globber([blocks, plugins]),
+    ...globber([
+      {
+        from: 'plugins',
+        entries: [
+          ['script', 'plugin.js'],
+        ],
+      }, {
+        from: 'blocks',
+        entries: [
+          ['editor_script', 'editor.js'],
+          ['editor_style', 'editor.css'],
+          ['script', 'editor.js'],
+          ['style', 'editor.css'],
+        ],
+      },
+    ]),
     ...config,
   },
 })

@@ -7,15 +7,7 @@ import {concatMap} from 'rxjs/operators'
  * @prop   {task array} dirs
  * @return {Observable}
  */
-const ensureDirs = ({
-  task,
-  observer,
-  logger,
-  actions,
-  config,
-  data,
-  compiler,
-}) => {
+const ensureDirs = ({task, observer, logger, actions, config, data, compiler}) => {
   logger.info({emitter: 'ensureDirs', task})
 
   from(task.dirs)

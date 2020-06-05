@@ -1,53 +1,13 @@
-#!/usr/bin/env node
-
-const {resolve} = require('path')
-const {writeFileSync} = require('fs')
-const {format} = require('prettier')
-
-/** Util */
-const {listKeys, block, commands} = require('./components/helpers')
-
-/** Data */
-const {
-  name,
-  licenses,
-  version,
-  dependencies,
-  devDependencies,
-  engines,
-} = require('./../package.json')
-
-/** Target */
-const readme = resolve(__dirname, '../README.md')
-
-/**
- * README contents.
- */
-writeFileSync(
-  readme,
-  format(
-    `
 <p align="center">
   <img alt="Bud" src="https://cdn.roots.io/app/uploads/logo-bud.svg" height="100">
 </p>
 
 <p align="center">
-  <img alt="${
-    licenses.shift().type || ''
-  } License" src="https://img.shields.io/github/license/${name.replace(
-      '@',
-      '',
-    )}?color=%23525ddc&style=flat-square">
+  <img alt="MIT License" src="https://img.shields.io/github/license/roots/bud?color=%23525ddc&style=flat-square">
 
-  <img alt="devDependency Status" src="https://img.shields.io/david/dev/${name.replace(
-    '@',
-    '',
-  )}.svg?style=flat-square">
+  <img alt="devDependency Status" src="https://img.shields.io/david/dev/roots/bud.svg?style=flat-square">
 
-  <img alt="Build Status" src="https://img.shields.io/circleci/project/github/${name.replace(
-    '@',
-    '',
-  )}/master.svg?style=flat-square">
+  <img alt="Build Status" src="https://img.shields.io/circleci/project/github/roots/bud/master.svg?style=flat-square">
 
   <img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/a7209502e433ea3571b1/maintainability">
 
@@ -74,8 +34,8 @@ However, the amount of effort needed to maintain and develop new features and pr
 
 <div align="center">
 
-  [![Donate via Patreon](https://img.shields.io/badge/donate-patreon-orange.svg?style=flat-square&logo=patreon")](https://www.patreon.com/rootsdev)
-  [![Donate via PayPal](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/rootsdev)
+[![Donate via Patreon](https://img.shields.io/badge/donate-patreon-orange.svg?style=flat-square&logo=patreon")](https://www.patreon.com/rootsdev)
+[![Donate via PayPal](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/rootsdev)
 
 </div>
 
@@ -86,47 +46,82 @@ Bud is an extendable, zero configuration scaffolding CLI for WordPress editor bl
 ## Requirements
 
 | Requirement | Version |
-| ---- | --- |
-| PHP  | >=7.2 |
-| Node | ${engines.node} |
+| ----------- | ------- |
+| PHP         | >=7.2   |
+| Node        | >=12    |
 
 ## Usage
 
 Bud is currently pre-release. But, you can try it out now:
 
-${block('sh', `npx @roots/bud@${version} init [project-dir]`)}
+```sh
+npx @roots/bud@1.0.0-rc.2 init [project-dir]
+```
 
-This will initialize your project and install \`@roots/bud\` as a local dev dependency.
+This will initialize your project and install `@roots/bud` as a local dev dependency.
 
 After initializing, you might try additional generators to kick-start your dev process:
 
-${block('sh', `yarn generate plugin`)}
+```sh
+yarn generate plugin
+```
 
-${block('sh', `yarn generate block`)}
+```sh
+yarn generate block
+```
 
-But, you can also write your own custom generators, or install/share them by writing a \`bud-plugin\`.
+But, you can also write your own custom generators, or install/share them by writing a `bud-plugin`.
 
-Documentation forthcoming. For now, you can run \`yarn generate:list\` to see what is available out-of-the-box.
+Documentation forthcoming. For now, you can run `yarn generate:list` to see what is available out-of-the-box.
 
 ## All commands:
 
 | Command | Description |
-| --- | --- |
-${commands()}
+| ------- | ----------- |
+
 
 ### Dependencies
 
-${listKeys(dependencies)}
+- enquirer
+- esm
+- execa
+- fs-extra
+- handlebars
+- handlebars-helpers
+- ink
+- ink-link
+- ink-spinner
+- ink-table
+- ink-use-stdout-dimensions
+- next-pino
+- node-fetch
+- pastel
+- pino
+- pino-pretty
+- prettier
+- prop-types
+- react
+- rxjs
 
 ### Development dependencies
 
-${listKeys(devDependencies)}
+- babel-eslint
+- eslint
+- eslint-plugin-jsx-a11y
+- eslint-plugin-react
+- eslint-plugin-react-hooks
+- globby
+- husky
+- ink-divider
+- markdownlint-cli
+- npm-run-all
+- tree-node-cli
 
 ## Roadmap
 
-- \`HMR\`
-- \`bud component\`
-- \`bud extension\`
+- `HMR`
+- `bud component`
+- `bud extension`
 
 ## Contributing
 
@@ -151,9 +146,3 @@ Keep track of development and community news.
 - Read and subscribe to the [Roots Blog](https://roots.io/blog/)
 - Subscribe to the [Roots Newsletter](https://roots.io/subscribe/)
 - Listen to the [Roots Radio podcast](https://roots.io/podcast/)
-
-`,
-    {parser: 'markdown'},
-  ),
-  'utf8',
-)

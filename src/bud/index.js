@@ -7,22 +7,23 @@ import makeUtil from './util'
 import pipes from './pipes'
 import actions from './actions'
 import prettier from './prettier'
-import makeLogger from './logger'
+import makeLogger from './status'
 
 /**
  * 🌱 bud starter
  *
  * @prop {string} projectDir
- * @prop {object} projectConfig
+ * @prop {object} config
  * @prop {object} data
  * @prop {object} sprout
  * @prop {string} templateDir
+ * @prop {bool}   logging
  *
  * @return {Observable}
  */
 const bud = props => {
   const {sprout} = props
-  const logger = makeLogger({...props})
+  const status = makeLogger({...props})
   const config = makeConfig({...props})
   const data = makeData({...props})
   const util = makeUtil({config})
@@ -42,7 +43,8 @@ const bud = props => {
       prettier,
       util,
       sprout,
-      logger,
+      status,
+      logger: status,
     }
 
     from(pipes)
@@ -54,16 +56,29 @@ const bud = props => {
             }),
         ),
       )
+
       .subscribe({
         next: next => {
-          next && logger.info({emitter: 'bud', emitted: 'next'})
+          next &&
+            status.info({
+              emitter: 'bud',
+              emitted: next,
+            })
+
           observer.next(next)
         },
         error: error => {
-          error && logger.error({emitter: 'bud', emitted: 'error'})
+          error &&
+            status.error({
+              emitter: 'bud',
+              emitted: error,
+            })
+
           observer.error(error)
         },
-        complete: () => observer.complete(),
+        complete: () => {
+          observer.complete()
+        },
       })
   })
 }
