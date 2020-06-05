@@ -18,17 +18,13 @@ const addDependencies = async ({task, logger, observer, util}) => {
 
   if (task.repo == 'npm') {
     logger.info({emitter: 'addDependencies', task})
-    installation = util.command(
-      `yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`,
-    )
+    installation = util.command(`yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`)
   }
 
   if (task.repo == 'packagist') {
     logger.info({emitter: 'addDependencies', task})
     installation = util.command(
-      `composer require ${task.pkgs.join(' ')} ${
-        task.dev ? `--development` : ``
-      }`,
+      `composer require ${task.pkgs.join(' ')} ${task.dev ? `--development` : ``}`,
     )
   }
 

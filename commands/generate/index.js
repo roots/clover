@@ -1,6 +1,6 @@
-import {dirname} from 'path'
 import React, {useState, useEffect} from 'react'
-import {Text, Color} from 'ink'
+import {Box} from 'ink'
+import Spinner from 'ink-spinner'
 import PropTypes from 'prop-types'
 import globby from 'globby'
 import App from '../../src/components/App'
@@ -9,11 +9,12 @@ import App from '../../src/components/App'
  * Search helpers
  */
 const cwd = process.cwd()
-const coreResults = name =>
-  `${cwd}/node_modules/@roots/bud/src/budfiles/**/${name}.bud.js`
-const pluginResults = name =>
-  `${cwd}/node_modules/**/bud-plugin-*/${name}.bud.js`
-const projectResults = name => `${cwd}/.bud/budfiles/**/${name}.bud.js`
+
+const search = {
+  core: name => `${cwd}/node_modules/@roots/bud/src/budfiles/**/${name}.bud.js`,
+  plugin: name => `${cwd}/node_modules/**/bud-plugin-*/${name}.bud.js`,
+  project: name => `${cwd}/.bud/budfiles/**/${name}.bud.js`,
+}
 
 /** Command: bud generate */
 /// Generate code from a budfile
@@ -37,7 +38,7 @@ const Generate = props => {
     budName &&
       !checked.project &&
       (async () => {
-        const buds = await globby([projectResults(budName)])
+        const buds = await globby([search.project(budName)])
         buds && buds.length > 0 && setBudfile(buds[0])
 
         setChecked({...checked, project: true})
@@ -51,7 +52,7 @@ const Generate = props => {
     !budfile &&
       checked.project &&
       (async () => {
-        const buds = await globby([pluginResults(budName)])
+        const buds = await globby([search.plugin(budName)])
         buds && buds.length > 0 && setBudfile(buds[0])
 
         setChecked({...checked, modules: true})
@@ -65,7 +66,7 @@ const Generate = props => {
     !budfile &&
       checked.modules &&
       (async () => {
-        const buds = await globby([coreResults(budName)])
+        const buds = await globby([search.core(budName)])
         buds && buds.length > 0 && setBudfile(buds[0])
 
         setChecked({...checked, roots: true})
@@ -73,30 +74,14 @@ const Generate = props => {
   }, [budfile, checked.modules])
 
   /**
-   * Sprout state.
-   */
-  const [sprout, setSprout] = useState(false)
-  const [templateDir, setTemplateDir] = useState(false)
-  useEffect(() => {
-    budfile && setSprout(require(budfile))
-    budfile && setTemplateDir(`${dirname(budfile)}/templates`)
-  }, [budfile])
-
-  /**
    * Render.
    */
-  return sprout && templateDir ? (
-    <App
-      sprout={sprout}
-      label={sprout.description ?? 'Bud'}
-      outDir={''}
-      noClear={true}
-      templateDir={templateDir ?? ''}
-    />
+  return budfile ? (
+    <App budfile={budfile} />
   ) : (
-    <Text>
-      <Color green>Searching...</Color>
-    </Text>
+    <Box>
+      <Spinner /> Loading
+    </Box>
   )
 }
 

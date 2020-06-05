@@ -13,10 +13,7 @@ const json = async function ({task, observer, prettier, config}) {
 
   try {
     const output = task.merge(json)
-    await outputFile(
-      `${config.projectDir}/${task.file}`,
-      prettier.format(output, 'json'),
-    )
+    await outputFile(`${config.projectDir}/${task.file}`, prettier.format(output, 'json'))
 
     observer.complete()
   } catch (err) {

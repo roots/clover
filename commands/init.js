@@ -1,8 +1,6 @@
-import {resolve} from 'path'
-import React, {useState, useEffect} from 'react'
-import {Box} from 'ink'
+import {join, resolve} from 'path'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Spinner from 'ink-spinner'
 
 import App from './../src/components/App'
 
@@ -11,62 +9,25 @@ const budfileDir = resolve(__dirname, './../../src/budfiles/init')
 
 /** Command: bud init */
 /// Create a new project
-const Init = props => {
-  /**
-   * Directories
-   */
-  const [projectDir] = useState(props.projectDir)
-  const [budfile, setBudfile] = useState(null)
-  const [templateDir, setTemplateDir] = useState(null)
-  useEffect(() => {
-    if (budfileDir) {
-      setBudfile(`${budfileDir}/init.bud`)
-      setTemplateDir(`${budfileDir}/templates`)
-    }
-  }, [budfileDir])
-
-  /**
-   * Sprout.
-   */
-  const [sprout, setSprout] = useState(null)
-  useEffect(() => {
-    budfile && setSprout(require(budfile))
-  }, [budfile])
-
-  /**
-   * Label.
-   */
-  const [label, setLabel] = useState('Bud CLI')
-  useEffect(() => {
-    sprout && setLabel(sprout.label)
-  }, [sprout])
-
-  /**
-   * Render.
-   */
-  return sprout ? (
-    <App
-      label={label}
-      outDir={projectDir || ''}
-      sprout={sprout}
-      templateDir={templateDir}
-    />
-  ) : (
-    <Box>
-      <Spinner /> Loading
-    </Box>
-  )
-}
+const Init = props => (
+  <App
+    budfile={join(budfileDir, 'init.bud.js')}
+    logging={props.logging}
+    output={props.output}
+  />
+)
 
 Init.propTypes = {
   /// Output directory
-  projectDir: PropTypes.string,
+  output: PropTypes.string,
+  /// Enable logging
+  logging: PropTypes.bool,
 }
 
 Init.defaultProps = {
-  budfileDir: budfileDir,
+  logging: false,
 }
 
-Init.positionalArgs = ['projectDir']
+Init.positionalArgs = ['output']
 
 export default Init

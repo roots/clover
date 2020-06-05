@@ -3,7 +3,7 @@
  *
  * @param {string} projectDir
  */
-const makeConfig = ({projectDir, templateDir, config}) => ({
+const makeConfig = ({projectDir, sprout: {templateDir}, config}) => ({
   projectDir,
   templateDir,
   ...config,

@@ -18,13 +18,7 @@ const touch = async ({task, config, compiler, data, observer}) => {
 
     observer.complete()
   } catch (error) {
-    observer.error(
-      `${JSON.stringify({
-        task,
-        config,
-        data,
-      })}`,
-    )
+    observer.error()
   }
 }
 

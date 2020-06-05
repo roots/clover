@@ -13,12 +13,21 @@
 			"description": "Create a new project",
 			"args": [
 				{
-					"key": "projectDir",
+					"key": "output",
 					"type": "string",
 					"description": "Output directory",
 					"isRequired": false,
 					"aliases": [],
 					"positional": true
+				},
+				{
+					"key": "logging",
+					"type": "boolean",
+					"description": "Enable logging",
+					"isRequired": false,
+					"defaultValue": false,
+					"aliases": [],
+					"positional": false
 				}
 			],
 			"subCommands": []
