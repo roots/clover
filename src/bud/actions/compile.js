@@ -18,14 +18,12 @@ const compile = async ({task, observer, logger, data, config, prettier, compiler
   const dest = compiler.make(task.dest)(data)
   const template = compiler.make(src)(data)
 
-  logger.info({emitter: 'compile', task, template: task.src, dest})
+  logger.info({emitter: 'compile', template: task.src, dest, task})
   observer.next(`Writing file ${dest}`)
 
   await outputFile(
-    ...[
-      join(config.projectDir, dest),
-      task.parser ? prettier.format(template, task.parser) : template,
-    ],
+    join(config.projectDir, dest),
+    task.parser ? prettier.format(template, task.parser) : template,
   )
 
   observer.complete()

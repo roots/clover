@@ -4,13 +4,9 @@
 
 <p align="center">
   <img alt="MIT License" src="https://img.shields.io/github/license/roots/bud?color=%23525ddc&style=flat-square">
-
   <img alt="devDependency Status" src="https://img.shields.io/david/dev/roots/bud.svg?style=flat-square">
-
   <img alt="Build Status" src="https://img.shields.io/circleci/project/github/roots/bud/master.svg?style=flat-square">
-
   <img alt="Maintainability" src="https://api.codeclimate.com/v1/badges/a7209502e433ea3571b1/maintainability">
-
   <a href="https://twitter.com/rootswp">
     <img alt="Follow Roots" src="https://img.shields.io/twitter/follow/rootswp.svg?style=flat-square&color=1da1f2" />
   </a>
@@ -34,8 +30,7 @@ However, the amount of effort needed to maintain and develop new features and pr
 
 <div align="center">
 
-[![Donate via Patreon](https://img.shields.io/badge/donate-patreon-orange.svg?style=flat-square&logo=patreon")](https://www.patreon.com/rootsdev)
-[![Donate via PayPal](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/rootsdev)
+[![Donate via Patreon](https://img.shields.io/badge/donate-patreon-orange.svg?style=flat-square&logo=patreon")](https://www.patreon.com/rootsdev) [![Donate via PayPal](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/rootsdev)
 
 </div>
 
@@ -55,7 +50,7 @@ Bud is an extendable, zero configuration scaffolding CLI for WordPress editor bl
 Bud is currently pre-release. But, you can try it out now:
 
 ```sh
-npx @roots/bud@1.0.0-rc.2 init [project-dir]
+npx @roots/bud@1.0.0-rc.3 init [project-dir]
 ```
 
 This will initialize your project and install `@roots/bud` as a local dev dependency.
@@ -70,18 +65,18 @@ yarn generate plugin
 yarn generate block
 ```
 
-But, you can also write your own custom generators, or install/share them by writing a `bud-plugin`.
+But, you can also write your own custom generators, or install/share them by writing a plugin for Bud.
 
 Documentation forthcoming. For now, you can run `yarn generate:list` to see what is available out-of-the-box.
 
 ## All commands:
 
-| Command        | Description                  |
-| -------------- | ---------------------------- |
-| `bud`          | Bud information              |
-| `bud init`     | Create a new project         |
-| `bud generate` | Generate code from a budfile |
-| `bud list`     | List available budfiles      |
+| Command      | Description                  |
+| ------------ | ---------------------------- |
+| bud          | Bud information              |
+| bud init     | Create a new project         |
+| bud generate | Generate code from a budfile |
+| bud list     | List available budfiles      |
 
 ### Dependencies
 
@@ -96,7 +91,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - ink-spinner
 - ink-table
 - ink-use-stdout-dimensions
-- next-pino
 - node-fetch
 - pastel
 - pino
@@ -119,12 +113,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - markdownlint-cli
 - npm-run-all
 - tree-node-cli
-
-## Roadmap
-
-- `HMR`
-- `bud component`
-- `bud extension`
 
 ## Contributing
 
