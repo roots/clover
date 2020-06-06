@@ -10,11 +10,7 @@ const budfileDir = resolve(__dirname, './../../src/budfiles/init')
 /** Command: bud init */
 /// Create a new project
 const Init = props => (
-  <App
-    budfile={join(budfileDir, 'init.bud.js')}
-    logging={props.logging}
-    output={props.output}
-  />
+  <App budfile={join(budfileDir, 'init.bud.js')} logging={props.logging} output={props.output} />
 )
 
 Init.propTypes = {

@@ -156,6 +156,7 @@ const Banner = ({
 
 var _default = Banner;
 exports.default = _default;
+<<<<<<< HEAD
 },{}],"../src/components/Tasks.js":[function(require,module,exports) {
 "use strict";
 
@@ -1585,6 +1586,9 @@ App.propDefaults = {
 var _default = App;
 exports.default = _default;
 },{"./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./Error":"../src/components/Error.js","./hooks/useConfig":"../src/components/hooks/useConfig.js","./hooks/useData":"../src/components/hooks/useData.js","./hooks/useSprout":"../src/components/hooks/useSprout.js","./hooks/useSubscription":"../src/components/hooks/useSubscription.js"}],"index.js":[function(require,module,exports) {
+=======
+},{}],"index.js":[function(require,module,exports) {
+>>>>>>> useSearch hook
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1596,24 +1600,23 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _App = _interopRequireDefault(require("./../src/components/App"));
+var _Banner = _interopRequireDefault(require("./../src/components/Banner"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Command: bud */
 /// Bud information
-const Bud = () => /*#__PURE__*/_react.default.createElement(_App.default, {
-  label: 'Bud: Modern WordPress Scaffolding',
-  inert: true
-}, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "column"
-}, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  marginBottom: 1
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, "To get started run ", /*#__PURE__*/_react.default.createElement(_ink.Color, {
+const Bud = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  padding: 1
+}, /*#__PURE__*/_react.default.createElement(_Banner.default, {
+  label: 'Bud'
+}), /*#__PURE__*/_react.default.createElement(_ink.Text, null, "To get started run ", /*#__PURE__*/_react.default.createElement(_ink.Color, {
   green: true
-}, "npx @roots/bud init ", `{project-dir}`)))));
+}, "npx @roots/bud init ", `{project-dir}`)));
 
 var _default = Bud;
 exports.default = _default;
-},{"./../src/components/App":"../src/components/App.js"}]},{},["index.js"], null)
+},{"./../src/components/Banner":"../src/components/Banner.js"}]},{},["index.js"], null)
 //# sourceMappingURL=/index.js.map
