@@ -469,17 +469,19 @@ exports.default = void 0;
  */
 const makeData = ({
   config,
-  data
+  data,
+  sprout
 }) => {
   const setData = ({
     key,
     value
   }) => {
-    data[`${key}`] = value;
+    data[key] = value;
   };
 
   return { ...(config ? config.project : []),
     ...data,
+    ...(sprout.data ? sprout.data : []),
     setData
   };
 };
@@ -695,9 +697,9 @@ const compile = async ({
 >>>>>>> add bud.log (pino)
   logger.info({
     emitter: 'compile',
-    task,
     template: task.src,
-    dest
+    dest,
+    task
   });
 <<<<<<< HEAD
 =======
@@ -705,7 +707,7 @@ const compile = async ({
 =======
 >>>>>>> add bud.log (pino)
   observer.next(`Writing file ${dest}`);
-  await (0, _fsExtra.outputFile)(...[(0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template]);
+  await (0, _fsExtra.outputFile)((0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template);
   observer.complete();
 };
 

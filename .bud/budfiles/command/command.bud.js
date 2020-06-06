@@ -21,7 +21,7 @@ module.exports = {
     {
       task: 'compile',
       src: 'Command.js.hbs',
-      dest: 'src/components/{{commandName}}.js',
+      dest: 'commands/{{commandName}}.js',
     },
   ],
 }

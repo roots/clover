@@ -1,6 +1,6 @@
 {
   "project": {
-    "name": "bud",
+    "name": "@roots/bud",
     "namespace": "@roots",
     "description": "dogfood",
     "website": "https://roots.io/bud",

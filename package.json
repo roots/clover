@@ -1,6 +1,6 @@
 {
   "name": "@roots/bud",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "repository": {
     "type": "git",
     "url": "git://github.com/roots/bud.git"
@@ -14,15 +14,12 @@
   "scripts": {
     "build": "pastel build",
     "dev": "pastel dev",
-    "docs": "node ./dev/repo/readme.js",
+    "docs": "bud generate readme",
     "lint": "npm-run-all lint:*",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write ."
   },
-  "files": [
-    "build",
-    "src"
-  ],
+  "files": ["build", "src"],
   "dependencies": {
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
