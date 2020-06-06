@@ -38,7 +38,7 @@
 			"description": "Generate code from a budfile",
 			"args": [
 				{
-					"key": "budName",
+					"key": "generator",
 					"type": "string",
 					"description": "",
 					"isRequired": false,

@@ -1516,7 +1516,7 @@ App.propDefaults = {
 };
 var _default = App;
 exports.default = _default;
-},{"./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./Error":"../src/components/Error.js","./hooks/useConfig":"../src/components/hooks/useConfig.js","./hooks/useData":"../src/components/hooks/useData.js","./hooks/useSprout":"../src/components/hooks/useSprout.js","./hooks/useSubscription":"../src/components/hooks/useSubscription.js"}],"generate/index.js":[function(require,module,exports) {
+},{"./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./Error":"../src/components/Error.js","./hooks/useConfig":"../src/components/hooks/useConfig.js","./hooks/useData":"../src/components/hooks/useData.js","./hooks/useSprout":"../src/components/hooks/useSprout.js","./hooks/useSubscription":"../src/components/hooks/useSubscription.js"}],"../src/components/Loading.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1524,7 +1524,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
@@ -1532,15 +1532,38 @@ var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _globby = _interopRequireDefault(require("globby"));
-
-var _App = _interopRequireDefault(require("../../src/components/App"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+/**
+ * Loading
+ *
+ * @prop {string} message
+ */
+const Loading = ({
+  message
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null), " ", message);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+Loading.propTypes = {
+  message: _propTypes.default.string
+};
+Loading.defaultProps = {
+  message: 'Loading'
+};
+var _default = Loading;
+exports.default = _default;
+},{}],"../src/components/hooks/useSearch.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Search helpers
@@ -1551,75 +1574,99 @@ const search = {
   plugin: name => `${cwd}/node_modules/**/bud-plugin-*/${name}.bud.js`,
   project: name => `${cwd}/.bud/budfiles/**/${name}.bud.js`
 };
-/** Command: bud generate */
-/// Generate code from a budfile
+/**
+ * Use Search
+ *
+ * @param {string} generatorName
+ */
 
-const Generate = props => {
-  const [budName] = (0, _react.useState)(props.budName);
-  /**
-   * Budfile state.
-   */
-
+const useSearch = generatorName => {
   const [budfile, setBudfile] = (0, _react.useState)(false);
   const [checked, setChecked] = (0, _react.useState)({
     project: false,
     modules: false,
-    roots: false
+    core: false
   });
-  /**
-   * Local budfiles.
-   */
+  /** Project generators */
 
   (0, _react.useEffect)(() => {
-    budName && !checked.project && (async () => {
-      const buds = await (0, _globby.default)([search.project(budName)]);
+    generatorName && !checked.project && (async () => {
+      const buds = await (0, _globby.default)([search.project(generatorName)]);
       buds && buds.length > 0 && setBudfile(buds[0]);
       setChecked({ ...checked,
         project: true
       });
     })();
-  }, [budName, checked.project]);
-  /**
-   * Module budfiles.
-   */
+  }, [generatorName, checked.project]);
+  /** Plugin generators */
 
   (0, _react.useEffect)(() => {
     !budfile && checked.project && (async () => {
-      const buds = await (0, _globby.default)([search.plugin(budName)]);
+      const buds = await (0, _globby.default)([search.plugin(generatorName)]);
       buds && buds.length > 0 && setBudfile(buds[0]);
       setChecked({ ...checked,
-        modules: true
+        plugins: true
       });
     })();
   }, [budfile, checked.project]);
-  /**
-   * Core budfiles.
-   */
+  /** Core generators */
 
   (0, _react.useEffect)(() => {
-    !budfile && checked.modules && (async () => {
-      const buds = await (0, _globby.default)([search.core(budName)]);
+    !budfile && checked.plugins && (async () => {
+      const buds = await (0, _globby.default)([search.core(generatorName)]);
       buds && buds.length > 0 && setBudfile(buds[0]);
       setChecked({ ...checked,
-        roots: true
+        core: true
       });
     })();
-  }, [budfile, checked.modules]);
-  /**
-   * Render.
-   */
+  }, [budfile, checked.plugins]);
+  return {
+    budfile,
+    checked
+  };
+};
 
+var _default = useSearch;
+exports.default = _default;
+},{}],"generate/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _App = _interopRequireDefault(require("../../src/components/App"));
+
+var _Loading = _interopRequireDefault(require("../../src/components/Loading"));
+
+var _useSearch = _interopRequireDefault(require("../../src/components/hooks/useSearch"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/** Command: bud generate */
+/// Generate code from a budfile
+const Generate = ({
+  generator
+}) => {
+  const {
+    budfile
+  } = (0, _useSearch.default)(generator);
   return budfile ? /*#__PURE__*/_react.default.createElement(_App.default, {
     budfile: budfile
-  }) : /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null), " Loading");
+  }) : /*#__PURE__*/_react.default.createElement(_Loading.default, null);
 };
 
 Generate.propTypes = {
-  // Generator name ([name].bud.js)
-  budName: _propTypes.default.string
+  // Generator name
+  generator: _propTypes.default.string
 };
-Generate.positionalArgs = ['budName'];
+Generate.positionalArgs = ['generator'];
 var _default = Generate;
 exports.default = _default;
-},{"../../src/components/App":"../src/components/App.js"}]},{},["generate/index.js"], null)
+},{"../../src/components/App":"../src/components/App.js","../../src/components/Loading":"../src/components/Loading.js","../../src/components/hooks/useSearch":"../src/components/hooks/useSearch.js"}]},{},["generate/index.js"], null)
 //# sourceMappingURL=/generate/index.js.map
