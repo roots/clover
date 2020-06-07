@@ -187,7 +187,7 @@ const Tasks = ({
   if (complete) {
     return /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
       green: true
-    }, "\uD83C\uDFC1  generator complete."));
+    }, "\uD83C\uDFC1 generator complete."));
   }
 
   if (!status) {
@@ -196,35 +196,10 @@ const Tasks = ({
 
   return !complete ? /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
     green: true
-  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), " ", status.toString())) : [];
+  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', status.toString())) : [];
 };
 
 var _default = Tasks;
-exports.default = _default;
-},{}],"../src/components/Error.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Error
- */
-const Error = ({
-  message
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  red: true
-}, "\uD83D\uDCA5 ", JSON.stringify(message)));
-
-var _default = Error;
 exports.default = _default;
 },{}],"../src/components/hooks/useConfig.js":[function(require,module,exports) {
 "use strict";
@@ -678,25 +653,6 @@ const compile = async ({
   const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> add bud.log (pino)
-  logger.info({
-    emitter: 'compile',
-    template: task.src,
-    dest,
-    task
-  });
-<<<<<<< HEAD
-=======
->>>>>>> [wip] fix css enqueues. update plugin generator
-=======
->>>>>>> add bud.log (pino)
-  observer.next(`Writing file ${dest}`);
-=======
->>>>>>> 1.0.0-rc.3 final set
   await (0, _fsExtra.outputFile)((0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template);
   observer.complete();
 };
@@ -732,19 +688,10 @@ const copy = async ({
 }) => {
   const src = (0, _path.join)(config.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> add bud.log (pino)
   logger.info({
     emitter: 'copy',
     task
   });
-<<<<<<< HEAD
-=======
->>>>>>> [wip] fix css enqueues. update plugin generator
-=======
->>>>>>> add bud.log (pino)
   observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
   observer.complete();
@@ -786,20 +733,11 @@ const ensureDir = async ({
   compiler
 }) => {
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> add bud.log (pino)
   logger.info({
     emitter: 'ensureDir',
     task,
     path
   });
-<<<<<<< HEAD
-=======
->>>>>>> [wip] fix css enqueues. update plugin generator
-=======
->>>>>>> add bud.log (pino)
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -828,56 +766,15 @@ var _operators = require("rxjs/operators");
 const ensureDirs = ({
   task,
   observer,
-<<<<<<< HEAD
-<<<<<<< HEAD
   logger,
-=======
->>>>>>> [wip] fix css enqueues. update plugin generator
-=======
-  logger,
->>>>>>> add bud.log (pino)
   actions,
   config,
   data,
   compiler
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> add bud.log (pino)
 }) => {
   logger.info({
     emitter: 'ensureDirs',
     task
-<<<<<<< HEAD
-  });
-  (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
-    actions.ensureDir({
-      task: {
-        path
-      },
-      config,
-      data,
-      compiler,
-      observer,
-      logger
-    });
-  }))).subscribe({
-    next: next => observer.next(next),
-    error: error => observer.error(error),
-    complete: () => observer.complete()
-=======
-}) => (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
-  actions.ensureDir({
-    task: {
-      path
-    },
-    config,
-    data,
-    compiler,
-    observer
->>>>>>> [wip] fix css enqueues. update plugin generator
-=======
->>>>>>> add bud.log (pino)
   });
   (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
     actions.ensureDir({
@@ -1452,7 +1349,7 @@ const useSubscription = ({
   } = (0, _ink.useApp)();
   const [subscription, setSubscription] = (0, _react.useState)(false);
   const [status, setStatus] = (0, _react.useState)(null);
-  const [error, setError] = (0, _react.useState)(null);
+  const [error] = (0, _react.useState)(null);
   const [complete, setComplete] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
     if (sprout && data && !subscription) {
@@ -1500,8 +1397,6 @@ var _Banner = _interopRequireDefault(require("./Banner"));
 
 var _Tasks = _interopRequireDefault(require("./Tasks"));
 
-var _Error = _interopRequireDefault(require("./Error"));
-
 var _useConfig = _interopRequireDefault(require("./hooks/useConfig"));
 
 var _useData = _interopRequireDefault(require("./hooks/useData"));
@@ -1539,7 +1434,6 @@ const App = ({
   } = (0, _useData.default)(sprout);
   const {
     status,
-    error,
     complete
   } = (0, _useSubscription.default)({
     config,
@@ -1577,7 +1471,7 @@ App.propDefaults = {
 };
 var _default = App;
 exports.default = _default;
-},{"./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./Error":"../src/components/Error.js","./hooks/useConfig":"../src/components/hooks/useConfig.js","./hooks/useData":"../src/components/hooks/useData.js","./hooks/useSprout":"../src/components/hooks/useSprout.js","./hooks/useSubscription":"../src/components/hooks/useSubscription.js"}],"init.js":[function(require,module,exports) {
+},{"./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js","./hooks/useConfig":"../src/components/hooks/useConfig.js","./hooks/useData":"../src/components/hooks/useData.js","./hooks/useSprout":"../src/components/hooks/useSprout.js","./hooks/useSubscription":"../src/components/hooks/useSubscription.js"}],"init.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
