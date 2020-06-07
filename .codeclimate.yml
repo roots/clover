@@ -1,3 +1,6 @@
 engines:
   markdownlint:
     enabled: false
+exclude_patterns:
+  - "build/**/*"
+  - "src/budfiles/**/*"
