@@ -14,7 +14,7 @@ const Tasks = ({status, complete}) => {
   if (complete) {
     return (
       <Text>
-        <Color green>🏁  generator complete.</Color>
+        <Color green>🏁 generator complete.</Color>
       </Text>
     )
   }
@@ -27,11 +27,16 @@ const Tasks = ({status, complete}) => {
     <Box>
       {status && (
         <Text>
-          <Color green><Spinner /></Color> {status.toString()}
+          <Color green>
+            <Spinner />
+          </Color>{' '}
+          {status.toString()}
         </Text>
       )}
     </Box>
-  ) : []
+  ) : (
+    []
+  )
 }
 
 export default Tasks

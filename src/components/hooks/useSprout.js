@@ -13,9 +13,7 @@ const useSprout = budfile => {
     templateDir: makeTemplateDir(budfile),
   }
 
-  sprout.tasks = sprout.tasks.map(
-    (task, id) => ({...task, id})
-  )
+  sprout.tasks = sprout.tasks.map((task, id) => ({...task, id}))
 
   return {sprout}
 }

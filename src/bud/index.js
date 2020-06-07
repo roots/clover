@@ -58,9 +58,15 @@ const bud = props => {
       )
 
       .subscribe({
-        next: next => { observer.next(next) },
-        error: error => { observer.error(error) },
-        complete: () => { observer.complete() },
+        next: next => {
+          observer.next(next)
+        },
+        error: error => {
+          observer.error(error)
+        },
+        complete: () => {
+          observer.complete()
+        },
       })
     })
 }

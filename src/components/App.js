@@ -31,8 +31,7 @@ const App = ({budfile, output, logging}) => {
 
   const {stdout} = useStdout()
   useLayoutEffect(() => {
-    sprout.prompts && data && !complete
-    && stdout.write('\x1B[2J\x1B[0f')
+    sprout.prompts && data && !complete && stdout.write('\x1B[2J\x1B[0f')
   }, [sprout, data])
 
   return (
@@ -43,11 +42,7 @@ const App = ({budfile, output, logging}) => {
       paddingTop={1}
       paddingBottom={1}>
       <Banner label={sprout.description || 'Bud: scaffolding utility'} />
-      <Tasks
-        status={status}
-        sprout={sprout}
-        complete={complete}
-      />
+      <Tasks status={status} sprout={sprout} complete={complete} />
     </Box>
   )
 }
