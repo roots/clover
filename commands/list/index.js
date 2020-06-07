@@ -1,7 +1,9 @@
+import {basename} from 'path'
 import React, {useState, useEffect} from 'react'
 import {Box} from 'ink'
 import globby from 'globby'
 import Divider from 'ink-divider'
+import Banner from './../../src/components/Banner'
 
 /**
  * Budfile glob paths
@@ -30,7 +32,7 @@ const List = () => {
                 const src = require(bud)
                 return {
                   command: `yarn generate ${src.name}`,
-                  source: 'project',
+                  source: basename(cwd),
                   name: src.name,
                   description: src.description,
                 }
@@ -100,7 +102,8 @@ const List = () => {
    * Render
    */
   return (
-    <Box flexDirection="column" marginTop={1} marginBottom={1}>
+    <Box width="103" flexDirection="column" justifyContent="flex-start" padding={1}>
+      <Banner label={'List budfiles'} />
       <Box flexDirection="row" flexGrow={1} justifyContent="flex-start">
         <Box width={40}>Command</Box>
         <Box width={40} marginLeft={1}>

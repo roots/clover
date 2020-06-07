@@ -164,7 +164,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
@@ -172,43 +172,31 @@ var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
 /**
  * Tasks
  *
+ * @prop {object} data
  * @prop {object} status
+ * @prop {object} sprout
  * @prop {bool}   complete
  */
 const Tasks = ({
-  data,
   status,
   complete
 }) => {
-  const {
-    stdout
-  } = (0, _ink.useStdout)();
-  (0, _react.useEffect)(() => {
-    data && stdout.write('\x1B[2J\x1B[0f');
-  }, [data]);
-
   if (complete) {
-    return /*#__PURE__*/_react.default.createElement(_ink.Color, {
-      green: true
-    }, "\u26A1\uFE0F All set.");
-  }
-
-  if (status) {
     return /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
       green: true
-    }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, {
-      type: "dots"
-    })), ` ${status}`);
+    }, "\uD83C\uDFC1  generator complete."));
   }
 
-  return [];
+  if (!status) {
+    return [];
+  }
+
+  return !complete ? /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+    green: true
+  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), " ", status.toString())) : [];
 };
 
 var _default = Tasks;
@@ -312,11 +300,17 @@ const makeTemplateDir = budfile => (0, _path.join)((0, _path.dirname)(budfile), 
  */
 
 
-const useSprout = budfile => ({
-  sprout: { ...makeSprout(budfile),
+const useSprout = budfile => {
+  const sprout = { ...makeSprout(budfile),
     templateDir: makeTemplateDir(budfile)
-  }
-});
+  };
+  sprout.tasks = sprout.tasks.map((task, id) => ({ ...task,
+    id
+  }));
+  return {
+    sprout
+  };
+};
 
 var _default = useSprout;
 exports.default = _default;
@@ -620,37 +614,30 @@ exports.default = void 0;
  */
 const addDependencies = async ({
   task,
-  logger,
   observer,
   util
 }) => {
-  let installation;
-  observer.next(`Installing packages`);
+  const cmdStr = () => {
+    switch (task.repo) {
+      case 'npm':
+        return `yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`;
 
-  if (task.repo !== 'npm' && task.repo !== 'packagist') {
-    observer.error(`Incorrect package repo specified.`);
-  }
+      case 'packagist':
+        return `composer require ${task.pkgs.join(' ')} ${task.dev ? `--development` : ``}`;
 
-  if (task.repo == 'npm') {
-    logger.info({
-      emitter: 'addDependencies',
-      task
-    });
-    installation = util.command(`yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`);
-  }
+      default:
+        observer.error(`Incorrect package repo specified.`);
+    }
+  };
 
-  if (task.repo == 'packagist') {
-    logger.info({
-      emitter: 'addDependencies',
-      task
-    });
-    installation = util.command(`composer require ${task.pkgs.join(' ')} ${task.dev ? `--development` : ``}`);
-  }
-
-  installation.stdout.on('data', status => {
-    observer.next(status);
-  });
-  installation.then(() => observer.complete());
+  observer.next(`Installating packages from ${task.repo}`);
+  const {
+    command,
+    exitCode,
+    stderr
+  } = await util.command(cmdStr());
+  command && observer.next(command);
+  exitCode == 0 ? observer.complete() : observer.error(stderr);
 };
 
 var _default = addDependencies;
@@ -682,15 +669,16 @@ var _fsExtra = require("fs-extra");
 const compile = async ({
   task,
   observer,
-  logger,
   data,
   config,
   prettier,
   compiler
 }) => {
+  observer.next(`Write file: ${task.src}`);
   const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -707,6 +695,8 @@ const compile = async ({
 =======
 >>>>>>> add bud.log (pino)
   observer.next(`Writing file ${dest}`);
+=======
+>>>>>>> 1.0.0-rc.3 final set
   await (0, _fsExtra.outputFile)((0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template);
   observer.complete();
 };
@@ -1005,25 +995,27 @@ const install = async ({
   observer,
   util
 }) => {
-  let installation;
-  observer.next(`Installing packages from ${task.repo}...`);
+  const cmdStr = () => {
+    switch (task.repo) {
+      case 'npm':
+        return 'yarn';
 
-  if (task.repo !== 'npm' && task.repo !== 'packagist') {
-    observer.error(`Incorrect package repo specified.`);
-  }
+      case 'packagist':
+        return 'composer install';
 
-  if (task.repo == 'npm') {
-    installation = util.command(`yarn`);
-    installation.stdout.on('data', status => {
-      observer.next(status);
-    });
-    installation.then(() => observer.complete());
-  }
+      default:
+        observer.error(`Incorrect package repo specified.`);
+    }
+  };
 
-  if (task.repo == 'packagist') {
-    installation = util.command(`composer install`);
-    installation.then(() => observer.complete());
-  }
+  observer.next(`Installating packages from ${task.repo}`);
+  const {
+    command,
+    exitCode,
+    stderr
+  } = await util.command(cmdStr());
+  command && observer.next(command);
+  exitCode == 0 ? observer.complete() : observer.error(stderr);
 };
 
 var _default = install;
@@ -1416,17 +1408,9 @@ const bud = props => {
       });
     }))).subscribe({
       next: next => {
-        next && status.info({
-          emitter: 'bud',
-          emitted: next
-        });
         observer.next(next);
       },
       error: error => {
-        error && status.error({
-          emitter: 'bud',
-          emitted: error
-        });
         observer.error(error);
       },
       complete: () => {
@@ -1479,7 +1463,6 @@ const useSubscription = ({
         projectDir
       }).subscribe({
         next: next => setStatus(next),
-        error: error => setError(error),
         complete: () => setComplete(true)
       }));
     }
@@ -1507,7 +1490,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _ink = require("ink");
 
@@ -1528,6 +1511,10 @@ var _useSprout = _interopRequireDefault(require("./hooks/useSprout"));
 var _useSubscription = _interopRequireDefault(require("./hooks/useSubscription"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /**
  * Bud application
@@ -1561,18 +1548,24 @@ const App = ({
     logging,
     projectDir: output ? output : process.cwd()
   });
+  const {
+    stdout
+  } = (0, _ink.useStdout)();
+  (0, _react.useLayoutEffect)(() => {
+    sprout.prompts && data && !complete && stdout.write('\x1B[2J\x1B[0f');
+  }, [sprout, data]);
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    width: "103",
     flexDirection: "column",
     justifyContent: "flex-start",
-    padding: 1
+    paddingTop: 1,
+    paddingBottom: 1
   }, /*#__PURE__*/_react.default.createElement(_Banner.default, {
-    label: 'Bud'
+    label: sprout.description || 'Bud: scaffolding utility'
   }), /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
-    data: data,
+    sprout: sprout,
     complete: complete
-  }), error && /*#__PURE__*/_react.default.createElement(_Error.default, {
-    message: error
   }));
 };
 

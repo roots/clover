@@ -10,7 +10,7 @@ const useSubscription = ({config, data, projectDir, sprout}) => {
 
   const [subscription, setSubscription] = useState(false)
   const [status, setStatus] = useState(null)
-  const [error, setError] = useState(null)
+  const [error] = useState(null)
   const [complete, setComplete] = useState(false)
 
   useEffect(() => {
@@ -18,7 +18,6 @@ const useSubscription = ({config, data, projectDir, sprout}) => {
       setSubscription(
         bud({config, data, sprout, projectDir}).subscribe({
           next: next => setStatus(next),
-          error: error => setError(error),
           complete: () => setComplete(true),
         }),
       )

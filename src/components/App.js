@@ -1,10 +1,9 @@
-import React from 'react'
-import {Box} from 'ink'
+import React, {useLayoutEffect} from 'react'
+import {Box, useStdout} from 'ink'
 import PropTypes from 'prop-types'
 
 import Banner from './Banner'
 import Tasks from './Tasks'
-import Error from './Error'
 
 import useConfig from './hooks/useConfig'
 import useData from './hooks/useData'
@@ -22,8 +21,7 @@ const App = ({budfile, output, logging}) => {
   const {config} = useConfig(process.cwd())
   const {sprout} = useSprout(budfile)
   const {data} = useData(sprout)
-
-  const {status, error, complete} = useSubscription({
+  const {status, complete} = useSubscription({
     config,
     data,
     sprout,
@@ -31,11 +29,25 @@ const App = ({budfile, output, logging}) => {
     projectDir: output ? output : process.cwd(),
   })
 
+  const {stdout} = useStdout()
+  useLayoutEffect(() => {
+    sprout.prompts && data && !complete
+    && stdout.write('\x1B[2J\x1B[0f')
+  }, [sprout, data])
+
   return (
-    <Box flexDirection="column" justifyContent="flex-start" padding={1}>
-      <Banner label={'Bud'} />
-      <Tasks status={status} data={data} complete={complete} />
-      {error && <Error message={error} />}
+    <Box
+      width="103"
+      flexDirection="column"
+      justifyContent="flex-start"
+      paddingTop={1}
+      paddingBottom={1}>
+      <Banner label={sprout.description || 'Bud: scaffolding utility'} />
+      <Tasks
+        status={status}
+        sprout={sprout}
+        complete={complete}
+      />
     </Box>
   )
 }

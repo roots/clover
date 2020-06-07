@@ -8,7 +8,9 @@ const options = {
 }
 
 const destination = projectDir =>
-  existsSync(`${projectDir}/.bud/bud.log`) ? pino.destination(`${projectDir}/.bud/bud.log`) : null
+  existsSync(`${projectDir}/.bud/bud.log`)
+    ? pino.destination(`${projectDir}/.bud/bud.log`)
+    : null
 
 /**
  * Make logger

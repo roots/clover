@@ -8,26 +8,23 @@
  * @return {Observable}
  */
 const install = async ({task, observer, util}) => {
-  let installation
-
-  observer.next(`Installing packages from ${task.repo}...`)
-
-  if (task.repo !== 'npm' && task.repo !== 'packagist') {
-    observer.error(`Incorrect package repo specified.`)
+  const cmdStr = () => {
+    switch (task.repo) {
+      case 'npm':
+        return 'yarn'
+      case 'packagist':
+        return 'composer install'
+      default:
+        observer.error(`Incorrect package repo specified.`)
+    }
   }
 
-  if (task.repo == 'npm') {
-    installation = util.command(`yarn`)
-    installation.stdout.on('data', status => {
-      observer.next(status)
-    })
-    installation.then(() => observer.complete())
-  }
-
-  if (task.repo == 'packagist') {
-    installation = util.command(`composer install`)
-    installation.then(() => observer.complete())
-  }
+  observer.next(`Installating packages from ${task.repo}`)
+  const {command, exitCode, stderr} = await util.command(cmdStr())
+  command && observer.next(command)
+  exitCode == 0
+    ? observer.complete()
+    : observer.error(stderr)
 }
 
 export default install

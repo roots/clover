@@ -1607,6 +1607,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /** Command: bud */
 /// Bud information
 const Bud = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  width: "103",
   flexDirection: "column",
   justifyContent: "flex-start",
   padding: 1

@@ -1,35 +1,37 @@
-import React, {useEffect} from 'react'
-import {Color, Text, useStdout} from 'ink'
+import React from 'react'
+import {Box, Color, Text} from 'ink'
 import Spinner from 'ink-spinner'
 
 /**
  * Tasks
  *
+ * @prop {object} data
  * @prop {object} status
+ * @prop {object} sprout
  * @prop {bool}   complete
  */
-const Tasks = ({data, status, complete}) => {
-  const {stdout} = useStdout()
-  useEffect(() => {
-    data && stdout.write('\x1B[2J\x1B[0f')
-  }, [data])
-
+const Tasks = ({status, complete}) => {
   if (complete) {
-    return <Color green>⚡️ All set.</Color>
-  }
-
-  if (status) {
     return (
       <Text>
-        <Color green>
-          <Spinner type="dots" />
-        </Color>
-        {` ${status}`}
+        <Color green>🏁  generator complete.</Color>
       </Text>
     )
   }
 
-  return []
+  if (!status) {
+    return []
+  }
+
+  return !complete ? (
+    <Box>
+      {status && (
+        <Text>
+          <Color green><Spinner /></Color> {status.toString()}
+        </Text>
+      )}
+    </Box>
+  ) : []
 }
 
 export default Tasks

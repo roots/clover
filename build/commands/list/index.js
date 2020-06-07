@@ -117,13 +117,54 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"list/index.js":[function(require,module,exports) {
+})({"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkLink = _interopRequireDefault(require("ink-link"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Banner component.
+ *
+ * @prop {string} label
+ */
+const Banner = ({
+  label
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  marginBottom: 1,
+  flexDirection: "row",
+  justifyContent: "space-between"
+}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, null, label), /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "row"
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, `🌱`), /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  bold: true
+}, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
+  url: "https://roots.io/bud"
+}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  green: true
+}, '  Bud')))));
+
+var _default = Banner;
+exports.default = _default;
+},{}],"list/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _path = require("path");
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -132,6 +173,8 @@ var _ink = require("ink");
 var _globby = _interopRequireDefault(require("globby"));
 
 var _inkDivider = _interopRequireDefault(require("ink-divider"));
+
+var _Banner = _interopRequireDefault(require("./../../src/components/Banner"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -162,7 +205,7 @@ const List = () => {
 
         return {
           command: `yarn generate ${src.name}`,
-          source: 'project',
+          source: (0, _path.basename)(cwd),
           name: src.name,
           description: src.description
         };
@@ -217,10 +260,13 @@ const List = () => {
    */
 
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    width: "103",
     flexDirection: "column",
-    marginTop: 1,
-    marginBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    justifyContent: "flex-start",
+    padding: 1
+  }, /*#__PURE__*/_react.default.createElement(_Banner.default, {
+    label: 'List budfiles'
+  }), /*#__PURE__*/_react.default.createElement(_ink.Box, {
     flexDirection: "row",
     flexGrow: 1,
     justifyContent: "flex-start"
@@ -253,5 +299,5 @@ const List = () => {
 
 var _default = List;
 exports.default = _default;
-},{}]},{},["list/index.js"], null)
+},{"./../../src/components/Banner":"../src/components/Banner.js"}]},{},["list/index.js"], null)
 //# sourceMappingURL=/list/index.js.map
