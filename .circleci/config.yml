@@ -19,7 +19,7 @@ orbs:
           - run: yarn install --frozen-lockfile
           - run: yarn lint
           - run: yarn build
-          - run: yarn docs
+          - run: node ./build/cli.js generate readme
           - run: node ./build/cli.js --default
           - save_cache:
               key: node-v1-{{ checksum "yarn.lock" }}
