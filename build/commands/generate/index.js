@@ -175,7 +175,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Tasks
  *
- * @prop {object} data
  * @prop {object} status
  * @prop {object} sprout
  * @prop {bool}   complete
@@ -653,6 +652,7 @@ const compile = async ({
   const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
+  observer.next(`Writing file ${dest}`);
   await (0, _fsExtra.outputFile)((0, _path.join)(config.projectDir, dest), task.parser ? prettier.format(template, task.parser) : template);
   observer.complete();
 };
@@ -683,15 +683,10 @@ var _fsExtra = require("fs-extra");
 const copy = async ({
   task,
   observer,
-  logger,
   config
 }) => {
   const src = (0, _path.join)(config.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
-  logger.info({
-    emitter: 'copy',
-    task
-  });
   observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
   observer.complete();
@@ -727,17 +722,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const ensureDir = async ({
   task,
   observer,
-  logger,
   config,
   data,
   compiler
 }) => {
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
-  logger.info({
-    emitter: 'ensureDir',
-    task,
-    path
-  });
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();

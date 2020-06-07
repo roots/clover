@@ -10,13 +10,11 @@ import {copy as fsCopy} from 'fs-extra'
  *
  * @return {void}
  */
-const copy = async ({task, observer, logger, config}) => {
+const copy = async ({task, observer, config}) => {
   const src = join(config.templateDir, task.src)
   const dest = join(config.projectDir, task.dest)
 
-  logger.info({emitter: 'copy', task})
   observer.next(`Copying file`)
-
   await fsCopy(src, dest)
 
   observer.complete()

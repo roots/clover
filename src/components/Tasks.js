@@ -5,7 +5,6 @@ import Spinner from 'ink-spinner'
 /**
  * Tasks
  *
- * @prop {object} data
  * @prop {object} status
  * @prop {object} sprout
  * @prop {bool}   complete
