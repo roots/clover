@@ -10,17 +10,8 @@ import {join} from 'path'
  * @prop   {object}   data
  * @prop   {Observer} observer
  */
-const touch = async ({
-  task,
-  config,
-  compiler,
-  data,
-  observer,
-}) => {
-  const path = join(
-    config.projectDir,
-    compiler.make(task.path)(data),
-  )
+const touch = async ({task, config, compiler, data, observer}) => {
+  const path = join(config.projectDir, compiler.make(task.path)(data))
 
   try {
     await ensureFile(path).then(() => {
