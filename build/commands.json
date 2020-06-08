@@ -8,6 +8,29 @@
 			"subCommands": []
 		},
 		{
+			"path": "generate/index.js",
+			"name": "generate",
+			"description": "Generate code from a budfile",
+			"args": [
+				{
+					"key": "generator",
+					"type": "string",
+					"description": "",
+					"isRequired": false,
+					"aliases": [],
+					"positional": true
+				}
+			],
+			"subCommands": []
+		},
+		{
+			"path": "list/index.js",
+			"name": "list",
+			"description": "List available budfiles",
+			"args": [],
+			"subCommands": []
+		},
+		{
 			"path": "init.js",
 			"name": "init",
 			"description": "Create a new project",
@@ -30,29 +53,6 @@
 					"positional": false
 				}
 			],
-			"subCommands": []
-		},
-		{
-			"path": "generate/index.js",
-			"name": "generate",
-			"description": "Generate code from a budfile",
-			"args": [
-				{
-					"key": "generator",
-					"type": "string",
-					"description": "",
-					"isRequired": false,
-					"aliases": [],
-					"positional": true
-				}
-			],
-			"subCommands": []
-		},
-		{
-			"path": "list/index.js",
-			"name": "list",
-			"description": "List available budfiles",
-			"args": [],
 			"subCommands": []
 		}
 	]
