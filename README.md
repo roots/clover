@@ -87,14 +87,12 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - handlebars
 - handlebars-helpers
 - ink
+- ink-divider
 - ink-link
 - ink-spinner
 - ink-table
 - ink-use-stdout-dimensions
-- node-fetch
 - pastel
-- pino
-- pino-pretty
 - prettier
 - prop-types
 - react
@@ -109,7 +107,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - eslint-plugin-react-hooks
 - globby
 - husky
-- ink-divider
 - markdownlint-cli
 - npm-run-all
 - tree-node-cli
