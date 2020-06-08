@@ -97,7 +97,9 @@ abstract class AbstractCollection extends Collection implements CollectionInterf
                  * Bounce early if we have a manifest or map or
                  * other unspecified artifact.
                  */
-                if ($extension == "map" || $extension == "json") { return; }
+                if ($extension == "map" || $extension == "json") {
+                    return;
+                }
 
                 /** Gather dependencies */
                 $dependencies = $this->collectFromJson(

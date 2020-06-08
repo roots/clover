@@ -4,7 +4,7 @@ const {projectPath} = require('./util')
  * Webpack resolves.
  */
 const resolve = ({
-  config,
+  aliases,
 }) => ({
   resolve:{
     alias: {
@@ -12,10 +12,17 @@ const resolve = ({
       '@components': projectPath('src/components'),
       '@extensions': projectPath('src/extensions'),
       '@hooks': projectPath('src/hooks'),
-      ...config,
+      ...aliases,
     },
-    extensions: ['.js', '.json', '.jsx', '.css'],
-    modules: [projectPath('node_modules')],
+    extensions: [
+      '.js',
+      '.json',
+      '.jsx',
+      '.css',
+    ],
+    modules: [
+      projectPath('node_modules'),
+    ],
   },
 })
 

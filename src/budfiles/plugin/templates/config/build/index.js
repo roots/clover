@@ -1,7 +1,5 @@
 /** Webpack modules */
-const devServer = require('./dev')
 const entry = require('./entry')
-const externals = require('./externals')
 const optimization = require('./optimization')
 const plugins = require('./plugins')
 const resolve = require('./resolve')
@@ -15,14 +13,12 @@ const {projectPath, isProduction} = require('./util')
  */
 const DEFAULT = {
   entry: {},
-  externals: {},
   rules: [],
   plugins: [],
-  alias: {},
+  aliases: {},
   optimization: {},
   dev: {
     host: 'localhost',
-    path: '/dist/',
     port: 3030,
   },
 }
@@ -31,19 +27,35 @@ const DEFAULT = {
  * Webpack config
  */
 const webpack = (config = DEFAULT) => ({
-  ...entry({config: config.entry}),
-  ...devServer({config: config.dev}),
-  ...plugins({dev: config.dev, plugins: config.plugins}),
-  ...resolve({config: config.alias}),
+  ...entry({entry: config.entry}),
+  ...resolve({aliases: config.aliases}),
   ...optimization({config: config.optimization}),
-  ...externals({config: config.externals}),
-  module: {...rules({config: config.rules})},
-  context: projectPath('src/'),
+  ...plugins({dev: config.dev,plugins: config.plugins}),
+  module: {
+    ...rules({config: config.rules}),
+  },
   output: {
     path: projectPath('dist/'),
     publicPath: `//${config.dev.host}:${config.dev.port}/dist/`,
     filename: '[name].[hash].js',
   },
+  devServer: {
+    headers: {
+			'Access-Control-Allow-Origin': '*',
+		},
+		disableHostCheck: true,
+		stats: {
+			all: false,
+			assets: true,
+			colors: true,
+			errors: true,
+			performance: true,
+			timings: true,
+			warnings: true,
+		},
+		port: 3030,
+  },
+  context: projectPath('src/'),
   mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? 'hidden-source-map' : 'cheap-module-source-map',
   watch: global.watch || false,

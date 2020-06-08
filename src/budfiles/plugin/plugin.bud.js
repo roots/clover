@@ -166,18 +166,8 @@ module.exports = {
     },
     {
       task: 'copy',
-      src: 'config/build/dev.js',
-      dest: 'config/build/dev.js',
-    },
-    {
-      task: 'copy',
       src: 'config/build/entry.js',
       dest: 'config/build/entry.js',
-    },
-    {
-      task: 'copy',
-      src: 'config/build/externals.js',
-      dest: 'config/build/externals.js',
     },
     {
       task: 'copy',

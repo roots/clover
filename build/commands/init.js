@@ -755,16 +755,11 @@ var _operators = require("rxjs/operators");
 const ensureDirs = ({
   task,
   observer,
-  logger,
   actions,
   config,
   data,
   compiler
 }) => {
-  logger.info({
-    emitter: 'ensureDirs',
-    task
-  });
   (0, _rxjs.from)(task.dirs).pipe((0, _operators.concatMap)(path => new _rxjs.Observable(observer => {
     actions.ensureDir({
       task: {
@@ -773,8 +768,7 @@ const ensureDirs = ({
       config,
       data,
       compiler,
-      observer,
-      logger
+      observer
     });
   }))).subscribe({
     next: next => observer.next(next),
@@ -802,14 +796,9 @@ exports.default = void 0;
  */
 const clone = async ({
   observer,
-  logger,
   task,
   util
 }) => {
-  logger.next({
-    emitter: 'clone',
-    task
-  });
   observer.next(`Cloning ${task.repo} to ${task.dest}`);
   const clone = util.command(`git clone git@github.com:${task.repo} ${task.dest}`);
   clone.stdout.on('data', () => observer.next(observer.next(`Cloning ${task.repo} to ${task.dest}}`)));
@@ -840,14 +829,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const git = async ({
   task,
   observer,
-  logger,
   ...props
 }) => {
-  logger.info({
-    emitter: 'git',
-    task
-  });
-
   if (task.action == 'clone') {
     (0, _clone.default)({
       task,
@@ -960,8 +943,10 @@ var _path = require("path");
  * Action: Touch
  *
  * @prop   {object}   task
+ * @prop   {object}   config
+ * @prop   {object}   compiler
+ * @prop   {object}   data
  * @prop   {Observer} observer
- * @prop   {object}   util
  */
 const touch = async ({
   task,
@@ -1156,62 +1141,7 @@ const prettier = {
 };
 var _default = prettier;
 exports.default = _default;
-},{"./inferParser":"../src/bud/prettier/inferParser.js","./format":"../src/bud/prettier/format.js"}],"../src/bud/status/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-const pino = require('pino');
-
-const prettifier = require('pino-pretty');
-
-const {
-  existsSync
-} = require('fs-extra');
-
-const options = {
-  prettyPrint: {
-    levelFirst: true
-  },
-  prettifier
-};
-
-const destination = projectDir => existsSync(`${projectDir}/.bud/bud.log`) ? pino.destination(`${projectDir}/.bud/bud.log`) : null;
-/**
- * Make logger
- *
- * @return {<Pino>()=>logger}
- */
-
-
-const makeLogger = ({
-  projectDir
-}) => pino(options, destination(projectDir));
-/**
- * Make status
- */
-
-
-const makeStatus = ({
-  projectDir,
-  logging
-}) => {
-  const logger = makeLogger(projectDir);
-  return logging ? {
-    info: info => logger.info(info),
-    error: error => logger.error(error)
-  } : {
-    info: () => null,
-    error: () => null
-  };
-};
-
-var _default = makeStatus;
-exports.default = _default;
-},{}],"../src/bud/index.js":[function(require,module,exports) {
+},{"./inferParser":"../src/bud/prettier/inferParser.js","./format":"../src/bud/prettier/format.js"}],"../src/bud/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1237,8 +1167,6 @@ var _actions = _interopRequireDefault(require("./actions"));
 
 var _prettier = _interopRequireDefault(require("./prettier"));
 
-var _status = _interopRequireDefault(require("./status"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -1257,8 +1185,6 @@ const bud = props => {
   const {
     sprout
   } = props;
-  const status = (0, _status.default)({ ...props
-  });
   const config = (0, _config.default)({ ...props
   });
   const data = (0, _data.default)({ ...props
@@ -1283,9 +1209,7 @@ const bud = props => {
       compiler,
       prettier: _prettier.default,
       util,
-      sprout,
-      status,
-      logger: status
+      sprout
     };
     (0, _rxjs.from)(_pipes.default).pipe((0, _operators.concatMap)(job => new _rxjs.Observable(async observer => {
       await job({
@@ -1308,7 +1232,7 @@ const bud = props => {
 
 var _default = bud;
 exports.default = _default;
-},{"./compiler":"../src/bud/compiler/index.js","./config":"../src/bud/config/index.js","./data":"../src/bud/data/index.js","./util":"../src/bud/util/index.js","./pipes":"../src/bud/pipes/index.js","./actions":"../src/bud/actions/index.js","./prettier":"../src/bud/prettier/index.js","./status":"../src/bud/status/index.js"}],"../src/components/hooks/useSubscription.js":[function(require,module,exports) {
+},{"./compiler":"../src/bud/compiler/index.js","./config":"../src/bud/config/index.js","./data":"../src/bud/data/index.js","./util":"../src/bud/util/index.js","./pipes":"../src/bud/pipes/index.js","./actions":"../src/bud/actions/index.js","./prettier":"../src/bud/prettier/index.js"}],"../src/components/hooks/useSubscription.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

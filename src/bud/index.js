@@ -7,7 +7,6 @@ import makeUtil from './util'
 import pipes from './pipes'
 import actions from './actions'
 import prettier from './prettier'
-import makeLogger from './status'
 
 /**
  * 🌱 bud starter
@@ -23,7 +22,6 @@ import makeLogger from './status'
  */
 const bud = props => {
   const {sprout} = props
-  const status = makeLogger({...props})
   const config = makeConfig({...props})
   const data = makeData({...props})
   const util = makeUtil({config})
@@ -43,8 +41,6 @@ const bud = props => {
       prettier,
       util,
       sprout,
-      status,
-      logger: status,
     }
 
     from(pipes)

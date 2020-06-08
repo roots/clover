@@ -8,12 +8,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const {HotModuleReplacementPlugin, NoEmitOnErrorsPlugin} = require('webpack')
 const WebpackBar = require('webpackbar')
 const WriteFilePlugin = require('write-file-webpack-plugin')
-const {isHMR} = require('./util')
+const {isProduction} = require('./util')
 
 /**
  * Webpack plugins.
  */
-const plugins = ({dev, plugins}) => ({
+const plugins = ({dev}) => ({
   plugins: [
     new FixStyleOnlyEntriesPlugin(),
     new MiniCssExtractPlugin({
@@ -32,13 +32,11 @@ const plugins = ({dev, plugins}) => ({
     }),
     new WebpackBar(),
     new DashboardPlugin(),
-    ...(isHMR ? [
-          new HotModuleReplacementPlugin(),
-          new NoEmitOnErrorsPlugin(),
-          new WriteFilePlugin(),
-        ]:[]
-    ),
-    ...plugins,
+    ...(!isProduction ? [
+      new HotModuleReplacementPlugin(),
+      new NoEmitOnErrorsPlugin(),
+      new WriteFilePlugin(),
+    ]:[]),
   ],
 })
 

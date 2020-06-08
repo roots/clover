@@ -54,7 +54,7 @@ abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, Co
      */
     public function get($id)
     {
-        return $this->{$property};
+        return $this->{$id};
     }
 
     /**
@@ -76,6 +76,6 @@ abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, Co
      */
      public function has($id): bool
      {
-         return property_exists($this, $property);
+         return property_exists($this, $id);
      }
 }
