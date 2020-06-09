@@ -187,6 +187,11 @@ module.exports = {
       dest: 'app/Block/Partial/BladeRenderable.php',
     },
     {
+      task: 'compile',
+      src: 'app/Block/Partial/AcornRenderable.php.hbs',
+      dest: 'app/Block/Partial/AcornRenderable.php',
+    },
+    {
       task: 'copy',
       src: 'config/build/index.js',
       dest: 'config/build/index.js',
