@@ -6,11 +6,19 @@ use \WP_Block_Type;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
+use {{pascalcase namespace}}\Block\Contract\RenderableInterface;
+use {{pascalcase namespace}}\Block\Partial\BladeRenderable;
 
 /**
  * Block class.
  */
-abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, ContainerInterface {
+abstract class AbstractBlock extends WP_Block_Type implements
+    BlockInterface,
+    ContainerInterface,
+    RenderableInterface
+{
+    use BladeRenderable;
+
     /** @var string */
     public $name = null;
 
@@ -26,11 +34,8 @@ abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, Co
     /** @var string */
     public $editor_style = null;
 
-    /** @var array */
-    public $attributes = [];
-
-    /** @var string */
-    public $render_callback = null;
+    /** @var \WP_Block_Type\render_callback */
+    public $render_callback;
 
     /**
      * Constructor.
@@ -44,6 +49,8 @@ abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, Co
     ) {
         $this->bud = $bud;
         $this->name = $name;
+
+        $this->hasView() && $this->setView();
     }
 
     /**
@@ -58,14 +65,15 @@ abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, Co
     }
 
     /**
-     * Set a block asset
+     * Set a block property
      *
-     * @param  string
+     * @param  string id
+     * @param  mixed  value
      * @return void
      */
-    public function set(string $property, string $name): void
+    public function set($id, $value): void
     {
-        $this->{$property} = $name;
+        $this->{$id} = $value;
     }
 
     /**
@@ -78,4 +86,14 @@ abstract class AbstractBlock extends WP_Block_Type implements BlockInterface, Co
      {
          return property_exists($this, $id);
      }
+
+    /**
+     * Register blocktype.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        register_block_type($this);
+    }
 }

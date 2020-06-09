@@ -2,7 +2,6 @@
 
 namespace {{pascalcase namespace}}\Plugin;
 
-use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use {{pascalcase namespace}}\Block\Contract\BlockInterface;
 use {{pascalcase namespace}}\Asset\Contract\CollectionInterface;
@@ -48,9 +47,11 @@ class Registration
         });
 
         /** Register blocks */
-        $this->assets->ofType('block')->map(function ($assets) {
-            $this->registerBlock($assets);
-        });
+        $this->assets->ofType('block')->map(
+            function ($assets) {
+                $this->registerAssetsWithBlock($assets);
+            }
+        );
     }
 
     /**
@@ -74,21 +75,23 @@ class Registration
      * @param  CollectionInterface assets
      * @return void
      */
-    public function registerBlock(CollectionInterface $assets): void
+    public function registerAssetsWithBlock(CollectionInterface $assets): void
     {
+        /** Get block name */
+        $name = $assets->pluck('block')->first();
+
         /** Make a new block object. */
         $block = $this->bud->make(
             BlockInterface::class,
-            ['name' => $assets->pluck('block')->first()]
+            ['name' => $name]
         );
 
-        /** Set assets. */
+        /** Set block assets. */
         $assets->each(function ($asset) use ($block) {
             $block->set($asset->get('hook'), $asset->get('name'));
         });
 
-        /** Register the object */
-        register_block_type($block)
-            && $assets->put('registered', true);
+        /** Register block. */
+        $block->register();
     }
 }

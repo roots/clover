@@ -14,7 +14,7 @@ module.exports = {
         'app/Asset',
         'app/Asset/Base',
         'app/Asset/Contract',
-        'app/Blocks',
+        'app/Block',
         'app/Block/Base',
         'app/Block/Contract',
         'app/Plugin',
@@ -23,7 +23,19 @@ module.exports = {
         'src',
         'src/blocks',
         'src/plugins',
+        'storage',
+        'storage/cache',
       ],
+    },
+    {
+      task: 'copy',
+      src: 'storage/.gitignore',
+      dest: 'storage/.gitignore',
+    },
+    {
+      task: 'copy',
+      src: 'storage/cache/.gitignore',
+      dest: 'storage/cache/.gitignore',
     },
     {
       task: 'compile',
@@ -160,9 +172,29 @@ module.exports = {
       dest: 'app/Block/Contract/BlockInterface.php',
     },
     {
+      task: 'compile',
+      src: 'app/Block/Contract/RenderableInterface.php.hbs',
+      dest: 'app/Block/Contract/RenderableInterface.php',
+    },
+    {
+      task: 'compile',
+      src: 'app/Block/Partial/Renderable.php.hbs',
+      dest: 'app/Block/Partial/Renderable.php',
+    },
+    {
+      task: 'compile',
+      src: 'app/Block/Partial/BladeRenderable.php.hbs',
+      dest: 'app/Block/Partial/BladeRenderable.php',
+    },
+    {
       task: 'copy',
       src: 'config/build/index.js',
       dest: 'config/build/index.js',
+    },
+    {
+      task: 'copy',
+      src: 'config/build/devServer.js',
+      dest: 'config/build/devServer.js',
     },
     {
       task: 'copy',
@@ -199,6 +231,7 @@ module.exports = {
       repo: 'packagist',
       dev: false,
       pkgs: [
+        'eftec/bladeone',
         'php-di/php-di',
         'tightenco/collect',
         'roots/support',

@@ -28,7 +28,7 @@ const plugins = ({dev}) => ({
     new ManifestPlugin({
       fileName: 'manifest.json',
 			writeToFileEmit: true,
-			publicPath: `//${dev.host}:${dev.port}/dist/`,
+			publicPath: isProduction ? `/dist/` : `//${dev.host}:${dev.port}/dist/`,
     }),
     new WebpackBar(),
     new DashboardPlugin(),

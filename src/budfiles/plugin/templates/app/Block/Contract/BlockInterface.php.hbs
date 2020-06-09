@@ -9,7 +9,7 @@ interface BlockInterface
 {
     public function get($id);
 
-    public function set(string $property, string $name): void;
+    public function set($id, $value): void;
 
     public function has($id): bool;
 }

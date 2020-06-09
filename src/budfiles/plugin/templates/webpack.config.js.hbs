@@ -3,26 +3,20 @@ const {webpack, defaults} = require('./config/build')
 /**
  * Webpack configuration
  *
- * You should not need to change this in order
- * to use this framework as designed.
+ * You should not need to change the webpack config
+ * in order to use this framework as designed.
  *
- * Default entrypoints as follows:
- *
- *    src
- *    ├── blocks
- *    │   └── {{block-name}}
- *    │       ├── editor.css
- *    │       ├── editor.js
- *    │       ├── public.css
- *    │       └── public.js
- *    ├── plugins
- *    │   └── {{plugin-name}}
- *    │       ├── plugin.js
- *    │       └── plugin.css
- *
- * Simply replicate this structure and assets
- * should be automatically reduced out of the
- * directory structure on next build.
+ *  src
+ *  ├── blocks
+ *  │   └── [blockname]
+ *  │       ├── editor.css
+ *  │       ├── editor.js
+ *  │       ├── public.css
+ *  │       └── public.js
+ *  └── plugins
+ *      └── [pluginname]
+ *          ├── plugin.js
+ *          └── plugin.css
  */
 
 module.exports = webpack(defaults)
