@@ -6,25 +6,25 @@ const {globber} = require('./util')
 const devServer = ({devServer}) => ({
   devServer: {
     headers: {
-			'Access-Control-Allow-Origin': '*',
-			...devServer.headers,
-		},
-		disableHostCheck: true,
-		host: 'localhost',
-		hot: true,
-		watchOptions: {
-			aggregateTimeout: 300,
-		},
-		stats: {
-			all: false,
-			assets: true,
-			colors: true,
-			errors: true,
-			performance: true,
-			timings: true,
-			warnings: true,
-		},
-		port: devServer.port,
+      'Access-Control-Allow-Origin': '*',
+      ...devServer.headers,
+    },
+    disableHostCheck: true,
+    host: 'localhost',
+    hot: true,
+    watchOptions: {
+      aggregateTimeout: 300,
+    },
+    stats: {
+      all: false,
+      assets: true,
+      colors: true,
+      errors: true,
+      performance: true,
+      timings: true,
+      warnings: true,
+    },
+    port: devServer.port,
   },
 })
 
