@@ -7,7 +7,6 @@ const devServer = ({devServer}) => ({
   devServer: {
     headers: {
       'Access-Control-Allow-Origin': '*',
-      ...devServer.headers,
     },
     disableHostCheck: true,
     host: 'localhost',

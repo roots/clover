@@ -1,4 +1,4 @@
-const {readdirSync, statSync} = require('fs')
+const {readdirSync, existsSync, statSync} = require('fs')
 const {join, resolve} = require('path')
 
 /**
@@ -22,7 +22,7 @@ const dirs = parentDir =>
   )
 
 /**
- * Entrypoints: blocks
+ * Globbed entrypoints
  */
 const globber = groups => ({
   /** src/[group]/... */
@@ -30,20 +30,27 @@ const globber = groups => ({
     (acc, group, index) => ({
       ...index > 0 ? acc : [],
 
-      /** src/group/[dir] */
+      /** src[group]/[dir] */
       ...dirs(group.from).reduce(
         (acc, asset, index) => ({
           ...index > 0 ? acc: [],
 
-          /** src/group/dir/[entrypoint] */
+          /** src/[group]/[dir]/[entrypoint] */
           ...group.entries.reduce(
-            (acc, entry, index) => ({
-              ...index > 0 ? acc: [],
+            (acc, entry, index) => {
+              const accumulated = index > 0
+                ? acc
+                : []
 
-              /** entrypoint */
-              [join(group.from, asset, entry[0])]:
-                join(projectDir, 'src', group.from, asset, entry[1]),
-            }),
+              const file = join(projectDir, 'src', group.from, asset, entry[1])
+              const chunk = join(group.from, asset, entry[0])
+              const exists = existsSync(file)
+
+              return {
+                ...accumulated,
+                ...(exists ? {[chunk]: file} : {}),
+              }
+            },
             group.entries[0],
           ),
         }),

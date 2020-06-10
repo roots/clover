@@ -2,19 +2,19 @@ const devServer = require('./devServer')
 const entry = require('./entry')
 const optimization = require('./optimization')
 const output = require('./output')
+const options = require('./options')
 const plugins = require('./plugins')
 const resolve = require('./resolve')
-const rules = require('./rules')
-const {projectPath, isProduction} = require('./util')
+const loaders = require('./loaders')
 
 /**
- * Defualt config
+ * Default config
  *
  * @type {object} default webpack configuration
  */
-const DEFAULT = {
+const DEFAULT_CONFIG = {
   entry: {},
-  rules: [],
+  loaders: [],
   plugins: [],
   aliases: {},
   optimization: {},
@@ -30,30 +30,35 @@ const DEFAULT = {
  * @param  {object} config overrides
  * @return {object} final webpack configuration
  */
-const webpack = (config = DEFAULT) => ({
-  ...entry({entry: config.entry}),
-  ...resolve({aliases: config.aliases}),
-  ...optimization({config: config.optimization}),
-  ...plugins({dev: config.dev, plugins: config.plugins}),
-  ...devServer({devServer: config.dev}),
-  ...output({dev: config.dev}),
-  module: { ...rules({config: config.rules}) },
-  context: projectPath('src/'),
-  mode: isProduction ? 'production' : 'development',
-  devtool: isProduction ? 'hidden-source-map' : 'cheap-module-source-map',
-  watch: global.watch || false,
-  stats: {
-    all: false,
-    assets: true,
-    colors: true,
-    errors: true,
-    performance: true,
-    timings: true,
-    warnings: true,
-  },
+const webpack = (config = DEFAULT_CONFIG) => ({
+  ...entry({
+    entry: config.entry,
+  }),
+  ...resolve({
+    aliases: config.aliases,
+  }),
+  ...optimization({
+    optimization: config.optimization,
+  }),
+  ...plugins({
+    dev: config.dev,
+    plugins: config.plugins,
+  }),
+  ...devServer({
+    devServer: config.dev,
+  }),
+  ...output({
+    dev: config.dev,
+  }),
+  ...loaders({
+    loaders: config.loaders,
+  }),
+  ...options({
+    options: config.options,
+  }),
 })
 
 module.exports = {
   webpack,
-  defaults: DEFAULT,
+  defaults: DEFAULT_CONFIG,
 }

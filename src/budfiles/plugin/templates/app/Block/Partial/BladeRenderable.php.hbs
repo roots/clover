@@ -22,10 +22,8 @@ trait BladeRenderable {
      */
     public function hasView(): bool
     {
-        $this->view = join('/', [
-            explode('/', $this->get('name'))[1],
-            $this->view,
-        ]);
+        $blockDir = explode('/', $this->get('name'))[1];
+        $this->view = join('/', [$blockDir, $this->view]);
 
         $this->viewPath = join('/', [
           $this->bud->get('path.plugin.src.blocks'),

@@ -5,12 +5,12 @@ const {isProduction} = require('./util')
 /**
  * Webpack optimization
  */
-const optimization = ({config}) => ({
+const optimization = ({optimization}) => ({
   optimization: {
     minimize: true,
     noEmitOnErrors: isProduction,
     minimizer: isProduction ? [new UglifyJsPlugin()] : [],
-    ...config,
+    ...optimization,
   },
 })
 

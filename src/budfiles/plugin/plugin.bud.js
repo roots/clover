@@ -208,6 +208,16 @@ module.exports = {
     },
     {
       task: 'copy',
+      src: 'config/build/loaders.js',
+      dest: 'config/build/loaders.js',
+    },
+    {
+      task: 'copy',
+      src: 'config/build/options.js',
+      dest: 'config/build/options.js',
+    },
+    {
+      task: 'copy',
       src: 'config/build/optimization.js',
       dest: 'config/build/optimization.js',
     },
@@ -220,11 +230,6 @@ module.exports = {
       task: 'copy',
       src: 'config/build/resolve.js',
       dest: 'config/build/resolve.js',
-    },
-    {
-      task: 'copy',
-      src: 'config/build/rules.js',
-      dest: 'config/build/rules.js',
     },
     {
       task: 'copy',

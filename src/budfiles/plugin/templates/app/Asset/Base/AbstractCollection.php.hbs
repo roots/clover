@@ -61,7 +61,7 @@ abstract class AbstractCollection extends Collection implements CollectionInterf
     }
 
     /**
-     * From JSON
+     * Initiate collection from a JSON manifest.
      *
      * @param  ContainerInterface
      * @param  string
@@ -82,11 +82,15 @@ abstract class AbstractCollection extends Collection implements CollectionInterf
 
         $this->collectFromJson($manifest)->each(
             function ($path) use ($assets) {
-                /** Determine env */
+                /**
+                 * Determine env (HMR assets are loaded from localhost)
+                 */
                 $this->dev = strpos($path, $this->localhost) ? true : false;
                 $pluginRelativePath = str_replace($this->localhost, '', $path);
 
-                /** Explode the path into known units. */
+                /**
+                 * Parse block info from the block path.
+                 */
                 [, , $type, $name, $file] = explode('/', $pluginRelativePath);
                 $components = $this->make(explode('.', $file));
                 $extension = $components->pop();
@@ -94,17 +98,18 @@ abstract class AbstractCollection extends Collection implements CollectionInterf
                 $version = $components->shift();
 
                 /**
-                 * Bounce early if we have a manifest or map or
-                 * other unspecified artifact.
+                 * Bounce early if we have a manifest or some other
+                 * non-asset.
                  */
                 if ($extension == "map" || $extension == "json") {
                     return;
                 }
 
-                /** Gather dependencies */
-                $dependencies = $this->collectFromJson(
-                    str_replace(".{$extension}", ".asset.json", $pluginRelativePath)
-                )->get('dependencies');
+                /**
+                 * Gather dependencies
+                 */
+                $manifestPath = str_replace($extension, "asset.json", $pluginRelativePath);
+                $dependencies = $this->collectFromJson($manifestPath)->get('dependencies');
 
                 /**
                  * Push entry.
