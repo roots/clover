@@ -223,6 +223,11 @@ module.exports = {
     },
     {
       task: 'copy',
+      src: 'config/build/output.js',
+      dest: 'config/build/output.js',
+    },
+    {
+      task: 'copy',
       src: 'config/build/plugins.js',
       dest: 'config/build/plugins.js',
     },
