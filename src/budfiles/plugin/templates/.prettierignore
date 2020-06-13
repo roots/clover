@@ -1,6 +1,0 @@
-.*
-*.lock
-*.log
-node_modules
-vendor
-dist

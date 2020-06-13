@@ -73,9 +73,9 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 | Command      | Description                  |
 | ------------ | ---------------------------- |
-| bud          | Bud information              |
-| bud init     | Create a new project         |
+| bud plugins  | List bud plugins             |
 | bud generate | Generate code from a budfile |
+| bud init     | Create a new project         |
 | bud list     | List available budfiles      |
 
 ### Dependencies
@@ -83,6 +83,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - enquirer
 - esm
 - execa
+- find-plugins
 - fs-extra
 - globby
 - handlebars
@@ -97,6 +98,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - prettier
 - prop-types
 - react
+- @roots/bud-generators
 - rxjs
 
 ### Development dependencies

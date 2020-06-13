@@ -117,120 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/useGenerators.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _path = _interopRequireDefault(require("path"));
-
-var _findPlugins = _interopRequireDefault(require("find-plugins"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const useExtensions = (search = '*') => {
-  const pluginGenerators = (0, _findPlugins.default)({
-    keyword: 'bud-generators'
-  }).map(generator => _path.default.join(generator.dir, `**/${search}.bud.js`));
-  const coreGenerators = (0, _findPlugins.default)({
-    keyword: 'bud-core-generators'
-  }).map(generator => _path.default.join(generator.dir, `**/${search}.bud.js`));
-  return {
-    pluginGenerators: pluginGenerators !== null && pluginGenerators !== void 0 ? pluginGenerators : null,
-    coreGenerators: coreGenerators !== null && coreGenerators !== void 0 ? coreGenerators : null
-  };
-};
-
-var _default = useExtensions;
-exports.default = _default;
-},{}],"../src/hooks/useSearch.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _path = require("path");
-
-var _react = require("react");
-
-var _globby = _interopRequireDefault(require("globby"));
-
-var _useGenerators = _interopRequireDefault(require("./useGenerators"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Search helpers
- */
-const cwd = process.cwd();
-const search = {
-  project: name => `${cwd}/.bud/budfiles/**/${name}.bud.js`
-};
-/**
- * Use Search
- *
- * @param {string} generatorName
- */
-
-const useSearch = generatorName => {
-  const {
-    coreGenerators,
-    pluginGenerators
-  } = (0, _useGenerators.default)(generatorName);
-  const [budfile, setBudfile] = (0, _react.useState)(false);
-  const [checked, setChecked] = (0, _react.useState)({
-    project: false,
-    modules: false,
-    core: false
-  });
-  /** Project generators */
-
-  (0, _react.useEffect)(() => {
-    generatorName && !checked.project && (async () => {
-      const buds = await (0, _globby.default)([search.project(generatorName)]);
-      buds && buds.length > 0 && setBudfile(buds[0]);
-      setChecked({ ...checked,
-        project: true
-      });
-    })();
-  }, [generatorName, checked.project]);
-  /** Plugin generators */
-
-  (0, _react.useEffect)(() => {
-    !budfile && checked.project && pluginGenerators && (async () => {
-      const buds = await (0, _globby.default)(pluginGenerators);
-      console.log(pluginGenerators, buds);
-      buds && buds.length > 0 && setBudfile(buds[0]);
-      setChecked({ ...checked,
-        plugins: true
-      });
-    })();
-  }, [budfile, checked.project]);
-  /** Core generators */
-
-  (0, _react.useEffect)(() => {
-    !budfile && checked.plugins && coreGenerators && (async () => {
-      const buds = await (0, _globby.default)(coreGenerators);
-      buds && buds.length > 0 && setBudfile(buds[0]);
-      setChecked({ ...checked,
-        core: true
-      });
-    })();
-  }, [budfile, checked.plugins]);
-  return {
-    budfile,
-    checked
-  };
-};
-
-var _default = useSearch;
-exports.default = _default;
-},{"./useGenerators":"../src/hooks/useGenerators.js"}],"../src/hooks/useConfig.js":[function(require,module,exports) {
+})({"../src/hooks/useConfig.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1500,7 +1387,7 @@ App.propDefaults = {
 };
 var _default = App;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js"}],"../src/components/Loading.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./Banner":"../src/components/Banner.js","./Tasks":"../src/components/Tasks.js"}],"init/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1508,72 +1395,38 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Loading
- *
- * @prop {string} message
- */
-const Loading = ({
-  message
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null), " ", message);
-
-Loading.propTypes = {
-  message: _propTypes.default.string
-};
-Loading.defaultProps = {
-  message: 'Loading'
-};
-var _default = Loading;
-exports.default = _default;
-},{}],"generate/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+var _path = require("path");
 
 var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _useSearch = _interopRequireDefault(require("./../../src/hooks/useSearch"));
 
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
-var _Loading = _interopRequireDefault(require("./../../src/components/Loading"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/** Command: bud generate */
-/// Generate code from a budfile
-const Generate = ({
-  generator
-}) => {
-  const {
-    budfile
-  } = (0, _useSearch.default)(generator);
-  return budfile ? /*#__PURE__*/_react.default.createElement(_App.default, {
-    budfile: budfile
-  }) : /*#__PURE__*/_react.default.createElement(_Loading.default, null);
-};
+/** Constants */
+const budfileDir = (0, _path.resolve)(__dirname, './../../src/budfiles/init');
+/** Command: bud init */
+/// Create a new project
 
-Generate.propTypes = {
-  // Generator name
-  generator: _propTypes.default.string
+const Init = props => /*#__PURE__*/_react.default.createElement(_App.default, {
+  budfile: (0, _path.join)(budfileDir, 'init.bud.js'),
+  logging: props.logging,
+  output: props.output
+});
+
+Init.propTypes = {
+  /// Output directory
+  output: _propTypes.default.string,
+  /// Enable logging
+  logging: _propTypes.default.bool
 };
-Generate.positionalArgs = ['generator'];
-var _default = Generate;
+Init.defaultProps = {
+  logging: false
+};
+Init.positionalArgs = ['output'];
+var _default = Init;
 exports.default = _default;
-},{"./../../src/hooks/useSearch":"../src/hooks/useSearch.js","./../../src/components/App":"../src/components/App.js","./../../src/components/Loading":"../src/components/Loading.js"}]},{},["generate/index.js"], null)
-//# sourceMappingURL=/generate/index.js.map
+},{"./../../src/components/App":"../src/components/App.js"}]},{},["init/index.js"], null)
+//# sourceMappingURL=/init/index.js.map

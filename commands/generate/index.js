@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import App from '../../src/components/App'
-import Loading from '../../src/components/Loading'
-import useSearch from '../../src/components/hooks/useSearch'
+import useSearch from './../../src/hooks/useSearch'
+
+import App from './../../src/components/App'
+import Loading from './../../src/components/Loading'
 
 /** Command: bud generate */
 /// Generate code from a budfile

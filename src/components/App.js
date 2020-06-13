@@ -2,13 +2,16 @@ import React, {useLayoutEffect} from 'react'
 import {Box, useStdout} from 'ink'
 import PropTypes from 'prop-types'
 
+import useConfig from './../hooks/useConfig'
+import useData from './../hooks/useData'
+import useSprout from './../hooks/useSprout'
+import useSubscription from './../hooks/useSubscription'
+
 import Banner from './Banner'
 import Tasks from './Tasks'
 
-import useConfig from './hooks/useConfig'
-import useData from './hooks/useData'
-import useSprout from './hooks/useSprout'
-import useSubscription from './hooks/useSubscription'
+/** Suppress unhandled rejections */
+process.on('unhandledRejection', () => null)
 
 /**
  * Bud application
@@ -31,7 +34,7 @@ const App = ({budfile, output, logging}) => {
 
   const {stdout} = useStdout()
   useLayoutEffect(() => {
-    sprout.prompts && data && !complete && stdout.write('\x1B[2J\x1B[0f')
+    !complete && stdout.write('\x1B[2J\x1B[0f')
   }, [sprout, data])
 
   return (

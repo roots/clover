@@ -24,6 +24,7 @@
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
     "execa": "^4.0.2",
+    "find-plugins": "^1.1.7",
     "fs-extra": "^9.0.1",
     "globby": "^11.0.1",
     "handlebars": "^4.7.6",
@@ -38,6 +39,7 @@
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "@roots/bud-generators": "1.0.0",
     "rxjs": "^6.5.5"
   },
   "devDependencies": {
