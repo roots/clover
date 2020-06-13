@@ -9,9 +9,9 @@ import Loading from './../../src/components/Loading'
 /** Command: bud generate */
 /// Generate code from a budfile
 const Generate = ({generator}) => {
-  const {budfile} = useSearch(generator)
+  const {budfile, complete} = useSearch(generator)
 
-  return budfile ? <App budfile={budfile} /> : <Loading />
+  return complete ? <App budfile={budfile.path} /> : <Loading />
 }
 
 Generate.propTypes = {

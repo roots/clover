@@ -1362,7 +1362,7 @@ const App = ({
     stdout
   } = (0, _ink.useStdout)();
   (0, _react.useLayoutEffect)(() => {
-    !complete && !sprout.prompts && stdout.write('\x1B[2J\x1B[0f');
+    !complete && stdout.write('\x1B[2J\x1B[0f');
   }, [sprout, data]);
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
     width: "103",

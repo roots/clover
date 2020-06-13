@@ -10,10 +10,4 @@ const Extensions = () => {
   return extensions.map((extension, id) => <Box key={id}>{extension.pkg.name}</Box>)
 }
 
-Extensions.propTypes = {}
-
-Extensions.defaultProps = {}
-
-Extensions.positionalArgs = []
-
 export default Extensions

@@ -80,6 +80,8 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ### Dependencies
 
+- @roots/bud-generators
+- @roots/budpack
 - enquirer
 - esm
 - execa
@@ -98,7 +100,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - prettier
 - prop-types
 - react
-- @roots/bud-generators
 - rxjs
 
 ### Development dependencies

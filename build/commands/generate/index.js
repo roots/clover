@@ -127,24 +127,86 @@ exports.default = void 0;
 
 var _path = _interopRequireDefault(require("path"));
 
+var _react = require("react");
+
 var _findPlugins = _interopRequireDefault(require("find-plugins"));
+
+var _globby = _interopRequireDefault(require("globby"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const useExtensions = (search = '*') => {
-  const pluginGenerators = (0, _findPlugins.default)({
-    keyword: 'bud-generators'
-  }).map(generator => _path.default.join(generator.dir, `**/${search}.bud.js`));
-  const coreGenerators = (0, _findPlugins.default)({
-    keyword: 'bud-core-generators'
-  }).map(generator => _path.default.join(generator.dir, `**/${search}.bud.js`));
+const cwd = process.cwd();
+
+const useGenerators = (search = '*') => {
+  /**
+   * project .bud
+   */
+  const [project, setProject] = (0, _react.useState)([]);
+  const [checkedProject, setCheckedProject] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    (async () => {
+      setCheckedProject(false);
+      const files = await (0, _globby.default)([`${cwd}/.bud/budfiles/**/${search}.bud.js`]);
+      setProject(files.map(result => ({
+        name: _path.default.basename(result).replace('.bud.js', ''),
+        path: result
+      })));
+      setCheckedProject(true);
+    })();
+  }, [search]);
+  /**
+   * node_modules
+   */
+
+  const [plugin, setPlugin] = (0, _react.useState)([]);
+  const [checkedPlugin, setCheckedPlugin] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    (async () => {
+      setCheckedPlugin(false);
+      const files = (0, _findPlugins.default)({
+        keyword: 'bud-generators'
+      }).map(match => `${match.dir}/**/${search}.bud.js`);
+      const results = await (0, _globby.default)(files);
+      setPlugin(results.map(result => ({
+        name: _path.default.basename(result).replace('.bud.js', ''),
+        path: result
+      })));
+      setCheckedPlugin(true);
+    })();
+  }, [search]);
+  /**
+   * @roots/bud-generators
+   */
+
+  const [core, setCore] = (0, _react.useState)([]);
+  const [checkedCore, setCheckedCore] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    (async () => {
+      setCheckedCore(false);
+      const files = (0, _findPlugins.default)({
+        keyword: 'bud-core-generators'
+      }).map(match => `${match.dir}/**/${search}.bud.js`);
+      const results = await (0, _globby.default)(files);
+      setCore(results.map(result => ({
+        name: _path.default.basename(result).replace('.bud.js', ''),
+        path: result
+      })));
+      setCheckedCore(true);
+    })();
+  }, [search]);
   return {
-    pluginGenerators: pluginGenerators !== null && pluginGenerators !== void 0 ? pluginGenerators : null,
-    coreGenerators: coreGenerators !== null && coreGenerators !== void 0 ? coreGenerators : null
+    project,
+    plugin,
+    core,
+    complete: {
+      project: checkedProject,
+      core: checkedCore,
+      plugin: checkedPlugin
+    }
   };
 };
 
-var _default = useExtensions;
+var _default = useGenerators;
 exports.default = _default;
 },{}],"../src/hooks/useSearch.js":[function(require,module,exports) {
 "use strict";
@@ -154,77 +216,40 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _path = require("path");
-
 var _react = require("react");
-
-var _globby = _interopRequireDefault(require("globby"));
 
 var _useGenerators = _interopRequireDefault(require("./useGenerators"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Search helpers
- */
-const cwd = process.cwd();
-const search = {
-  project: name => `${cwd}/.bud/budfiles/**/${name}.bud.js`
-};
-/**
  * Use Search
  *
  * @param {string} generatorName
  */
-
-const useSearch = generatorName => {
+const useSearch = (generatorName = '*') => {
   const {
-    coreGenerators,
-    pluginGenerators
+    core,
+    plugin,
+    project,
+    complete
   } = (0, _useGenerators.default)(generatorName);
-  const [budfile, setBudfile] = (0, _react.useState)(false);
-  const [checked, setChecked] = (0, _react.useState)({
-    project: false,
-    modules: false,
-    core: false
-  });
-  /** Project generators */
-
+  const [budfile, setBudfile] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
-    generatorName && !checked.project && (async () => {
-      const buds = await (0, _globby.default)([search.project(generatorName)]);
-      buds && buds.length > 0 && setBudfile(buds[0]);
-      setChecked({ ...checked,
-        project: true
-      });
-    })();
-  }, [generatorName, checked.project]);
-  /** Plugin generators */
-
-  (0, _react.useEffect)(() => {
-    !budfile && checked.project && pluginGenerators && (async () => {
-      const buds = await (0, _globby.default)(pluginGenerators);
-      console.log(pluginGenerators, buds);
-      buds && buds.length > 0 && setBudfile(buds[0]);
-      setChecked({ ...checked,
-        plugins: true
-      });
-    })();
-  }, [budfile, checked.project]);
-  /** Core generators */
-
-  (0, _react.useEffect)(() => {
-    !budfile && checked.plugins && coreGenerators && (async () => {
-      const buds = await (0, _globby.default)(coreGenerators);
-      buds && buds.length > 0 && setBudfile(buds[0]);
-      setChecked({ ...checked,
-        core: true
-      });
-    })();
-  }, [budfile, checked.plugins]);
+    if (project && project.length > 0) {
+      setBudfile(project[0]);
+    } else if (plugin && plugin.length > 0) {
+      setBudfile(plugin[0]);
+    } else if (core && core.length > 0) {
+      setBudfile(core[0]);
+    }
+  }, [core, plugin, project, complete]);
   return {
+    core,
+    plugin,
+    project,
     budfile,
-    checked
+    complete: complete.core && complete.project && complete.plugin
   };
 };
 
@@ -1475,7 +1500,7 @@ const App = ({
     stdout
   } = (0, _ink.useStdout)();
   (0, _react.useLayoutEffect)(() => {
-    !complete && !sprout.prompts && stdout.write('\x1B[2J\x1B[0f');
+    !complete && stdout.write('\x1B[2J\x1B[0f');
   }, [sprout, data]);
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
     width: "103",
@@ -1561,10 +1586,11 @@ const Generate = ({
   generator
 }) => {
   const {
-    budfile
+    budfile,
+    complete
   } = (0, _useSearch.default)(generator);
-  return budfile ? /*#__PURE__*/_react.default.createElement(_App.default, {
-    budfile: budfile
+  return complete ? /*#__PURE__*/_react.default.createElement(_App.default, {
+    budfile: budfile.path
   }) : /*#__PURE__*/_react.default.createElement(_Loading.default, null);
 };
 
