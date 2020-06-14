@@ -1,18 +1,17 @@
-import {join, resolve} from 'path'
+import {resolve} from 'path'
 import React from 'react'
 import PropTypes from 'prop-types'
 
 import App from './../../src/App'
 
 /** Constants */
-const budfileDir = resolve(__dirname, './../../src/budfiles/init')
+const init = resolve(__dirname, './../../../src/generators/init/init.bud.js')
 
 /** Command: bud init */
 /// Create a new project
 const Init = props => (
   <App
-    budfile={join(budfileDir, 'init.bud.js')}
-    logging={props.logging}
+    budfile={init}
     output={props.output}
   />
 )
@@ -20,12 +19,6 @@ const Init = props => (
 Init.propTypes = {
   /// Output directory
   output: PropTypes.string,
-  /// Enable logging
-  logging: PropTypes.bool,
-}
-
-Init.defaultProps = {
-  logging: false,
 }
 
 Init.positionalArgs = ['output']

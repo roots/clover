@@ -1,0 +1,25 @@
+{
+  "name": "@{{lowercase (dashcase namespace)}}/{{lowercase (dashcase name)}}",
+  "description": "{{description}}",
+  "homepage": "{{lowercase website}}",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "authors": [
+    {
+      "name": "{{capitalizeAll author}}",
+      "email": "{{lowercase email}}"
+    }
+  ],
+  "private": true,
+  "scripts": {
+    "generate": "bud generate"
+  },
+  "devDependencies": {
+    "@roots/bud": "roots/bud#master"
+  },
+  "dependencies": {}
+}

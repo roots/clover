@@ -28,7 +28,6 @@ const useSubscription = ({config, data, projectDir, sprout}) => {
     complete &&
       (() => {
         subscription.unsubscribe()
-
         exit()
       })()
   }, [complete])

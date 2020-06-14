@@ -1425,13 +1425,11 @@ process.on('unhandledRejection', () => null);
  *
  * @prop {string} budfile
  * @prop {string} output
- * @prop {bool}   logging
  */
 
 const App = ({
   budfile,
-  output,
-  logging
+  output
 }) => {
   const {
     config
@@ -1449,7 +1447,6 @@ const App = ({
     config,
     data,
     sprout,
-    logging,
     projectDir: output ? output : process.cwd()
   });
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {

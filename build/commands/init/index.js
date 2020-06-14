@@ -1327,13 +1327,11 @@ process.on('unhandledRejection', () => null);
  *
  * @prop {string} budfile
  * @prop {string} output
- * @prop {bool}   logging
  */
 
 const App = ({
   budfile,
-  output,
-  logging
+  output
 }) => {
   const {
     config
@@ -1351,7 +1349,6 @@ const App = ({
     config,
     data,
     sprout,
-    logging,
     projectDir: output ? output : process.cwd()
   });
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
@@ -1396,24 +1393,18 @@ var _App = _interopRequireDefault(require("./../../src/App"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Constants */
-const budfileDir = (0, _path.resolve)(__dirname, './../../src/budfiles/init');
+const init = (0, _path.resolve)(__dirname, './../../../src/generators/init/init.bud.js');
 /** Command: bud init */
 /// Create a new project
 
 const Init = props => /*#__PURE__*/_react.default.createElement(_App.default, {
-  budfile: (0, _path.join)(budfileDir, 'init.bud.js'),
-  logging: props.logging,
+  budfile: init,
   output: props.output
 });
 
 Init.propTypes = {
   /// Output directory
-  output: _propTypes.default.string,
-  /// Enable logging
-  logging: _propTypes.default.bool
-};
-Init.defaultProps = {
-  logging: false
+  output: _propTypes.default.string
 };
 Init.positionalArgs = ['output'];
 var _default = Init;

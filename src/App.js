@@ -18,9 +18,8 @@ process.on('unhandledRejection', () => null)
  *
  * @prop {string} budfile
  * @prop {string} output
- * @prop {bool}   logging
  */
-const App = ({budfile, output, logging}) => {
+const App = ({budfile, output}) => {
   const {config} = useConfig(process.cwd())
   const {sprout} = useSprout(budfile)
   const {data} = useData(sprout)
@@ -28,7 +27,6 @@ const App = ({budfile, output, logging}) => {
     config,
     data,
     sprout,
-    logging,
     projectDir: output ? output : process.cwd(),
   })
 
