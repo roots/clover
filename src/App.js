@@ -1,14 +1,14 @@
-import React, {useLayoutEffect} from 'react'
-import {Box, useStdout} from 'ink'
+import React from 'react'
+import {Box} from 'ink'
 import PropTypes from 'prop-types'
 
-import useConfig from './../hooks/useConfig'
-import useData from './../hooks/useData'
-import useSprout from './../hooks/useSprout'
-import useSubscription from './../hooks/useSubscription'
+import useConfig from './hooks/useConfig'
+import useData from './hooks/useData'
+import useSprout from './hooks/useSprout'
+import useSubscription from './hooks/useSubscription'
 
-import Banner from './Banner'
-import Tasks from './Tasks'
+import Banner from './components/Banner'
+import Tasks from './components/Tasks'
 
 /** Suppress unhandled rejections */
 process.on('unhandledRejection', () => null)
@@ -31,11 +31,6 @@ const App = ({budfile, output, logging}) => {
     logging,
     projectDir: output ? output : process.cwd(),
   })
-
-  const {stdout} = useStdout()
-  useLayoutEffect(() => {
-    !complete && stdout.write('\x1B[2J\x1B[0f')
-  }, [sprout, data])
 
   return (
     <Box

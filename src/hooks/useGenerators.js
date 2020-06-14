@@ -5,87 +5,80 @@ import globby from 'globby'
 
 const cwd = process.cwd()
 
-const useGenerators = (search = '*') => {
-  /**
-   * project .bud
-   */
-  const [project, setProject] = useState([])
-  const [checkedProject, setCheckedProject] = useState(false)
+/**
+ * Process globby matches into expected object
+ */
+const fromMatches = matches =>
+  matches.map(generator => ({
+    name: path.basename(generator).replace('.bud.js', ''),
+    path: generator,
+  }))
+
+/**
+ * Generators sourced from project .bud dir
+ */
+const useProjectGenerators = () => {
+  const [generators, setGenerators] = useState([])
+  const [checked, setChecked] = useState(false)
   useEffect(() => {
-    (async () => {
-      setCheckedProject(false)
+    ;(async () => {
+      setChecked(false)
 
-      const files = await globby([
-        `${cwd}/.bud/budfiles/**/${search}.bud.js`,
-      ])
+      const matches = await globby([`${cwd}/.bud/budfiles/**/*.bud.js`])
 
-      setProject(files.map(result => ({
-        name: path.basename(result).replace('.bud.js', ''),
-        path: result,
-      })))
-
-      setCheckedProject(true)
+      setGenerators(fromMatches(matches))
+      setChecked(true)
     })()
-  }, [search])
+  }, [])
 
-  /**
-   * node_modules
-   */
-  const [plugin, setPlugin] = useState([])
-  const [checkedPlugin, setCheckedPlugin] = useState(false)
+  return [generators, checked]
+}
+
+/**
+ * Generators sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+const useModuleGenerators = keyword => {
+  const [generators, setGenerators] = useState([])
+  const [checked, setChecked] = useState(false)
   useEffect(() => {
-    (async () => {
-      setCheckedPlugin(false)
+    keyword &&
+      (async () => {
+        setChecked(false)
 
-      const files = findPlugins({
-        keyword: 'bud-generators',
-      }).map(match => `${match.dir}/**/${search}.bud.js`)
+        const packages = findPlugins({keyword}).map(plugin => `${plugin.dir}/**/*.bud.js`)
 
-      const results = await globby(files)
+        const matches = await globby(packages)
 
-      setPlugin(results.map(result => ({
-        name: path.basename(result).replace('.bud.js', ''),
-        path: result,
-      })))
+        setGenerators(fromMatches(matches))
+        setChecked(true)
+      })()
+  }, [keyword])
 
-      setCheckedPlugin(true)
-    })()
-  }, [search])
+  return [generators, checked]
+}
 
-  /**
-   * @roots/bud-generators
-   */
-  const [core, setCore] = useState([])
-  const [checkedCore, setCheckedCore] = useState(false)
-  useEffect(() => {
-    (async () => {
-      setCheckedCore(false)
-
-      const files = findPlugins({
-        keyword: 'bud-core-generators',
-      }).map(match => `${match.dir}/**/${search}.bud.js`)
-
-      const results = await globby(files)
-
-      setCore(results.map(result => ({
-        name: path.basename(result).replace('.bud.js', ''),
-        path: result,
-      })))
-
-      setCheckedCore(true)
-    })()
-  }, [search])
+/**
+ * useGenerators hook
+ */
+const useGenerators = () => {
+  const [project, checkedProject] = useProjectGenerators()
+  const [core, checkedCore] = useModuleGenerators('bud-core-generators')
+  const [plugin, checkedPlugin] = useModuleGenerators('bud-generators')
 
   return {
     project,
     plugin,
     core,
-    complete: {
+    status: {
       project: checkedProject,
-      core: checkedCore,
       plugin: checkedPlugin,
+      core: checkedCore,
     },
+    complete: checkedCore && checkedProject && checkedPlugin,
   }
 }
 
 export default useGenerators
+export {useProjectGenerators, useModuleGenerators}

@@ -2,7 +2,7 @@ import {join, resolve} from 'path'
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import App from './../../src/components/App'
+import App from './../../src/App'
 
 /** Constants */
 const budfileDir = resolve(__dirname, './../../src/budfiles/init')

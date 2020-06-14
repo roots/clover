@@ -1,26 +1,17 @@
 {
 	"commands": [
 		{
-			"path": "extensions/index.js",
-			"name": "extensions",
-			"description": "List bud plugins",
+			"path": "index.js",
+			"name": "index",
+			"description": "Bud",
 			"args": [],
 			"subCommands": []
 		},
 		{
-			"path": "generate/index.js",
-			"name": "generate",
-			"description": "Generate code from a budfile",
-			"args": [
-				{
-					"key": "generator",
-					"type": "string",
-					"description": "",
-					"isRequired": false,
-					"aliases": [],
-					"positional": true
-				}
-			],
+			"path": "list/index.js",
+			"name": "list",
+			"description": "List available budfiles",
+			"args": [],
 			"subCommands": []
 		},
 		{
@@ -49,10 +40,19 @@
 			"subCommands": []
 		},
 		{
-			"path": "list/index.js",
-			"name": "list",
-			"description": "List available budfiles",
-			"args": [],
+			"path": "generate/index.js",
+			"name": "generate",
+			"description": "Run a generator. Pass along the generator name as an argument if you wish to skip the prompt.",
+			"args": [
+				{
+					"key": "inputArgs",
+					"type": "array",
+					"description": "",
+					"isRequired": false,
+					"aliases": [],
+					"positional": false
+				}
+			],
 			"subCommands": []
 		}
 	]

@@ -2,13 +2,13 @@ import React from 'react'
 import {Box} from 'ink'
 import Divider from 'ink-divider'
 
-import useSearch from './../../src/hooks/useSearch'
+import useGenerators from './../../src/hooks/useGenerators'
 import Banner from './../../src/components/Banner'
 
 /** Command: bud list */
 /// List available budfiles
 const List = () => {
-  const {core, plugin, project} = useSearch()
+  const {core, plugin, project} = useGenerators()
   const buds = [...project, ...plugin, ...core]
 
   return (

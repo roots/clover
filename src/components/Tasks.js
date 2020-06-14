@@ -13,7 +13,7 @@ const Tasks = ({status, complete}) => {
   if (complete) {
     return (
       <Text>
-        <Color green>🏁 Done.</Color>
+        <Color green>🏁{'  '}Done</Color>
       </Text>
     )
   }

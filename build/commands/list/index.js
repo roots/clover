@@ -123,7 +123,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.useModuleGenerators = exports.useProjectGenerators = exports.default = void 0;
 
 var _path = _interopRequireDefault(require("path"));
 
@@ -136,126 +136,86 @@ var _globby = _interopRequireDefault(require("globby"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const cwd = process.cwd();
+/**
+ * Process globby matches into expected object
+ */
 
-const useGenerators = (search = '*') => {
-  /**
-   * project .bud
-   */
-  const [project, setProject] = (0, _react.useState)([]);
-  const [checkedProject, setCheckedProject] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    (async () => {
-      setCheckedProject(false);
-      const files = await (0, _globby.default)([`${cwd}/.bud/budfiles/**/${search}.bud.js`]);
-      setProject(files.map(result => ({
-        name: _path.default.basename(result).replace('.bud.js', ''),
-        path: result
-      })));
-      setCheckedProject(true);
-    })();
-  }, [search]);
-  /**
-   * node_modules
-   */
+const fromMatches = matches => matches.map(generator => ({
+  name: _path.default.basename(generator).replace('.bud.js', ''),
+  path: generator
+}));
+/**
+ * Generators sourced from project .bud dir
+ */
 
-  const [plugin, setPlugin] = (0, _react.useState)([]);
-  const [checkedPlugin, setCheckedPlugin] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    (async () => {
-      setCheckedPlugin(false);
-      const files = (0, _findPlugins.default)({
-        keyword: 'bud-generators'
-      }).map(match => `${match.dir}/**/${search}.bud.js`);
-      const results = await (0, _globby.default)(files);
-      setPlugin(results.map(result => ({
-        name: _path.default.basename(result).replace('.bud.js', ''),
-        path: result
-      })));
-      setCheckedPlugin(true);
-    })();
-  }, [search]);
-  /**
-   * @roots/bud-generators
-   */
 
-  const [core, setCore] = (0, _react.useState)([]);
-  const [checkedCore, setCheckedCore] = (0, _react.useState)(false);
+const useProjectGenerators = () => {
+  const [generators, setGenerators] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
+    ;
+
     (async () => {
-      setCheckedCore(false);
-      const files = (0, _findPlugins.default)({
-        keyword: 'bud-core-generators'
-      }).map(match => `${match.dir}/**/${search}.bud.js`);
-      const results = await (0, _globby.default)(files);
-      setCore(results.map(result => ({
-        name: _path.default.basename(result).replace('.bud.js', ''),
-        path: result
-      })));
-      setCheckedCore(true);
+      setChecked(false);
+      const matches = await (0, _globby.default)([`${cwd}/.bud/budfiles/**/*.bud.js`]);
+      setGenerators(fromMatches(matches));
+      setChecked(true);
     })();
-  }, [search]);
+  }, []);
+  return [generators, checked];
+};
+/**
+ * Generators sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+
+
+exports.useProjectGenerators = useProjectGenerators;
+
+const useModuleGenerators = keyword => {
+  const [generators, setGenerators] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    keyword && (async () => {
+      setChecked(false);
+      const packages = (0, _findPlugins.default)({
+        keyword
+      }).map(plugin => `${plugin.dir}/**/*.bud.js`);
+      const matches = await (0, _globby.default)(packages);
+      setGenerators(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, [keyword]);
+  return [generators, checked];
+};
+/**
+ * useGenerators hook
+ */
+
+
+exports.useModuleGenerators = useModuleGenerators;
+
+const useGenerators = () => {
+  const [project, checkedProject] = useProjectGenerators();
+  const [core, checkedCore] = useModuleGenerators('bud-core-generators');
+  const [plugin, checkedPlugin] = useModuleGenerators('bud-generators');
   return {
     project,
     plugin,
     core,
-    complete: {
+    status: {
       project: checkedProject,
-      core: checkedCore,
-      plugin: checkedPlugin
-    }
+      plugin: checkedPlugin,
+      core: checkedCore
+    },
+    complete: checkedCore && checkedProject && checkedPlugin
   };
 };
 
 var _default = useGenerators;
 exports.default = _default;
-},{}],"../src/hooks/useSearch.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = require("react");
-
-var _useGenerators = _interopRequireDefault(require("./useGenerators"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Use Search
- *
- * @param {string} generatorName
- */
-const useSearch = (generatorName = '*') => {
-  const {
-    core,
-    plugin,
-    project,
-    complete
-  } = (0, _useGenerators.default)(generatorName);
-  const [budfile, setBudfile] = (0, _react.useState)(null);
-  (0, _react.useEffect)(() => {
-    if (project && project.length > 0) {
-      setBudfile(project[0]);
-    } else if (plugin && plugin.length > 0) {
-      setBudfile(plugin[0]);
-    } else if (core && core.length > 0) {
-      setBudfile(core[0]);
-    }
-  }, [core, plugin, project, complete]);
-  return {
-    core,
-    plugin,
-    project,
-    budfile,
-    complete: complete.core && complete.project && complete.plugin
-  };
-};
-
-var _default = useSearch;
-exports.default = _default;
-},{"./useGenerators":"../src/hooks/useGenerators.js"}],"../src/components/Banner.js":[function(require,module,exports) {
+},{}],"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -302,21 +262,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
 var _inkDivider = _interopRequireDefault(require("ink-divider"));
 
-var _useSearch = _interopRequireDefault(require("./../../src/hooks/useSearch"));
+var _useGenerators = _interopRequireDefault(require("./../../src/hooks/useGenerators"));
 
 var _Banner = _interopRequireDefault(require("./../../src/components/Banner"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /** Command: bud list */
 /// List available budfiles
@@ -324,9 +280,8 @@ const List = () => {
   const {
     core,
     plugin,
-    project,
-    complete
-  } = (0, _useSearch.default)();
+    project
+  } = (0, _useGenerators.default)();
   const buds = [...project, ...plugin, ...core];
   return /*#__PURE__*/_react.default.createElement(_ink.Box, {
     width: "103",
@@ -348,5 +303,5 @@ const List = () => {
 
 var _default = List;
 exports.default = _default;
-},{"./../../src/hooks/useSearch":"../src/hooks/useSearch.js","./../../src/components/Banner":"../src/components/Banner.js"}]},{},["list/index.js"], null)
+},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/components/Banner":"../src/components/Banner.js"}]},{},["list/index.js"], null)
 //# sourceMappingURL=/list/index.js.map
