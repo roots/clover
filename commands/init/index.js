@@ -9,12 +9,7 @@ const init = resolve(__dirname, './../../../src/generators/init/init.bud.js')
 
 /** Command: bud init */
 /// Create a new project
-const Init = props => (
-  <App
-    budfile={init}
-    output={props.output}
-  />
-)
+const Init = props => <App budfile={init} output={props.output} />
 
 Init.propTypes = {
   /// Output directory

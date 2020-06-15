@@ -78,6 +78,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 | bud generate | Run a generator.        |
 | bud init     | Create a new project    |
 | bud list     | List available budfiles |
+| bud preset   | Run a preset.           |
 
 ### Dependencies
 

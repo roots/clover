@@ -27,9 +27,7 @@ const useProjectPresets = () => {
     ;(async () => {
       setChecked(false)
 
-      const matches = await globby([
-        `${cwd}/.bud/budfiles/**/*-preset.bud.js`,
-      ])
+      const matches = await globby([`${cwd}/.bud/budfiles/**/*-preset.bud.js`])
 
       setPresets(fromMatches(matches))
       setChecked(true)
@@ -53,7 +51,7 @@ const useModulePresets = keyword => {
         setChecked(false)
 
         const packages = findPlugins({keyword}).map(
-          plugin => `${plugin.dir}/**/*-preset.bud.js`
+          plugin => `${plugin.dir}/**/*-preset.bud.js`,
         )
 
         const matches = await globby(packages)

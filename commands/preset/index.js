@@ -39,14 +39,13 @@ const Preset = ({inputArgs}) => {
    */
   const [generators, setGenerators] = useState(null)
   useEffect(() => {
-    generatorsComplete && setGenerators([
-      ...projectGenerators,
-      ...pluginGenerators,
-      ...coreGenerators,
-    ].map(generator => ({
-      value: generator.path,
-      label: generator.name,
-    })))
+    generatorsComplete &&
+      setGenerators(
+        [...projectGenerators, ...pluginGenerators, ...coreGenerators].map(generator => ({
+          value: generator.path,
+          label: generator.name,
+        })),
+      )
   }, [generatorsComplete])
 
   /**
@@ -54,14 +53,13 @@ const Preset = ({inputArgs}) => {
    */
   const [presets, setPresets] = useState(null)
   useEffect(() => {
-    presetsComplete && setPresets([
-      ...projectPresets,
-      ...pluginPresets,
-      ...corePresets,
-    ].map(preset => ({
-      value: preset.path,
-      label: preset.name,
-    })))
+    presetsComplete &&
+      setPresets(
+        [...projectPresets, ...pluginPresets, ...corePresets].map(preset => ({
+          value: preset.path,
+          label: preset.name,
+        })),
+      )
   }, [presetsComplete])
 
   /**
@@ -69,9 +67,7 @@ const Preset = ({inputArgs}) => {
    */
   useEffect(() => {
     if (name && presets && presetsComplete) {
-      const match = presets.filter(preset =>
-        preset.label == name
-      )
+      const match = presets.filter(preset => preset.label == name)
 
       setSelection(match[0])
     }
@@ -83,10 +79,12 @@ const Preset = ({inputArgs}) => {
    */
   const [preset, setPreset] = useState(null)
   useEffect(() => {
-    selection && !preset && setPreset({
-      ...selection,
-      data: require(selection.value),
-    })
+    selection &&
+      !preset &&
+      setPreset({
+        ...selection,
+        data: require(selection.value),
+      })
   }, [selection])
 
   /**
@@ -95,8 +93,8 @@ const Preset = ({inputArgs}) => {
   const [generatorQueue, setGeneratorQueue] = useState([])
   useEffect(() => {
     if (preset && generatorsComplete) {
-      const presetGenerators = generators.filter(generator =>
-        preset.data.buds[`${generator.name}`]
+      const presetGenerators = generators.filter(
+        generator => preset.data.buds[`${generator.name}`],
       )
 
       setGeneratorQueue(presetGenerators)
@@ -107,7 +105,11 @@ const Preset = ({inputArgs}) => {
 
   return (
     <Box>
-      {noResults && <Text><Color red>No presets found</Color></Text>}
+      {noResults && (
+        <Text>
+          <Color red>No presets found</Color>
+        </Text>
+      )}
 
       {!name && !selection && presets?.length > 0 && (
         <QuickSearchInput
@@ -117,9 +119,7 @@ const Preset = ({inputArgs}) => {
         />
       )}
 
-      {generatorQueue.length > 0 &&
-        <App queue={generatorQueue} />
-      }
+      {generatorQueue.length > 0 && <App queue={generatorQueue} />}
     </Box>
   )
 }
