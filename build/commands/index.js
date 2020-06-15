@@ -199,7 +199,7 @@ exports.useModuleGenerators = useModuleGenerators;
 const useGenerators = () => {
   const [project, checkedProject] = useProjectGenerators();
   const [core, checkedCore] = useModuleGenerators('bud-core-generators');
-  const [plugin, checkedPlugin] = useModuleGenerators('bud-generators');
+  const [plugin, checkedPlugin] = useModuleGenerators('bud-generator');
   return {
     project,
     plugin,
@@ -215,7 +215,137 @@ const useGenerators = () => {
 
 var _default = useGenerators;
 exports.default = _default;
-},{}],"../src/hooks/useConfig.js":[function(require,module,exports) {
+},{}],"../src/components/Banner.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkGradient = _interopRequireDefault(require("ink-gradient"));
+
+var _inkBigText = _interopRequireDefault(require("ink-big-text"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkGradient.default, {
+  name: "teen"
+}, /*#__PURE__*/_react.default.createElement(_inkBigText.default, {
+  text: "Bud",
+  font: "simple3d"
+})));
+
+var _default = Banner;
+exports.default = _default;
+},{}],"../package.json":[function(require,module,exports) {
+module.exports = {
+  "name": "@roots/bud",
+  "version": "1.0.0-rc.5",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/roots/bud.git"
+  },
+  "bin": {
+    "bud": "build/cli.js"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "bud": "bud",
+    "build": "pastel build",
+    "dev": "pastel dev",
+    "docs": "bud generate readme",
+    "lint": "npm-run-all -c lint:*",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --write ."
+  },
+  "files": ["assets", "build", "src"],
+  "dependencies": {
+    "@roots/bud": "roots/bud#v1.0.0-rc.5",
+    "@roots/bud-generators": "^0.0.1",
+    "enquirer": "^2.3.5",
+    "esm": "^3.2.25",
+    "execa": "^4.0.2",
+    "find-plugins": "^1.1.7",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
+    "handlebars": "^4.7.6",
+    "handlebars-helpers": "^0.10.0",
+    "ink": "^2.7.1",
+    "ink-ascii": "^0.0.4",
+    "ink-big-text": "^1.1.0",
+    "ink-box": "^1.0.0",
+    "ink-divider": "^2.0.1",
+    "ink-gradient": "^1.0.0",
+    "ink-image": "^2.0.0",
+    "ink-link": "^1.1.0",
+    "ink-quicksearch-input": "^1.0.0",
+    "ink-spinner": "^3.0.1",
+    "ink-table": "^2.0.1",
+    "ink-text-input": "^3.2.2",
+    "ink-use-stdout-dimensions": "^1.0.5",
+    "pastel": "^1.0.3",
+    "prettier": "2.0.5",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "rxjs": "^6.5.5"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.2.0",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.4",
+    "husky": "^4.2.5",
+    "markdownlint-cli": "^0.23.1",
+    "npm-run-all": "^4.1.5"
+  },
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://opensource.org/licenses/MIT"
+  }]
+};
+},{}],"../src/components/Footer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _package = _interopRequireDefault(require("./../../package.json"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Footer = ({
+  label,
+  width
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  width: width,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 1,
+  marginBottom: 0,
+  paddingBottom: 0,
+  paddingTop: 0
+}, /*#__PURE__*/_react.default.createElement(_ink.Box, null, label !== null && label !== void 0 ? label : 'bud: scaffolding utilities'), /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  bold: true
+}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  green: true
+}, "\u26A1\uFE0F ", _package.default.name, " [", _package.default.version, "]"))));
+
+var _default = Footer;
+exports.default = _default;
+},{"./../../package.json":"../package.json"}],"../src/hooks/useConfig.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1307,46 +1437,7 @@ const useSubscription = ({
 
 var _default = useSubscription;
 exports.default = _default;
-},{"./../bud":"../src/bud/index.js"}],"../src/components/Banner.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _inkLink = _interopRequireDefault(require("ink-link"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Banner component.
- *
- * @prop {string} label
- */
-const Banner = ({
-  label
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  marginBottom: 1,
-  flexDirection: "row",
-  justifyContent: "space-between"
-}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, null, label), /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "row"
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, `🌱`), /*#__PURE__*/_react.default.createElement(_ink.Text, {
-  bold: true
-}, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://roots.io/bud"
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, '  Bud')))));
-
-var _default = Banner;
-exports.default = _default;
-},{}],"../src/components/Tasks.js":[function(require,module,exports) {
+},{"./../bud":"../src/bud/index.js"}],"../src/components/Tasks.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1412,8 +1503,6 @@ var _useSprout = _interopRequireDefault(require("./hooks/useSprout"));
 
 var _useSubscription = _interopRequireDefault(require("./hooks/useSubscription"));
 
-var _Banner = _interopRequireDefault(require("./components/Banner"));
-
 var _Tasks = _interopRequireDefault(require("./components/Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1424,11 +1513,13 @@ process.on('unhandledRejection', () => null);
  * Bud application
  *
  * @prop {string} budfile
+ * @prop {array}  queue
  * @prop {string} output
  */
 
 const App = ({
   budfile,
+  queue,
   output
 }) => {
   const {
@@ -1455,9 +1546,7 @@ const App = ({
     justifyContent: "flex-start",
     paddingTop: 1,
     paddingBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_Banner.default, {
-    label: sprout.description || 'Bud: scaffolding utility'
-  }), /*#__PURE__*/_react.default.createElement(_Tasks.default, {
+  }, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
     sprout: sprout,
     complete: complete
@@ -1465,82 +1554,15 @@ const App = ({
 };
 
 App.propTypes = {
-  budfile: _propTypes.default.string
+  budfile: _propTypes.default.string,
+  queue: _propTypes.default.array
 };
 App.propDefaults = {
   output: null
 };
 var _default = App;
 exports.default = _default;
-},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Banner":"../src/components/Banner.js","./components/Tasks":"../src/components/Tasks.js"}],"../package.json":[function(require,module,exports) {
-module.exports = {
-  "name": "@roots/bud",
-  "version": "1.0.0-rc.5",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/roots/bud.git"
-  },
-  "bin": {
-    "bud": "build/cli.js"
-  },
-  "engines": {
-    "node": ">=12"
-  },
-  "scripts": {
-    "bud": "bud",
-    "build": "pastel build",
-    "dev": "pastel dev",
-    "docs": "bud generate readme",
-    "lint": "npm-run-all -c lint:*",
-    "lint:eslint": "eslint .",
-    "lint:prettier": "prettier --write ."
-  },
-  "files": ["assets", "build", "src"],
-  "dependencies": {
-    "@roots/bud": "roots/bud#v1.0.0-rc.5",
-    "@roots/bud-generators": "^0.0.1",
-    "enquirer": "^2.3.5",
-    "esm": "^3.2.25",
-    "execa": "^4.0.2",
-    "find-plugins": "^1.1.7",
-    "fs-extra": "^9.0.1",
-    "globby": "^11.0.1",
-    "handlebars": "^4.7.6",
-    "handlebars-helpers": "^0.10.0",
-    "ink": "^2.7.1",
-    "ink-ascii": "^0.0.4",
-    "ink-big-text": "^1.1.0",
-    "ink-box": "^1.0.0",
-    "ink-divider": "^2.0.1",
-    "ink-gradient": "^1.0.0",
-    "ink-image": "^2.0.0",
-    "ink-link": "^1.1.0",
-    "ink-quicksearch-input": "^1.0.0",
-    "ink-spinner": "^3.0.1",
-    "ink-table": "^2.0.1",
-    "ink-text-input": "^3.2.2",
-    "ink-use-stdout-dimensions": "^1.0.5",
-    "pastel": "^1.0.3",
-    "prettier": "2.0.5",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "rxjs": "^6.5.5"
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
-    "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4.0.4",
-    "husky": "^4.2.5",
-    "markdownlint-cli": "^0.23.1",
-    "npm-run-all": "^4.1.5"
-  },
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://opensource.org/licenses/MIT"
-  }]
-};
-},{}],"index.js":[function(require,module,exports) {
+},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Tasks":"../src/components/Tasks.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1554,15 +1576,15 @@ var _ink = require("ink");
 
 var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
 
-var _inkGradient = _interopRequireDefault(require("ink-gradient"));
-
-var _inkBigText = _interopRequireDefault(require("ink-big-text"));
+var _inkUseStdoutDimensions = _interopRequireDefault(require("ink-use-stdout-dimensions"));
 
 var _useGenerators = _interopRequireDefault(require("./../src/hooks/useGenerators"));
 
-var _App = _interopRequireDefault(require("./../src/App"));
+var _Banner = _interopRequireDefault(require("./../src/components/Banner"));
 
-var _package = _interopRequireDefault(require("./../package.json"));
+var _Footer = _interopRequireDefault(require("./../src/components/Footer"));
+
+var _App = _interopRequireDefault(require("./../src/App"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1573,6 +1595,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /** Command: bud */
 /// Bud
 const Bud = () => {
+  const [columns, rows] = (0, _inkUseStdoutDimensions.default)();
+  const padding = 4;
+  const appDimensions = {
+    height: rows - padding,
+    width: columns - padding
+  };
   const {
     core,
     plugin,
@@ -1587,45 +1615,22 @@ const Bud = () => {
       label: bud.name
     })));
   }, [complete]);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 0,
-    paddingBottom: 0
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    marginRight: 1,
-    marginBottom: 0,
-    marginTop: 0
-  }, /*#__PURE__*/_react.default.createElement(_inkGradient.default, {
-    name: "teen"
-  }, /*#__PURE__*/_react.default.createElement(_inkBigText.default, {
-    text: "Bud",
-    font: "simple3d",
-    marginTop: 0,
-    marginBottom: 0,
-    paddingBottom: 0
-  }))), /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  return !selection ? /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    paddingLeft: 2,
+    paddingRight: 2,
+    height: appDimensions.height,
     flexDirection: "column",
-    marginBottom: 0,
-    marginTop: 0
-  }, /*#__PURE__*/_react.default.createElement(_ink.Text, {
-    bold: true
-  }, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    green: true
-  }, "\u26A1\uFE0F ", _package.default.name, " [", _package.default.version, "]")), /*#__PURE__*/_react.default.createElement(_ink.Text, {
-    uppercase: true
-  }, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    red: true
-  }, "\u26A0"), " This software is pre-release"), /*#__PURE__*/_react.default.createElement(_ink.Text, null, " "))), /*#__PURE__*/_react.default.createElement(_ink.Box, null, buds && !selection && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
+    justifyContent: "space-around"
+  }, /*#__PURE__*/_react.default.createElement(_Banner.default, null), buds && !selection && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
     label: "Select a generator",
     items: buds,
     onSelect: selection => setSelection(selection)
-  }), selection && /*#__PURE__*/_react.default.createElement(_App.default, {
+  }), /*#__PURE__*/_react.default.createElement(_Footer.default, null)) : /*#__PURE__*/_react.default.createElement(_App.default, {
     budfile: selection.value
-  })));
+  });
 };
 
 var _default = Bud;
 exports.default = _default;
-},{"./../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../src/App":"../src/App.js","./../package.json":"../package.json"}]},{},["index.js"], null)
+},{"./../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../src/components/Banner":"../src/components/Banner.js","./../src/components/Footer":"../src/components/Footer.js","./../src/App":"../src/App.js"}]},{},["index.js"], null)
 //# sourceMappingURL=/index.js.map

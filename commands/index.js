@@ -1,16 +1,24 @@
 import React, {useEffect, useState} from 'react'
-import {Box, Color, Text} from 'ink'
+import {Box} from 'ink'
 import QuickSearchInput from 'ink-quicksearch-input'
-import Gradient from 'ink-gradient'
-import BigText from 'ink-big-text'
+import useStdoutDimensions from 'ink-use-stdout-dimensions'
 
 import useGenerators from './../src/hooks/useGenerators'
+
+import Banner from './../src/components/Banner'
+import Footer from './../src/components/Footer'
 import App from './../src/App'
-import pkg from './../package.json'
 
 /** Command: bud */
 /// Bud
 const Bud = () => {
+  const [columns, rows] = useStdoutDimensions()
+  const padding = 4
+  const appDimensions = {
+    height: rows - padding,
+    width: columns - padding,
+  }
+
   const {core, plugin, project, complete} = useGenerators()
   const [buds, setBuds] = useState(null)
   const [selection, setSelection] = useState(null)
@@ -24,44 +32,27 @@ const Bud = () => {
       )
   }, [complete])
 
-  return (
-    <>
-      <Box flexDirection="row" alignItems="center" marginBottom={0} paddingBottom={0}>
-        <Box marginRight={1} marginBottom={0} marginTop={0}>
-          <Gradient name="teen">
-            <BigText
-              text="Bud"
-              font="simple3d"
-              marginTop={0}
-              marginBottom={0}
-              paddingBottom={0}
-            />
-          </Gradient>
-        </Box>
-        <Box flexDirection="column" marginBottom={0} marginTop={0}>
-          <Text bold>
-            <Color green>
-              ⚡️ {pkg.name} [{pkg.version}]
-            </Color>
-          </Text>
-          <Text uppercase>
-            <Color red>⚠</Color> This software is pre-release
-          </Text>
-          <Text> </Text>
-        </Box>
-      </Box>
-      <Box>
-        {buds && !selection && (
-          <QuickSearchInput
-            label="Select a generator"
-            items={buds}
-            onSelect={selection => setSelection(selection)}
-          />
-        )}
+  return !selection ? (
+    <Box
+      paddingLeft={2}
+      paddingRight={2}
+      height={appDimensions.height}
+      flexDirection="column"
+      justifyContent="space-around">
+      <Banner />
 
-        {selection && <App budfile={selection.value} />}
-      </Box>
-    </>
+      {buds && !selection && (
+        <QuickSearchInput
+          label="Select a generator"
+          items={buds}
+          onSelect={selection => setSelection(selection)}
+        />
+      )}
+
+      <Footer />
+    </Box>
+  ) : (
+    <App budfile={selection.value} />
   )
 }
 

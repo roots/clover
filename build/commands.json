@@ -8,31 +8,6 @@
 			"subCommands": []
 		},
 		{
-			"path": "init.js",
-			"name": "init",
-			"description": "Create a new project",
-			"args": [
-				{
-					"key": "output",
-					"type": "string",
-					"description": "Output directory",
-					"isRequired": false,
-					"aliases": [],
-					"positional": true
-				},
-				{
-					"key": "logging",
-					"type": "boolean",
-					"description": "Enable logging",
-					"isRequired": false,
-					"defaultValue": false,
-					"aliases": [],
-					"positional": false
-				}
-			],
-			"subCommands": []
-		},
-		{
 			"path": "generate/index.js",
 			"name": "generate",
 			"description": "Run a generator.",

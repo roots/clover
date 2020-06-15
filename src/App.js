@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Box} from 'ink'
 import PropTypes from 'prop-types'
 
@@ -7,7 +7,6 @@ import useData from './hooks/useData'
 import useSprout from './hooks/useSprout'
 import useSubscription from './hooks/useSubscription'
 
-import Banner from './components/Banner'
 import Tasks from './components/Tasks'
 
 /** Suppress unhandled rejections */
@@ -17,9 +16,10 @@ process.on('unhandledRejection', () => null)
  * Bud application
  *
  * @prop {string} budfile
+ * @prop {array}  queue
  * @prop {string} output
  */
-const App = ({budfile, output}) => {
+const App = ({budfile, queue, output}) => {
   const {config} = useConfig(process.cwd())
   const {sprout} = useSprout(budfile)
   const {data} = useData(sprout)
@@ -30,6 +30,10 @@ const App = ({budfile, output}) => {
     projectDir: output ? output : process.cwd(),
   })
 
+  useEffect(() => {
+    console.log(queue)
+  }, [queue])
+
   return (
     <Box
       width="103"
@@ -37,7 +41,6 @@ const App = ({budfile, output}) => {
       justifyContent="flex-start"
       paddingTop={1}
       paddingBottom={1}>
-      <Banner label={sprout.description || 'Bud: scaffolding utility'} />
       <Tasks status={status} sprout={sprout} complete={complete} />
     </Box>
   )
@@ -45,6 +48,7 @@ const App = ({budfile, output}) => {
 
 App.propTypes = {
   budfile: PropTypes.string,
+  queue: PropTypes.array,
 }
 
 App.propDefaults = {

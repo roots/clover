@@ -1209,46 +1209,7 @@ const useSubscription = ({
 
 var _default = useSubscription;
 exports.default = _default;
-},{"./../bud":"../src/bud/index.js"}],"../src/components/Banner.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _inkLink = _interopRequireDefault(require("ink-link"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Banner component.
- *
- * @prop {string} label
- */
-const Banner = ({
-  label
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  marginBottom: 1,
-  flexDirection: "row",
-  justifyContent: "space-between"
-}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, null, label), /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "row"
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, `🌱`), /*#__PURE__*/_react.default.createElement(_ink.Text, {
-  bold: true
-}, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://roots.io/bud"
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, '  Bud')))));
-
-var _default = Banner;
-exports.default = _default;
-},{}],"../src/components/Tasks.js":[function(require,module,exports) {
+},{"./../bud":"../src/bud/index.js"}],"../src/components/Tasks.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1314,8 +1275,6 @@ var _useSprout = _interopRequireDefault(require("./hooks/useSprout"));
 
 var _useSubscription = _interopRequireDefault(require("./hooks/useSubscription"));
 
-var _Banner = _interopRequireDefault(require("./components/Banner"));
-
 var _Tasks = _interopRequireDefault(require("./components/Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1326,11 +1285,13 @@ process.on('unhandledRejection', () => null);
  * Bud application
  *
  * @prop {string} budfile
+ * @prop {array}  queue
  * @prop {string} output
  */
 
 const App = ({
   budfile,
+  queue,
   output
 }) => {
   const {
@@ -1357,9 +1318,7 @@ const App = ({
     justifyContent: "flex-start",
     paddingTop: 1,
     paddingBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_Banner.default, {
-    label: sprout.description || 'Bud: scaffolding utility'
-  }), /*#__PURE__*/_react.default.createElement(_Tasks.default, {
+  }, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
     sprout: sprout,
     complete: complete
@@ -1367,14 +1326,15 @@ const App = ({
 };
 
 App.propTypes = {
-  budfile: _propTypes.default.string
+  budfile: _propTypes.default.string,
+  queue: _propTypes.default.array
 };
 App.propDefaults = {
   output: null
 };
 var _default = App;
 exports.default = _default;
-},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Banner":"../src/components/Banner.js","./components/Tasks":"../src/components/Tasks.js"}],"init/index.js":[function(require,module,exports) {
+},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Tasks":"../src/components/Tasks.js"}],"init/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

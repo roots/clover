@@ -1,23 +1,13 @@
 import React from 'react'
-import {Box, Color, Text} from 'ink'
-import Link from 'ink-link'
+import {Box} from 'ink'
+import Gradient from 'ink-gradient'
+import BigText from 'ink-big-text'
 
-/**
- * Banner component.
- *
- * @prop {string} label
- */
-const Banner = ({label}) => (
-  <Box marginBottom={1} flexDirection="row" justifyContent="space-between">
-    {label && <Text>{label}</Text>}
-    <Box flexDirection="row">
-      <Text>{`🌱`}</Text>
-      <Text bold>
-        <Link url="https://roots.io/bud">
-          <Color green>{'  Bud'}</Color>
-        </Link>
-      </Text>
-    </Box>
+const Banner = () => (
+  <Box>
+    <Gradient name="teen">
+      <BigText text="Bud" font="simple3d" />
+    </Gradient>
   </Box>
 )
 

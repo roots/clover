@@ -65,7 +65,7 @@ const useModuleGenerators = keyword => {
 const useGenerators = () => {
   const [project, checkedProject] = useProjectGenerators()
   const [core, checkedCore] = useModuleGenerators('bud-core-generators')
-  const [plugin, checkedPlugin] = useModuleGenerators('bud-generators')
+  const [plugin, checkedPlugin] = useModuleGenerators('bud-generator')
 
   return {
     project,

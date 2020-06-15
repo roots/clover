@@ -199,7 +199,7 @@ exports.useModuleGenerators = useModuleGenerators;
 const useGenerators = () => {
   const [project, checkedProject] = useProjectGenerators();
   const [core, checkedCore] = useModuleGenerators('bud-core-generators');
-  const [plugin, checkedPlugin] = useModuleGenerators('bud-generators');
+  const [plugin, checkedPlugin] = useModuleGenerators('bud-generator');
   return {
     project,
     plugin,
@@ -227,30 +227,18 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkLink = _interopRequireDefault(require("ink-link"));
+var _inkGradient = _interopRequireDefault(require("ink-gradient"));
+
+var _inkBigText = _interopRequireDefault(require("ink-big-text"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Banner component.
- *
- * @prop {string} label
- */
-const Banner = ({
-  label
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  marginBottom: 1,
-  flexDirection: "row",
-  justifyContent: "space-between"
-}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, null, label), /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "row"
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, `🌱`), /*#__PURE__*/_react.default.createElement(_ink.Text, {
-  bold: true
-}, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://roots.io/bud"
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, '  Bud')))));
+const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkGradient.default, {
+  name: "teen"
+}, /*#__PURE__*/_react.default.createElement(_inkBigText.default, {
+  text: "Bud",
+  font: "simple3d"
+})));
 
 var _default = Banner;
 exports.default = _default;
