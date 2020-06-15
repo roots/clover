@@ -74,14 +74,15 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 | Command      | Description             |
 | ------------ | ----------------------- |
 | bud          | Bud                     |
+| bud init     | Create a new project    |
 | bud generate | Run a generator.        |
 | bud init     | Create a new project    |
 | bud list     | List available budfiles |
 
 ### Dependencies
 
+- @roots/bud
 - @roots/bud-generators
-- @roots/budpack
 - enquirer
 - esm
 - execa

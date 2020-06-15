@@ -43,11 +43,6 @@ module.exports = {
   ],
   tasks: [
     {
-      task: 'copy',
-      src: '.bud/bud.log',
-      dest: '.bud/bud.log',
-    },
-    {
       task: 'compile',
       src: '.bud/bud.config.json.hbs',
       dest: '.bud/bud.config.json',

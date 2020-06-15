@@ -9,7 +9,6 @@ import App from './../../src/App'
 
 /** Command: bud generate */
 /// Run a generator.
-/// Pass along the generator name as an argument if you wish to skip the prompt.
 const Generate = ({inputArgs}) => {
   const [name] = useState(inputArgs[1] ?? null)
   const {core, plugin, project, complete} = useGenerators()

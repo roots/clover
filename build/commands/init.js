@@ -117,105 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/useGenerators.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useModuleGenerators = exports.useProjectGenerators = exports.default = void 0;
-
-var _path = _interopRequireDefault(require("path"));
-
-var _react = require("react");
-
-var _findPlugins = _interopRequireDefault(require("find-plugins"));
-
-var _globby = _interopRequireDefault(require("globby"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const cwd = process.cwd();
-/**
- * Process globby matches into expected object
- */
-
-const fromMatches = matches => matches.map(generator => ({
-  name: _path.default.basename(generator).replace('.bud.js', ''),
-  path: generator
-}));
-/**
- * Generators sourced from project .bud dir
- */
-
-
-const useProjectGenerators = () => {
-  const [generators, setGenerators] = (0, _react.useState)([]);
-  const [checked, setChecked] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      setChecked(false);
-      const matches = await (0, _globby.default)([`${cwd}/.bud/budfiles/**/*.bud.js`]);
-      setGenerators(fromMatches(matches));
-      setChecked(true);
-    })();
-  }, []);
-  return [generators, checked];
-};
-/**
- * Generators sourced from node_modules
- *
- * @param {string} keyword package.json keywords match
- */
-
-
-exports.useProjectGenerators = useProjectGenerators;
-
-const useModuleGenerators = keyword => {
-  const [generators, setGenerators] = (0, _react.useState)([]);
-  const [checked, setChecked] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    keyword && (async () => {
-      setChecked(false);
-      const packages = (0, _findPlugins.default)({
-        keyword
-      }).map(plugin => `${plugin.dir}/**/*.bud.js`);
-      const matches = await (0, _globby.default)(packages);
-      setGenerators(fromMatches(matches));
-      setChecked(true);
-    })();
-  }, [keyword]);
-  return [generators, checked];
-};
-/**
- * useGenerators hook
- */
-
-
-exports.useModuleGenerators = useModuleGenerators;
-
-const useGenerators = () => {
-  const [project, checkedProject] = useProjectGenerators();
-  const [core, checkedCore] = useModuleGenerators('bud-core-generators');
-  const [plugin, checkedPlugin] = useModuleGenerators('bud-generators');
-  return {
-    project,
-    plugin,
-    core,
-    status: {
-      project: checkedProject,
-      plugin: checkedPlugin,
-      core: checkedCore
-    },
-    complete: checkedCore && checkedProject && checkedPlugin
-  };
-};
-
-var _default = useGenerators;
-exports.default = _default;
-},{}],"../src/hooks/useConfig.js":[function(require,module,exports) {
+})({"../src/hooks/useConfig.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1472,75 +1374,7 @@ App.propDefaults = {
 };
 var _default = App;
 exports.default = _default;
-},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Banner":"../src/components/Banner.js","./components/Tasks":"../src/components/Tasks.js"}],"../package.json":[function(require,module,exports) {
-module.exports = {
-  "name": "@roots/bud",
-  "version": "1.0.0-rc.5",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/roots/bud.git"
-  },
-  "bin": {
-    "bud": "build/cli.js"
-  },
-  "engines": {
-    "node": ">=12"
-  },
-  "scripts": {
-    "bud": "bud",
-    "build": "pastel build",
-    "dev": "pastel dev",
-    "docs": "bud generate readme",
-    "lint": "npm-run-all -c lint:*",
-    "lint:eslint": "eslint .",
-    "lint:prettier": "prettier --write ."
-  },
-  "files": ["assets", "build", "src"],
-  "dependencies": {
-    "@roots/bud": "roots/bud#v1.0.0-rc.5",
-    "@roots/bud-generators": "^0.0.1",
-    "enquirer": "^2.3.5",
-    "esm": "^3.2.25",
-    "execa": "^4.0.2",
-    "find-plugins": "^1.1.7",
-    "fs-extra": "^9.0.1",
-    "globby": "^11.0.1",
-    "handlebars": "^4.7.6",
-    "handlebars-helpers": "^0.10.0",
-    "ink": "^2.7.1",
-    "ink-ascii": "^0.0.4",
-    "ink-big-text": "^1.1.0",
-    "ink-box": "^1.0.0",
-    "ink-divider": "^2.0.1",
-    "ink-gradient": "^1.0.0",
-    "ink-image": "^2.0.0",
-    "ink-link": "^1.1.0",
-    "ink-quicksearch-input": "^1.0.0",
-    "ink-spinner": "^3.0.1",
-    "ink-table": "^2.0.1",
-    "ink-text-input": "^3.2.2",
-    "ink-use-stdout-dimensions": "^1.0.5",
-    "pastel": "^1.0.3",
-    "prettier": "2.0.5",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "rxjs": "^6.5.5"
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
-    "eslint-plugin-react": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4.0.4",
-    "husky": "^4.2.5",
-    "markdownlint-cli": "^0.23.1",
-    "npm-run-all": "^4.1.5"
-  },
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://opensource.org/licenses/MIT"
-  }]
-};
-},{}],"index.js":[function(require,module,exports) {
+},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Banner":"../src/components/Banner.js","./components/Tasks":"../src/components/Tasks.js"}],"init.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1548,84 +1382,37 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _path = require("path");
 
-var _ink = require("ink");
+var _react = _interopRequireDefault(require("react"));
 
-var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
-
-var _inkGradient = _interopRequireDefault(require("ink-gradient"));
-
-var _inkBigText = _interopRequireDefault(require("ink-big-text"));
-
-var _useGenerators = _interopRequireDefault(require("./../src/hooks/useGenerators"));
+var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _App = _interopRequireDefault(require("./../src/App"));
 
-var _package = _interopRequireDefault(require("./../package.json"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+const budfileDir = (0, _path.resolve)(__dirname, './../../src/budfiles/init');
+/** Command: bud init */
+/// Create a new project
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+const Init = props => /*#__PURE__*/_react.default.createElement(_App.default, {
+  budfile: (0, _path.join)(budfileDir, 'init.bud.js'),
+  logging: props.logging,
+  output: props.output
+});
 
-/** Command: bud */
-/// Bud
-const Bud = () => {
-  const {
-    core,
-    plugin,
-    project,
-    complete
-  } = (0, _useGenerators.default)();
-  const [buds, setBuds] = (0, _react.useState)(null);
-  const [selection, setSelection] = (0, _react.useState)(null);
-  (0, _react.useEffect)(() => {
-    complete && setBuds([...project, ...plugin, ...core].map(bud => ({
-      value: bud.path,
-      label: bud.name
-    })));
-  }, [complete]);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 0,
-    paddingBottom: 0
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    marginRight: 1,
-    marginBottom: 0,
-    marginTop: 0
-  }, /*#__PURE__*/_react.default.createElement(_inkGradient.default, {
-    name: "teen"
-  }, /*#__PURE__*/_react.default.createElement(_inkBigText.default, {
-    text: "Bud",
-    font: "simple3d",
-    marginTop: 0,
-    marginBottom: 0,
-    paddingBottom: 0
-  }))), /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "column",
-    marginBottom: 0,
-    marginTop: 0
-  }, /*#__PURE__*/_react.default.createElement(_ink.Text, {
-    bold: true
-  }, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    green: true
-  }, "\u26A1\uFE0F ", _package.default.name, " [", _package.default.version, "]")), /*#__PURE__*/_react.default.createElement(_ink.Text, {
-    uppercase: true
-  }, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    red: true
-  }, "\u26A0"), " This software is pre-release"), /*#__PURE__*/_react.default.createElement(_ink.Text, null, " "))), /*#__PURE__*/_react.default.createElement(_ink.Box, null, buds && !selection && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
-    label: "Select a generator",
-    items: buds,
-    onSelect: selection => setSelection(selection)
-  }), selection && /*#__PURE__*/_react.default.createElement(_App.default, {
-    budfile: selection.value
-  })));
+Init.propTypes = {
+  /// Output directory
+  output: _propTypes.default.string,
+  /// Enable logging
+  logging: _propTypes.default.bool
 };
-
-var _default = Bud;
+Init.defaultProps = {
+  logging: false
+};
+Init.positionalArgs = ['output'];
+var _default = Init;
 exports.default = _default;
-},{"./../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../src/App":"../src/App.js","./../package.json":"../package.json"}]},{},["index.js"], null)
-//# sourceMappingURL=/index.js.map
+},{"./../src/App":"../src/App.js"}]},{},["init.js"], null)
+//# sourceMappingURL=/init.js.map

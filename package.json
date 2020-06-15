@@ -20,10 +20,14 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write ."
   },
-  "files": ["assets", "build", "src"],
+  "files": [
+    "assets",
+    "build",
+    "src"
+  ],
   "dependencies": {
+    "@roots/bud": "roots/bud#v1.0.0-rc.5",
     "@roots/bud-generators": "^0.0.1",
-    "@roots/budpack": "^0.0.1",
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
     "execa": "^4.0.2",

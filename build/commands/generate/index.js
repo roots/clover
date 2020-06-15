@@ -1500,7 +1500,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 /** Command: bud generate */
 /// Run a generator.
-/// Pass along the generator name as an argument if you wish to skip the prompt.
 const Generate = ({
   inputArgs
 }) => {
