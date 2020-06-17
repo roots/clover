@@ -24,7 +24,9 @@ const useProjectGenerators = () => {
     ;(async () => {
       setChecked(false)
 
-      const matches = await globby([`${cwd}/.bud/budfiles/**/*.bud.js`])
+      const matches = await globby([
+        `${cwd}/.bud/budfiles/**/*.bud.js`,
+      ])
 
       setGenerators(fromMatches(matches))
       setChecked(true)
@@ -42,18 +44,24 @@ const useProjectGenerators = () => {
 const useModuleGenerators = keyword => {
   const [generators, setGenerators] = useState([])
   const [checked, setChecked] = useState(false)
+
   useEffect(() => {
-    keyword &&
-      (async () => {
-        setChecked(false)
+    ;(async () => {
+      setChecked(false)
 
-        const packages = findPlugins({keyword}).map(plugin => `${plugin.dir}/**/*.bud.js`)
+      const packages = findPlugins({
+        dir: path.resolve(path.join(cwd, 'node_modules')),
+        scanAllDirs: true,
+        keyword,
+      }).map(
+        plugin => path.join(plugin.dir, '/**/*.bud.js'),
+      )
 
-        const matches = await globby(packages)
+      const matches = globby.sync(packages)
 
-        setGenerators(fromMatches(matches))
-        setChecked(true)
-      })()
+      setGenerators(fromMatches(matches))
+      setChecked(true)
+    })()
   }, [keyword])
 
   return [generators, checked]

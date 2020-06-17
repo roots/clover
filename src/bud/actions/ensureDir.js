@@ -12,7 +12,13 @@ import fs from 'fs-extra'
  *
  * @return {void}
  */
-const ensureDir = async ({task, observer, config, data, compiler}) => {
+const ensureDir = async ({
+  task,
+  observer,
+  config,
+  data,
+  compiler,
+}) => {
   const path = join(config.projectDir, compiler.make(task.path)(data))
   observer.next(`Writing directory ${path}`)
   await fs.ensureDir(path)

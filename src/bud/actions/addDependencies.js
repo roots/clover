@@ -11,7 +11,9 @@ const addDependencies = async ({task, observer, util}) => {
   const cmdStr = () => {
     switch (task.repo) {
       case 'npm':
-        return `yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(' ')}`
+        return `yarn add ${task.dev ? `-D` : ``} ${task.pkgs.join(
+          ' ',
+        )}`
       case 'packagist':
         return `composer require ${task.pkgs.join(' ')} ${
           task.dev ? `--development` : ``

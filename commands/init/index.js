@@ -2,14 +2,24 @@ import {resolve} from 'path'
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import App from './../../src/App'
+import GeneratorMiddleware from './../../src/middleware/GeneratorMiddleware'
 
 /** Constants */
-const init = resolve(__dirname, './../../../src/generators/init/init.bud.js')
+const init = resolve(
+  __dirname,
+  './../../../src/generators/init/init.bud.js',
+)
+
+console.log(init)
 
 /** Command: bud init */
 /// Create a new project
-const Init = props => <App budfile={init} output={props.output} />
+const Init = props => (
+  <GeneratorMiddleware
+    budfile={init}
+    output={props.output}
+  />
+)
 
 Init.propTypes = {
   /// Output directory

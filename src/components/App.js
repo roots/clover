@@ -1,6 +1,7 @@
 import React from 'react'
 import {Box} from 'ink'
-import Tasks from './components/Tasks'
+
+import Tasks from './Tasks'
 
 /**
  * Bud application

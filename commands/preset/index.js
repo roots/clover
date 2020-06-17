@@ -41,7 +41,11 @@ const Preset = ({inputArgs}) => {
   useEffect(() => {
     generatorsComplete &&
       setGenerators(
-        [...projectGenerators, ...pluginGenerators, ...coreGenerators].map(generator => ({
+        [
+          ...projectGenerators,
+          ...pluginGenerators,
+          ...coreGenerators,
+        ].map(generator => ({
           value: generator.path,
           label: generator.name,
         })),
@@ -55,10 +59,12 @@ const Preset = ({inputArgs}) => {
   useEffect(() => {
     presetsComplete &&
       setPresets(
-        [...projectPresets, ...pluginPresets, ...corePresets].map(preset => ({
-          value: preset.path,
-          label: preset.name,
-        })),
+        [...projectPresets, ...pluginPresets, ...corePresets].map(
+          preset => ({
+            value: preset.path,
+            label: preset.name,
+          }),
+        ),
       )
   }, [presetsComplete])
 
@@ -90,7 +96,7 @@ const Preset = ({inputArgs}) => {
   /**
    * Filter generators based on specs of selected preset
    */
-  const [generatorQueue, setGeneratorQueue] = useState([])
+  const [generatorQueue, setGeneratorQueue] = useState(null)
   useEffect(() => {
     if (preset && generatorsComplete) {
       const presetGenerators = generators.filter(
@@ -101,7 +107,20 @@ const Preset = ({inputArgs}) => {
     }
   }, [preset, generatorsComplete])
 
-  const noResults = presetsComplete && (!presets || !presets.length > 0)
+  /**
+   * Aggregate all prompts from all generators
+   */
+  const [prompts, setPrompts] = useState([])
+  useEffect(() => {
+    const promptsReducer = (acc, {prompts}) => [...acc, ...prompts]
+    setPrompts(prompts.reduce(promptsReducer, []))
+  })
+
+  /**
+   * There were no presets found.
+   */
+  const noResults =
+    presetsComplete && (!presets || !presets.length > 0)
 
   return (
     <Box>

@@ -9,7 +9,9 @@ const useData = sprout => {
 
   useEffect(() => {
     if (sprout && !data) {
-      sprout.prompts ? prompt(sprout.prompts).then(data => setData(data)) : setData({})
+      sprout.prompts
+        ? prompt(sprout.prompts).then(data => setData(data))
+        : setData({})
     }
   }, [sprout])
 

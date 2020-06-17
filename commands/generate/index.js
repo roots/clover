@@ -4,8 +4,7 @@ import PropTypes from 'prop-types'
 import QuickSearchInput from 'ink-quicksearch-input'
 
 import useGenerators from './../../src/hooks/useGenerators'
-
-import App from './../../src/App'
+import GeneratorMiddleware from './../../src/middleware/GeneratorMiddleware'
 
 /** Command: bud generate */
 /// Run a generator.
@@ -31,9 +30,11 @@ const Generate = ({inputArgs}) => {
     }
   }, [complete, buds, name])
 
+  const displayQuickSearch = !name && buds && !selection
+
   return (
     <Box>
-      {!name && buds && !selection && (
+      {displayQuickSearch && (
         <QuickSearchInput
           label="Select a generator"
           items={buds}
@@ -41,7 +42,7 @@ const Generate = ({inputArgs}) => {
         />
       )}
 
-      {selection && <App budfile={selection.value} />}
+      {selection && <GeneratorMiddleware budfile={selection.value} />}
     </Box>
   )
 }

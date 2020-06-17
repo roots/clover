@@ -13,10 +13,20 @@ import {outputFile, readFile} from 'fs-extra'
  * @param  {object}   compiler
  * @return {void}
  */
-const compile = async ({task, observer, data, config, prettier, compiler}) => {
+const compile = async ({
+  task,
+  observer,
+  data,
+  config,
+  prettier,
+  compiler,
+}) => {
   observer.next(`Write file: ${task.src}`)
 
-  const src = await readFile(join(config.templateDir, task.src), 'utf8')
+  const src = await readFile(
+    join(config.templateDir, task.src),
+    'utf8',
+  )
 
   const dest = compiler.make(task.dest)(data)
   const template = compiler.make(src)(data)

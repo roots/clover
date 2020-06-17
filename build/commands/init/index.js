@@ -985,7 +985,7 @@ module.exports = {
   arrowParens: 'avoid',
   bracketSpacing: false,
   tabWidth: 2,
-  printWidth: 90,
+  printWidth: 70,
   singleQuote: true,
   jsxBracketSameLine: true,
   useTabs: false,
@@ -1253,7 +1253,7 @@ const Tasks = ({
 
 var _default = Tasks;
 exports.default = _default;
-},{}],"../src/App.js":[function(require,module,exports) {
+},{}],"../src/components/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1265,33 +1265,66 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _useConfig = _interopRequireDefault(require("./hooks/useConfig"));
-
-var _useData = _interopRequireDefault(require("./hooks/useData"));
-
-var _useSprout = _interopRequireDefault(require("./hooks/useSprout"));
-
-var _useSubscription = _interopRequireDefault(require("./hooks/useSubscription"));
-
-var _Tasks = _interopRequireDefault(require("./components/Tasks"));
+var _Tasks = _interopRequireDefault(require("./Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/** Suppress unhandled rejections */
-process.on('unhandledRejection', () => null);
 /**
  * Bud application
+ *
+ * @prop {string} status
+ * @prop {array}  sprout
+ * @prop {bool} complete
+ */
+const App = ({
+  status,
+  sprout,
+  complete
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  width: "103",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  paddingTop: 1,
+  paddingBottom: 1
+}, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
+  status: status,
+  sprout: sprout,
+  complete: complete
+}));
+
+var _default = App;
+exports.default = _default;
+},{"./Tasks":"../src/components/Tasks.js"}],"../src/middleware/GeneratorMiddleware.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _useConfig = _interopRequireDefault(require("./../hooks/useConfig"));
+
+var _useData = _interopRequireDefault(require("./../hooks/useData"));
+
+var _useSprout = _interopRequireDefault(require("./../hooks/useSprout"));
+
+var _useSubscription = _interopRequireDefault(require("./../hooks/useSubscription"));
+
+var _App = _interopRequireDefault(require("./../components/App"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Middleware: Generator
  *
  * @prop {string} budfile
  * @prop {array}  queue
  * @prop {string} output
  */
-
-const App = ({
+const GeneratorMiddleware = ({
   budfile,
-  queue,
   output
 }) => {
   const {
@@ -1312,29 +1345,16 @@ const App = ({
     sprout,
     projectDir: output ? output : process.cwd()
   });
-  return /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    width: "103",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    paddingTop: 1,
-    paddingBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
+  return /*#__PURE__*/_react.default.createElement(_App.default, {
     status: status,
     sprout: sprout,
     complete: complete
-  }));
+  });
 };
 
-App.propTypes = {
-  budfile: _propTypes.default.string,
-  queue: _propTypes.default.array
-};
-App.propDefaults = {
-  output: null
-};
-var _default = App;
+var _default = GeneratorMiddleware;
 exports.default = _default;
-},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Tasks":"../src/components/Tasks.js"}],"init/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/App":"../src/components/App.js"}],"init/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1348,16 +1368,17 @@ var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _App = _interopRequireDefault(require("./../../src/App"));
+var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middleware/GeneratorMiddleware"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Constants */
 const init = (0, _path.resolve)(__dirname, './../../../src/generators/init/init.bud.js');
+console.log(init);
 /** Command: bud init */
 /// Create a new project
 
-const Init = props => /*#__PURE__*/_react.default.createElement(_App.default, {
+const Init = props => /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
   budfile: init,
   output: props.output
 });
@@ -1369,5 +1390,5 @@ Init.propTypes = {
 Init.positionalArgs = ['output'];
 var _default = Init;
 exports.default = _default;
-},{"./../../src/App":"../src/App.js"}]},{},["init/index.js"], null)
+},{"./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}]},{},["init/index.js"], null)
 //# sourceMappingURL=/init/index.js.map

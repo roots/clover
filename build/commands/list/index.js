@@ -177,12 +177,18 @@ const useModuleGenerators = keyword => {
   const [generators, setGenerators] = (0, _react.useState)([]);
   const [checked, setChecked] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
-    keyword && (async () => {
+    ;
+
+    (async () => {
       setChecked(false);
       const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
         keyword
-      }).map(plugin => `${plugin.dir}/**/*.bud.js`);
-      const matches = await (0, _globby.default)(packages);
+      }).map(plugin => _path.default.join(plugin.dir, '/**/*.bud.js'));
+
+      const matches = _globby.default.sync(packages);
+
       setGenerators(fromMatches(matches));
       setChecked(true);
     })();

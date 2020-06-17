@@ -177,12 +177,18 @@ const useModuleGenerators = keyword => {
   const [generators, setGenerators] = (0, _react.useState)([]);
   const [checked, setChecked] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
-    keyword && (async () => {
+    ;
+
+    (async () => {
       setChecked(false);
       const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
         keyword
-      }).map(plugin => `${plugin.dir}/**/*.bud.js`);
-      const matches = await (0, _globby.default)(packages);
+      }).map(plugin => _path.default.join(plugin.dir, '/**/*.bud.js'));
+
+      const matches = _globby.default.sync(packages);
+
       setGenerators(fromMatches(matches));
       setChecked(true);
     })();
@@ -1083,7 +1089,7 @@ module.exports = {
   arrowParens: 'avoid',
   bracketSpacing: false,
   tabWidth: 2,
-  printWidth: 90,
+  printWidth: 70,
   singleQuote: true,
   jsxBracketSameLine: true,
   useTabs: false,
@@ -1351,7 +1357,7 @@ const Tasks = ({
 
 var _default = Tasks;
 exports.default = _default;
-},{}],"../src/App.js":[function(require,module,exports) {
+},{}],"../src/components/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1363,33 +1369,66 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _useConfig = _interopRequireDefault(require("./hooks/useConfig"));
-
-var _useData = _interopRequireDefault(require("./hooks/useData"));
-
-var _useSprout = _interopRequireDefault(require("./hooks/useSprout"));
-
-var _useSubscription = _interopRequireDefault(require("./hooks/useSubscription"));
-
-var _Tasks = _interopRequireDefault(require("./components/Tasks"));
+var _Tasks = _interopRequireDefault(require("./Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/** Suppress unhandled rejections */
-process.on('unhandledRejection', () => null);
 /**
  * Bud application
+ *
+ * @prop {string} status
+ * @prop {array}  sprout
+ * @prop {bool} complete
+ */
+const App = ({
+  status,
+  sprout,
+  complete
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  width: "103",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  paddingTop: 1,
+  paddingBottom: 1
+}, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
+  status: status,
+  sprout: sprout,
+  complete: complete
+}));
+
+var _default = App;
+exports.default = _default;
+},{"./Tasks":"../src/components/Tasks.js"}],"../src/middleware/GeneratorMiddleware.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _useConfig = _interopRequireDefault(require("./../hooks/useConfig"));
+
+var _useData = _interopRequireDefault(require("./../hooks/useData"));
+
+var _useSprout = _interopRequireDefault(require("./../hooks/useSprout"));
+
+var _useSubscription = _interopRequireDefault(require("./../hooks/useSubscription"));
+
+var _App = _interopRequireDefault(require("./../components/App"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Middleware: Generator
  *
  * @prop {string} budfile
  * @prop {array}  queue
  * @prop {string} output
  */
-
-const App = ({
+const GeneratorMiddleware = ({
   budfile,
-  queue,
   output
 }) => {
   const {
@@ -1410,29 +1449,16 @@ const App = ({
     sprout,
     projectDir: output ? output : process.cwd()
   });
-  return /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    width: "103",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    paddingTop: 1,
-    paddingBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
+  return /*#__PURE__*/_react.default.createElement(_App.default, {
     status: status,
     sprout: sprout,
     complete: complete
-  }));
+  });
 };
 
-App.propTypes = {
-  budfile: _propTypes.default.string,
-  queue: _propTypes.default.array
-};
-App.propDefaults = {
-  output: null
-};
-var _default = App;
+var _default = GeneratorMiddleware;
 exports.default = _default;
-},{"./hooks/useConfig":"../src/hooks/useConfig.js","./hooks/useData":"../src/hooks/useData.js","./hooks/useSprout":"../src/hooks/useSprout.js","./hooks/useSubscription":"../src/hooks/useSubscription.js","./components/Tasks":"../src/components/Tasks.js"}],"generate/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/App":"../src/components/App.js"}],"generate/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1450,7 +1476,7 @@ var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input
 
 var _useGenerators = _interopRequireDefault(require("./../../src/hooks/useGenerators"));
 
-var _App = _interopRequireDefault(require("./../../src/App"));
+var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middleware/GeneratorMiddleware"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1486,11 +1512,12 @@ const Generate = ({
       setSelection(match[0]);
     }
   }, [complete, buds, name]);
-  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, !name && buds && !selection && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
+  const displayQuickSearch = !name && buds && !selection;
+  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, displayQuickSearch && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
     label: "Select a generator",
     items: buds,
     onSelect: selection => setSelection(selection)
-  }), selection && /*#__PURE__*/_react.default.createElement(_App.default, {
+  }), selection && /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
     budfile: selection.value
   }));
 };
@@ -1500,5 +1527,5 @@ Generate.propTypes = {
 };
 var _default = Generate;
 exports.default = _default;
-},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/App":"../src/App.js"}]},{},["generate/index.js"], null)
+},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}]},{},["generate/index.js"], null)
 //# sourceMappingURL=/generate/index.js.map

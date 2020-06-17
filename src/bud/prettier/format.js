@@ -10,7 +10,8 @@ const config = require('../../../prettier.config.js')
  * @return {string}
  */
 const format = (content, parser) => {
-  content = typeof content !== 'string' ? JSON.stringify(content) : content
+  content =
+    typeof content !== 'string' ? JSON.stringify(content) : content
 
   return prettier.format(content, {
     ...config,

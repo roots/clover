@@ -931,6 +931,10 @@
   resolved "https://registry.yarnpkg.com/@roots/bud-generators/-/bud-generators-0.0.1.tgz#868bdbf89f7d3a573d9fbeff60431526471be762"
   integrity sha512-UDXVc7o4Dp8jkfLR+yDQ0T0AHRnGVtNizj4AMyrNyVywhG0DBzhujDRdAXggQk6UFqxPGI5yrmBHZ0VJeUXY1Q==
 
+"@roots/bud-generators@roots/bud-generators#master":
+  version "0.0.1"
+  resolved "https://codeload.github.com/roots/bud-generators/tar.gz/dcf24de775447f89c187eb7168ad9259846fbd14"
+
 "@roots/bud@roots/bud#v1.0.0-rc.5":
   version "1.0.0-rc.5"
   resolved "https://codeload.github.com/roots/bud/tar.gz/44eb9c368b783406dfdd2ac4af547904b603fb59"

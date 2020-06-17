@@ -12,11 +12,19 @@ const List = () => {
   const buds = [...project, ...plugin, ...core]
 
   return (
-    <Box width="103" flexDirection="column" justifyContent="flex-start" padding={1}>
+    <Box
+      width="103"
+      flexDirection="column"
+      justifyContent="flex-start"
+      padding={1}>
       <Banner label={'List budfiles'} />
       <Divider padding={0} width={100} />
       {buds.map((bud, id) => (
-        <Box key={id} flexDirection="column" flexGrow={1} justifyContent="flex-start">
+        <Box
+          key={id}
+          flexDirection="column"
+          flexGrow={1}
+          justifyContent="flex-start">
           <Box>{bud.name}</Box>
         </Box>
       ))}
