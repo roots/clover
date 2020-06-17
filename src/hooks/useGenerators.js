@@ -53,9 +53,7 @@ const useModuleGenerators = keyword => {
         dir: path.resolve(path.join(cwd, 'node_modules')),
         scanAllDirs: true,
         keyword,
-      }).map(
-        plugin => path.join(plugin.dir, '/**/*.bud.js'),
-      )
+      }).map(plugin => path.join(plugin.dir, '/**/*.bud.js'))
 
       const matches = globby.sync(packages)
 
@@ -72,7 +70,9 @@ const useModuleGenerators = keyword => {
  */
 const useGenerators = () => {
   const [project, checkedProject] = useProjectGenerators()
-  const [core, checkedCore] = useModuleGenerators('bud-core-generators')
+  const [core, checkedCore] = useModuleGenerators(
+    'bud-core-generators',
+  )
   const [plugin, checkedPlugin] = useModuleGenerators('bud-generator')
 
   return {

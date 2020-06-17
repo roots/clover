@@ -25,13 +25,7 @@ const GeneratorMiddleware = ({budfile, output}) => {
     projectDir: output ? output : process.cwd(),
   })
 
-  return (
-    <App
-      status={status}
-      sprout={sprout}
-      complete={complete}
-    />
-  )
+  return <App status={status} sprout={sprout} complete={complete} />
 }
 
 export default GeneratorMiddleware

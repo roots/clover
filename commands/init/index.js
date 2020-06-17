@@ -15,10 +15,7 @@ console.log(init)
 /** Command: bud init */
 /// Create a new project
 const Init = props => (
-  <GeneratorMiddleware
-    budfile={init}
-    output={props.output}
-  />
+  <GeneratorMiddleware budfile={init} output={props.output} />
 )
 
 Init.propTypes = {
