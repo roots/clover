@@ -5,7 +5,7 @@ orbs:
     executors:
       node-12:
         docker:
-          - image: 'circleci/node:12-stretch'
+          - image: circleci/node:12-stretch
     jobs:
       build-node:
         executor: node-12
@@ -20,7 +20,7 @@ orbs:
           - run: yarn lint
           - run: yarn build
           - run: node ./build/cli.js generate readme
-          - run: node ./build/cli.js --default
+          - run: node ./build/cli.js wp-plugin
           - save_cache:
               key: node-v1-{{ checksum "yarn.lock" }}
               paths:
