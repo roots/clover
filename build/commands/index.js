@@ -221,7 +221,114 @@ const useGenerators = () => {
 
 var _default = useGenerators;
 exports.default = _default;
-},{}],"../src/hooks/useConfig.js":[function(require,module,exports) {
+},{}],"../src/components/Banner.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkLink = _interopRequireDefault(require("ink-link"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  marginBottom: 1
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
+  url: "https://github.com/roots/bud",
+  fallback: false
+}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  green: true
+}, "\u26A1\uFE0F @roots/bud"))));
+
+var _default = Banner;
+exports.default = _default;
+},{}],"../src/components/Loading.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Loading
+ *
+ * @prop {string} message
+ */
+const Loading = ({
+  message,
+  spinnerColor = 'white'
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  keyword: spinnerColor
+}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', message);
+
+Loading.propTypes = {
+  message: _propTypes.default.string
+};
+Loading.defaultProps = {
+  message: 'Loading'
+};
+var _default = Loading;
+exports.default = _default;
+},{}],"../src/components/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _Banner = _interopRequireDefault(require("./Banner"));
+
+var _Loading = _interopRequireDefault(require("./Loading"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Bud application.
+ *
+ * @prop {object} children
+ */
+const App = ({
+  isLoading,
+  loadingMessage,
+  children
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  paddingTop: 1,
+  paddingRight: 1,
+  paddingBottom: 0,
+  paddingLeft: 1
+}, /*#__PURE__*/_react.default.createElement(_Banner.default, null), isLoading && /*#__PURE__*/_react.default.createElement(_Loading.default, {
+  spinnerColor: "green",
+  message: loadingMessage !== null && loadingMessage !== void 0 ? loadingMessage : 'Loading'
+}), children);
+
+var _default = App;
+exports.default = _default;
+},{"./Banner":"../src/components/Banner.js","./Loading":"../src/components/Loading.js"}],"../src/hooks/useConfig.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1417,114 +1524,7 @@ const GeneratorMiddleware = ({
 
 var _default = GeneratorMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"../src/components/Banner.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _inkLink = _interopRequireDefault(require("ink-link"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "column",
-  marginBottom: 1
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://github.com/roots/bud",
-  fallback: false
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, "\u26A1\uFE0F @roots/bud"))));
-
-var _default = Banner;
-exports.default = _default;
-},{}],"../src/components/Loading.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
-
-var _propTypes = _interopRequireDefault(require("prop-types"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Loading
- *
- * @prop {string} message
- */
-const Loading = ({
-  message,
-  spinnerColor = 'white'
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  keyword: spinnerColor
-}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), " ", message);
-
-Loading.propTypes = {
-  message: _propTypes.default.string
-};
-Loading.defaultProps = {
-  message: 'Loading'
-};
-var _default = Loading;
-exports.default = _default;
-},{}],"../src/components/App.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _Banner = _interopRequireDefault(require("./Banner"));
-
-var _Loading = _interopRequireDefault(require("./Loading"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Bud application.
- *
- * @prop {object} children
- */
-const App = ({
-  isLoading,
-  loadingMessage,
-  children
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  flexDirection: "column",
-  justifyContent: "flex-start",
-  paddingTop: 1,
-  paddingRight: 1,
-  paddingBottom: 0,
-  paddingLeft: 1
-}, /*#__PURE__*/_react.default.createElement(_Banner.default, null), isLoading && /*#__PURE__*/_react.default.createElement(_Loading.default, {
-  spinnerColor: "green",
-  message: loadingMessage !== null && loadingMessage !== void 0 ? loadingMessage : 'Loading'
-}), children);
-
-var _default = App;
-exports.default = _default;
-},{"./Banner":"../src/components/Banner.js","./Loading":"../src/components/Loading.js"}],"index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"generate/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1540,11 +1540,11 @@ var _lodash = require("lodash");
 
 var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
 
-var _useGenerators = _interopRequireDefault(require("./../src/hooks/useGenerators"));
+var _useGenerators = _interopRequireDefault(require("./../../src/hooks/useGenerators"));
 
-var _GeneratorMiddleware = _interopRequireDefault(require("./../src/middleware/GeneratorMiddleware"));
+var _App = _interopRequireDefault(require("./../../src/components/App"));
 
-var _App = _interopRequireDefault(require("./../src/components/App"));
+var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middleware/GeneratorMiddleware"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1552,9 +1552,9 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-/** Command: bud */
-/// Bud CLI
-const Bud = ({
+/** Command: bud generate */
+/// Run a generator.
+const Generate = ({
   inputArgs
 }) => {
   var _inputArgs$;
@@ -1572,7 +1572,7 @@ const Bud = ({
       value: bud.path,
       label: bud.name
     })));
-  }, [complete]);
+  }, [name, complete]);
   const [selection, setSelection] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
     name && buds && complete && setSelection(buds.filter(bud => (0, _lodash.isEqual)(bud.label, name))[0]);
@@ -1590,10 +1590,39 @@ const Bud = ({
   }));
 };
 
+Generate.propTypes = {
+  inputArgs: _propTypes.default.array
+};
+var _default = Generate;
+exports.default = _default;
+},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}],"index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _generate = _interopRequireDefault(require("./generate"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/** Command: bud */
+/// Bud CLI
+const Bud = ({
+  inputArgs
+}) => /*#__PURE__*/_react.default.createElement(_generate.default, {
+  inputArgs: inputArgs
+});
+
 Bud.propTypes = {
   inputArgs: _propTypes.default.array
 };
 var _default = Bud;
 exports.default = _default;
-},{"./../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js","./../src/components/App":"../src/components/App.js"}]},{},["index.js"], null)
+},{"./generate":"generate/index.js"}]},{},["index.js"], null)
 //# sourceMappingURL=/index.js.map

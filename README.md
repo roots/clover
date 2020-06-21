@@ -80,7 +80,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ### Dependencies
 
-- @roots/bud
 - @roots/bud-generators
 - enquirer
 - esm
@@ -91,7 +90,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - handlebars
 - handlebars-helpers
 - ink
-- ink-box
 - ink-link
 - ink-quicksearch-input
 - ink-spinner
@@ -106,6 +104,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ### Development dependencies
 
+- @roots/bud
 - babel-eslint
 - eslint
 - eslint-plugin-react

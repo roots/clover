@@ -22,7 +22,6 @@
   },
   "files": ["assets", "build", "src"],
   "dependencies": {
-    "@roots/bud": "roots/bud#v1.0.0-rc.5",
     "@roots/bud-generators": "roots/bud-generators#master",
     "enquirer": "^2.3.5",
     "esm": "^3.2.25",
@@ -33,7 +32,6 @@
     "handlebars": "^4.7.6",
     "handlebars-helpers": "^0.10.0",
     "ink": "^2.7.1",
-    "ink-box": "^1.0.0",
     "ink-link": "^1.1.0",
     "ink-quicksearch-input": "^1.0.0",
     "ink-spinner": "^3.0.1",
@@ -47,8 +45,9 @@
     "rxjs": "^6.5.5"
   },
   "devDependencies": {
+    "@roots/bud": "roots/bud#master",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
+    "eslint": "^7.3.0",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
     "husky": "^4.2.5",

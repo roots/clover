@@ -277,7 +277,7 @@ const Loading = ({
   spinnerColor = 'white'
 }) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
   keyword: spinnerColor
-}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), " ", message);
+}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', message);
 
 Loading.propTypes = {
   message: _propTypes.default.string
