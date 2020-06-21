@@ -1253,48 +1253,7 @@ const Tasks = ({
 
 var _default = Tasks;
 exports.default = _default;
-},{}],"../src/components/App.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ink = require("ink");
-
-var _Tasks = _interopRequireDefault(require("./Tasks"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Bud application
- *
- * @prop {string} status
- * @prop {array}  sprout
- * @prop {bool} complete
- */
-const App = ({
-  status,
-  sprout,
-  complete
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  width: "103",
-  flexDirection: "column",
-  justifyContent: "flex-start",
-  paddingTop: 1,
-  paddingBottom: 1
-}, /*#__PURE__*/_react.default.createElement(_Tasks.default, {
-  status: status,
-  sprout: sprout,
-  complete: complete
-}));
-
-var _default = App;
-exports.default = _default;
-},{"./Tasks":"../src/components/Tasks.js"}],"../src/middleware/GeneratorMiddleware.js":[function(require,module,exports) {
+},{}],"../src/middleware/GeneratorMiddleware.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1312,7 +1271,7 @@ var _useSprout = _interopRequireDefault(require("./../hooks/useSprout"));
 
 var _useSubscription = _interopRequireDefault(require("./../hooks/useSubscription"));
 
-var _App = _interopRequireDefault(require("./../components/App"));
+var _Tasks = _interopRequireDefault(require("./../components/Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1345,7 +1304,7 @@ const GeneratorMiddleware = ({
     sprout,
     projectDir: output ? output : process.cwd()
   });
-  return /*#__PURE__*/_react.default.createElement(_App.default, {
+  return /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
     sprout: sprout,
     complete: complete
@@ -1354,7 +1313,7 @@ const GeneratorMiddleware = ({
 
 var _default = GeneratorMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/App":"../src/components/App.js"}],"init/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"init/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1374,7 +1333,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /** Constants */
 const init = (0, _path.resolve)(__dirname, './../../../src/generators/init/init.bud.js');
-console.log(init);
 /** Command: bud init */
 /// Create a new project
 

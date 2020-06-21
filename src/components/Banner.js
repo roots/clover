@@ -1,13 +1,14 @@
 import React from 'react'
-import {Box} from 'ink'
-import Gradient from 'ink-gradient'
-import BigText from 'ink-big-text'
+import {Box, Text, Color} from 'ink'
+import Link from 'ink-link'
 
 const Banner = () => (
-  <Box>
-    <Gradient name="teen">
-      <BigText text="Bud" font="simple3d" />
-    </Gradient>
+  <Box flexDirection="column" marginBottom={1}>
+    <Text>
+      <Link url="https://github.com/roots/bud" fallback={false}>
+        <Color green>⚡️ @roots/bud</Color>
+      </Link>
+    </Text>
   </Box>
 )
 

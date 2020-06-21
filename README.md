@@ -73,11 +73,10 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 | Command      | Description             |
 | ------------ | ----------------------- |
-| bud          | Bud                     |
+| bud          | Bud CLI                 |
 | bud generate | Run a generator.        |
 | bud init     | Create a new project    |
 | bud list     | List available budfiles |
-| bud preset   | Run a preset.           |
 
 ### Dependencies
 
@@ -92,12 +91,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - handlebars
 - handlebars-helpers
 - ink
-- ink-ascii
-- ink-big-text
 - ink-box
-- ink-divider
-- ink-gradient
-- ink-image
 - ink-link
 - ink-quicksearch-input
 - ink-spinner

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box} from 'ink'
+import {Box, Color} from 'ink'
 import Spinner from 'ink-spinner'
 import PropTypes from 'prop-types'
 
@@ -8,9 +8,12 @@ import PropTypes from 'prop-types'
  *
  * @prop {string} message
  */
-const Loading = ({message}) => (
+const Loading = ({message, spinnerColor = 'white'}) => (
   <Box>
-    <Spinner /> {message}
+    <Color keyword={spinnerColor}>
+      <Spinner />
+    </Color>{' '}
+    {message}
   </Box>
 )
 

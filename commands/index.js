@@ -1,27 +1,20 @@
 import React, {useEffect, useState} from 'react'
-import {Box} from 'ink'
+import PropTypes from 'prop-types'
+import {isEqual} from 'lodash'
 import QuickSearchInput from 'ink-quicksearch-input'
-import useStdoutDimensions from 'ink-use-stdout-dimensions'
 
 import useGenerators from './../src/hooks/useGenerators'
+import GeneratorMiddleware from './../src/middleware/GeneratorMiddleware'
 
-import Banner from './../src/components/Banner'
-import Footer from './../src/components/Footer'
-import App from './../src/App'
+import App from './../src/components/App'
 
 /** Command: bud */
-/// Bud
-const Bud = () => {
-  const [columns, rows] = useStdoutDimensions()
-  const padding = 4
-  const appDimensions = {
-    height: rows - padding,
-    width: columns - padding,
-  }
-
+/// Bud CLI
+const Bud = ({inputArgs}) => {
+  const [name] = useState(inputArgs[1] ?? null)
   const {core, plugin, project, complete} = useGenerators()
+
   const [buds, setBuds] = useState(null)
-  const [selection, setSelection] = useState(null)
   useEffect(() => {
     complete &&
       setBuds(
@@ -32,16 +25,20 @@ const Bud = () => {
       )
   }, [complete])
 
-  return !selection ? (
-    <Box
-      paddingLeft={2}
-      paddingRight={2}
-      height={appDimensions.height}
-      flexDirection="column"
-      justifyContent="space-around">
-      <Banner />
+  const [selection, setSelection] = useState(null)
+  useEffect(() => {
+    name &&
+      buds &&
+      complete &&
+      setSelection(buds.filter(bud => isEqual(bud.label, name))[0])
+  }, [complete, buds, name])
 
-      {buds && !selection && (
+  const isLoading = !name && !buds && !selection
+  const displayQuickSearch = !name && buds && !selection
+
+  return (
+    <App isLoading={isLoading}>
+      {displayQuickSearch && (
         <QuickSearchInput
           label="Select a generator"
           items={buds}
@@ -49,11 +46,13 @@ const Bud = () => {
         />
       )}
 
-      <Footer />
-    </Box>
-  ) : (
-    <App budfile={selection.value} />
+      {selection && <GeneratorMiddleware budfile={selection.value} />}
+    </App>
   )
+}
+
+Bud.propTypes = {
+  inputArgs: PropTypes.array,
 }
 
 export default Bud

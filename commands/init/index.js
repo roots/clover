@@ -10,8 +10,6 @@ const init = resolve(
   './../../../src/generators/init/init.bud.js',
 )
 
-console.log(init)
-
 /** Command: bud init */
 /// Create a new project
 const Init = props => (

@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import {Box} from 'ink'
 import PropTypes from 'prop-types'
+import {isEqual} from 'lodash'
 import QuickSearchInput from 'ink-quicksearch-input'
 
 import useGenerators from './../../src/hooks/useGenerators'
+
+import App from './../../src/components/App'
 import GeneratorMiddleware from './../../src/middleware/GeneratorMiddleware'
 
 /** Command: bud generate */
@@ -11,6 +13,7 @@ import GeneratorMiddleware from './../../src/middleware/GeneratorMiddleware'
 const Generate = ({inputArgs}) => {
   const [name] = useState(inputArgs[1] ?? null)
   const {core, plugin, project, complete} = useGenerators()
+
   const [buds, setBuds] = useState(null)
   useEffect(() => {
     complete &&
@@ -20,20 +23,21 @@ const Generate = ({inputArgs}) => {
           label: bud.name,
         })),
       )
-  }, [complete])
+  }, [name, complete])
 
   const [selection, setSelection] = useState(null)
   useEffect(() => {
-    if (name && buds && complete) {
-      const match = buds.filter(bud => bud.label == name)
-      setSelection(match[0])
-    }
+    name &&
+      buds &&
+      complete &&
+      setSelection(buds.filter(bud => isEqual(bud.label, name))[0])
   }, [complete, buds, name])
 
+  const isLoading = !name && !buds && !selection
   const displayQuickSearch = !name && buds && !selection
 
   return (
-    <Box>
+    <App isLoading={isLoading}>
       {displayQuickSearch && (
         <QuickSearchInput
           label="Select a generator"
@@ -43,7 +47,7 @@ const Generate = ({inputArgs}) => {
       )}
 
       {selection && <GeneratorMiddleware budfile={selection.value} />}
-    </Box>
+    </App>
   )
 }
 

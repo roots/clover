@@ -1,23 +1,31 @@
 import React from 'react'
 import {Box} from 'ink'
 
-import Tasks from './Tasks'
+import Banner from './Banner'
+import Loading from './Loading'
 
 /**
- * Bud application
+ * Bud application.
  *
- * @prop {string} status
- * @prop {array}  sprout
- * @prop {bool} complete
+ * @prop {object} children
  */
-const App = ({status, sprout, complete}) => (
+const App = ({isLoading, loadingMessage, children}) => (
   <Box
-    width="103"
     flexDirection="column"
     justifyContent="flex-start"
     paddingTop={1}
-    paddingBottom={1}>
-    <Tasks status={status} sprout={sprout} complete={complete} />
+    paddingRight={1}
+    paddingBottom={0}
+    paddingLeft={1}>
+    <Banner />
+
+    {isLoading && (
+      <Loading
+        spinnerColor="green"
+        message={loadingMessage ?? 'Loading'}
+      />
+    )}
+    {children}
   </Box>
 )
 

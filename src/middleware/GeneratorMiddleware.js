@@ -5,7 +5,7 @@ import useData from './../hooks/useData'
 import useSprout from './../hooks/useSprout'
 import useSubscription from './../hooks/useSubscription'
 
-import App from './../components/App'
+import Tasks from './../components/Tasks'
 
 /**
  * Middleware: Generator
@@ -25,7 +25,7 @@ const GeneratorMiddleware = ({budfile, output}) => {
     projectDir: output ? output : process.cwd(),
   })
 
-  return <App status={status} sprout={sprout} complete={complete} />
+  return <Tasks status={status} sprout={sprout} complete={complete} />
 }
 
 export default GeneratorMiddleware

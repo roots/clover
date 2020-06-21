@@ -233,22 +233,23 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkGradient = _interopRequireDefault(require("ink-gradient"));
-
-var _inkBigText = _interopRequireDefault(require("ink-big-text"));
+var _inkLink = _interopRequireDefault(require("ink-link"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_inkGradient.default, {
-  name: "teen"
-}, /*#__PURE__*/_react.default.createElement(_inkBigText.default, {
-  text: "Bud",
-  font: "simple3d"
-})));
+const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  marginBottom: 1
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
+  url: "https://github.com/roots/bud",
+  fallback: false
+}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  green: true
+}, "\u26A1\uFE0F @roots/bud"))));
 
 var _default = Banner;
 exports.default = _default;
-},{}],"list/index.js":[function(require,module,exports) {
+},{}],"../src/components/Loading.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -260,11 +261,88 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkDivider = _interopRequireDefault(require("ink-divider"));
+var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Loading
+ *
+ * @prop {string} message
+ */
+const Loading = ({
+  message,
+  spinnerColor = 'white'
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  keyword: spinnerColor
+}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), " ", message);
+
+Loading.propTypes = {
+  message: _propTypes.default.string
+};
+Loading.defaultProps = {
+  message: 'Loading'
+};
+var _default = Loading;
+exports.default = _default;
+},{}],"../src/components/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _Banner = _interopRequireDefault(require("./Banner"));
+
+var _Loading = _interopRequireDefault(require("./Loading"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Bud application.
+ *
+ * @prop {object} children
+ */
+const App = ({
+  isLoading,
+  loadingMessage,
+  children
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  paddingTop: 1,
+  paddingRight: 1,
+  paddingBottom: 0,
+  paddingLeft: 1
+}, /*#__PURE__*/_react.default.createElement(_Banner.default, null), isLoading && /*#__PURE__*/_react.default.createElement(_Loading.default, {
+  spinnerColor: "green",
+  message: loadingMessage !== null && loadingMessage !== void 0 ? loadingMessage : 'Loading'
+}), children);
+
+var _default = App;
+exports.default = _default;
+},{"./Banner":"../src/components/Banner.js","./Loading":"../src/components/Loading.js"}],"list/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
 
 var _useGenerators = _interopRequireDefault(require("./../../src/hooks/useGenerators"));
 
-var _Banner = _interopRequireDefault(require("./../../src/components/Banner"));
+var _App = _interopRequireDefault(require("./../../src/components/App"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -274,28 +352,21 @@ const List = () => {
   const {
     core,
     plugin,
-    project
+    project,
+    complete
   } = (0, _useGenerators.default)();
   const buds = [...project, ...plugin, ...core];
-  return /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    width: "103",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    padding: 1
-  }, /*#__PURE__*/_react.default.createElement(_Banner.default, {
-    label: 'List budfiles'
-  }), /*#__PURE__*/_react.default.createElement(_inkDivider.default, {
-    padding: 0,
-    width: 100
-  }), buds.map((bud, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  return /*#__PURE__*/_react.default.createElement(_App.default, {
+    isLoading: !complete
+  }, buds.map((bud, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
     key: id,
     flexDirection: "column",
     flexGrow: 1,
     justifyContent: "flex-start"
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, bud.name))));
+  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, "\u25E6 ", bud.name))));
 };
 
 var _default = List;
 exports.default = _default;
-},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/components/Banner":"../src/components/Banner.js"}]},{},["list/index.js"], null)
+},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/components/App":"../src/components/App.js"}]},{},["list/index.js"], null)
 //# sourceMappingURL=/list/index.js.map

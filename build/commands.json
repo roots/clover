@@ -3,8 +3,17 @@
 		{
 			"path": "index.js",
 			"name": "index",
-			"description": "Bud",
-			"args": [],
+			"description": "Bud CLI",
+			"args": [
+				{
+					"key": "inputArgs",
+					"type": "array",
+					"description": "",
+					"isRequired": false,
+					"aliases": [],
+					"positional": false
+				}
+			],
 			"subCommands": []
 		},
 		{
@@ -44,22 +53,6 @@
 			"name": "list",
 			"description": "List available budfiles",
 			"args": [],
-			"subCommands": []
-		},
-		{
-			"path": "preset/index.js",
-			"name": "preset",
-			"description": "Run a preset.",
-			"args": [
-				{
-					"key": "inputArgs",
-					"type": "array",
-					"description": "",
-					"isRequired": false,
-					"aliases": [],
-					"positional": false
-				}
-			],
 			"subCommands": []
 		}
 	]
