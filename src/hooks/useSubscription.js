@@ -5,7 +5,7 @@ import bud from './../bud'
 /**
  * Use subscription.
  */
-const useSubscription = ({config, data, projectDir, sprout}) => {
+const useSubscription = ({config, data, projectDir, generator}) => {
   const {exit} = useApp()
 
   const [subscription, setSubscription] = useState(false)
@@ -14,9 +14,9 @@ const useSubscription = ({config, data, projectDir, sprout}) => {
   const [complete, setComplete] = useState(false)
 
   useEffect(() => {
-    if (sprout && data && !subscription) {
+    if (generator && data && !subscription) {
       setSubscription(
-        bud({config, data, sprout, projectDir}).subscribe({
+        bud({config, data, generator, projectDir}).subscribe({
           next: next => setStatus(next),
           complete: () => setComplete(true),
         }),

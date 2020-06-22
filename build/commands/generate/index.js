@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/useGenerators.js":[function(require,module,exports) {
+})({"../src/hooks/useGeneratorIndex.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -157,7 +157,7 @@ const useProjectGenerators = () => {
 
     (async () => {
       setChecked(false);
-      const matches = await (0, _globby.default)([`${cwd}/.bud/budfiles/**/*.bud.js`]);
+      const matches = await (0, _globby.default)([`${cwd}/.bud/generators/**/*.bud.js`]);
       setGenerators(fromMatches(matches));
       setChecked(true);
     })();
@@ -185,10 +185,8 @@ const useModuleGenerators = keyword => {
         dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
         scanAllDirs: true,
         keyword
-      }).map(plugin => _path.default.join(plugin.dir, '/**/*.bud.js'));
-
-      const matches = _globby.default.sync(packages);
-
+      }).map(plugin => _path.default.join(plugin.dir, '/generators/**/*.bud.js'));
+      const matches = await (0, _globby.default)([...packages, '!/**/*.preset.bud.js']);
       setGenerators(fromMatches(matches));
       setChecked(true);
     })();
@@ -202,7 +200,7 @@ const useModuleGenerators = keyword => {
 
 exports.useModuleGenerators = useModuleGenerators;
 
-const useGenerators = () => {
+const useGeneratorIndex = () => {
   const [project, checkedProject] = useProjectGenerators();
   const [core, checkedCore] = useModuleGenerators('bud-core-generators');
   const [plugin, checkedPlugin] = useModuleGenerators('bud-generator');
@@ -219,7 +217,7 @@ const useGenerators = () => {
   };
 };
 
-var _default = useGenerators;
+var _default = useGeneratorIndex;
 exports.default = _default;
 },{}],"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
@@ -368,13 +366,13 @@ var _enquirer = require("enquirer");
 /**
  * Use prompts
  */
-const useData = sprout => {
+const useData = generator => {
   const [data, setData] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
-    if (sprout && !data) {
-      sprout.prompts ? (0, _enquirer.prompt)(sprout.prompts).then(data => setData(data)) : setData({});
+    if (generator && !data) {
+      generator.prompts ? (0, _enquirer.prompt)(generator.prompts).then(data => setData(data)) : setData({});
     }
-  }, [sprout]);
+  }, [generator]);
   return {
     data
   };
@@ -382,39 +380,44 @@ const useData = sprout => {
 
 var _default = useData;
 exports.default = _default;
-},{}],"../src/hooks/useSprout.js":[function(require,module,exports) {
+},{}],"../src/hooks/useGenerator.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.makeGeneratorTemplateDir = exports.makeGenerator = exports.default = void 0;
 
 var _path = require("path");
 
 var _fs = require("fs");
 
-const makeSprout = budfile => (0, _fs.existsSync)(budfile) ? require(budfile) : null;
+const makeGenerator = generatorFile => (0, _fs.existsSync)(generatorFile) ? require(generatorFile) : null;
 
-const makeTemplateDir = budfile => (0, _path.join)((0, _path.dirname)(budfile), 'templates');
+exports.makeGenerator = makeGenerator;
+
+const makeGeneratorTemplateDir = generatorFile => (0, _path.join)((0, _path.dirname)(generatorFile), 'templates');
 /**
- * Use Sprout
+ * Use Generator
  */
 
 
-const useSprout = budfile => {
-  const sprout = { ...makeSprout(budfile),
-    templateDir: makeTemplateDir(budfile)
-  };
-  sprout.tasks = sprout.tasks.map((task, id) => ({ ...task,
-    id
+exports.makeGeneratorTemplateDir = makeGeneratorTemplateDir;
+
+const useGenerator = generatorFile => {
+  const generator = { ...makeGenerator(generatorFile),
+    templateDir: makeGeneratorTemplateDir(generatorFile)
+  }; // Attach the templateDir ref. to each generator task.
+
+  generator.tasks = generator.tasks.map(task => ({ ...task,
+    templateDir: generator.templateDir
   }));
   return {
-    sprout
+    generator
   };
 };
 
-var _default = useSprout;
+var _default = useGenerator;
 exports.default = _default;
 },{}],"../src/bud/compiler/helpers/index.js":[function(require,module,exports) {
 "use strict";
@@ -487,13 +490,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param {handlebars} handlebars
  */
 const makeCompiler = ({
-  sprout,
+  generator,
   data
 }) => {
   (0, _handlebarsHelpers.default)({
     handlebars: _handlebars.default
   });
-  sprout.registerHelpers && sprout.registerHelpers.forEach(helper => {
+  generator.registerHelpers && generator.registerHelpers.forEach(helper => {
     _helpers.default.push(helper);
   });
   (0, _helpers.default)(data).forEach(({
@@ -533,13 +536,9 @@ exports.default = void 0;
  */
 const makeConfig = ({
   projectDir,
-  sprout: {
-    templateDir
-  },
   config
 }) => ({
   projectDir,
-  templateDir,
   ...config,
   execa: {
     cwd: projectDir
@@ -566,7 +565,7 @@ exports.default = void 0;
 const makeData = ({
   config,
   data,
-  sprout
+  generator
 }) => {
   const setData = ({
     key,
@@ -577,7 +576,7 @@ const makeData = ({
 
   return { ...(config ? config.project : []),
     ...data,
-    ...(sprout.data ? sprout.data : []),
+    ...(generator.data ? generator.data : []),
     setData
   };
 };
@@ -651,17 +650,17 @@ var _operators = require("rxjs/operators");
  * Curried actions
  *
  * @prop {Observer} observer
- * @prop {object}   sprout
+ * @prop {object}   generator
  * @prop {object}   task
  * @prop {object}   actionProps
  */
 const actions = ({
   observer,
-  sprout,
+  generator,
   actions,
   ...props
 }) => {
-  (0, _rxjs.from)(sprout.tasks).pipe((0, _operators.concatMap)(task => new _rxjs.Observable(async observer => {
+  (0, _rxjs.from)(generator.tasks).pipe((0, _operators.concatMap)(task => new _rxjs.Observable(async observer => {
     actions[task.task]({
       task,
       actions,
@@ -772,12 +771,12 @@ const compile = async ({
   task,
   observer,
   data,
-  config,
   prettier,
-  compiler
+  compiler,
+  config
 }) => {
   observer.next(`Write file: ${task.src}`);
-  const src = await (0, _fsExtra.readFile)((0, _path.join)(config.templateDir, task.src), 'utf8');
+  const src = await (0, _fsExtra.readFile)((0, _path.join)(task.templateDir, task.src), 'utf8');
   const dest = compiler.make(task.dest)(data);
   const template = compiler.make(src)(data);
   observer.next(`Writing file ${dest}`);
@@ -810,10 +809,10 @@ var _fsExtra = require("fs-extra");
  */
 const copy = async ({
   task,
-  observer,
-  config
+  config,
+  observer
 }) => {
-  const src = (0, _path.join)(config.templateDir, task.src);
+  const src = (0, _path.join)(task.templateDir, task.src);
   const dest = (0, _path.join)(config.projectDir, task.dest);
   observer.next(`Copying file`);
   await (0, _fsExtra.copy)(src, dest);
@@ -1298,20 +1297,21 @@ var _prettier = _interopRequireDefault(require("./prettier"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * 🌱 bud starter
+ * Bud
  *
  * @prop {string} projectDir
  * @prop {object} config
  * @prop {object} data
- * @prop {object} sprout
+ * @prop {object} generator
  * @prop {string} templateDir
  * @prop {bool}   logging
  *
  * @return {Observable}
  */
 const bud = props => {
+  /** 🌱 */
   const {
-    sprout
+    generator
   } = props;
   const config = (0, _config.default)({ ...props
   });
@@ -1321,10 +1321,10 @@ const bud = props => {
     config
   });
   const compiler = (0, _compiler.default)({
-    sprout,
+    generator,
     data
   });
-  sprout.registerActions && sprout.registerActions.forEach(action => {
+  generator.registerActions && generator.registerActions.forEach(action => {
     _actions.default.register({
       action
     });
@@ -1337,7 +1337,7 @@ const bud = props => {
       compiler,
       prettier: _prettier.default,
       util,
-      sprout
+      generator
     };
     (0, _rxjs.from)(_pipes.default).pipe((0, _operators.concatMap)(job => new _rxjs.Observable(async observer => {
       await job({
@@ -1383,7 +1383,7 @@ const useSubscription = ({
   config,
   data,
   projectDir,
-  sprout
+  generator
 }) => {
   const {
     exit
@@ -1393,11 +1393,11 @@ const useSubscription = ({
   const [error] = (0, _react.useState)(null);
   const [complete, setComplete] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
-    if (sprout && data && !subscription) {
+    if (generator && data && !subscription) {
       setSubscription((0, _bud.default)({
         config,
         data,
-        sprout,
+        generator,
         projectDir
       }).subscribe({
         next: next => setStatus(next),
@@ -1453,13 +1453,13 @@ const Tasks = ({
     }, "\uD83C\uDFC1", '  ', "Done"));
   }
 
-  if (!status) {
+  if (!status || complete) {
     return [];
   }
 
-  return !complete ? /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
     green: true
-  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', status.toString())) : [];
+  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', status.toString()));
 };
 
 var _default = Tasks;
@@ -1478,7 +1478,7 @@ var _useConfig = _interopRequireDefault(require("./../hooks/useConfig"));
 
 var _useData = _interopRequireDefault(require("./../hooks/useData"));
 
-var _useSprout = _interopRequireDefault(require("./../hooks/useSprout"));
+var _useGenerator = _interopRequireDefault(require("./../hooks/useGenerator"));
 
 var _useSubscription = _interopRequireDefault(require("./../hooks/useSubscription"));
 
@@ -1489,42 +1489,40 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Middleware: Generator
  *
- * @prop {string} budfile
- * @prop {array}  queue
+ * @prop {string} generatorFile
  * @prop {string} output
  */
 const GeneratorMiddleware = ({
-  budfile,
+  generatorFile,
   output
 }) => {
   const {
     config
   } = (0, _useConfig.default)(process.cwd());
   const {
-    sprout
-  } = (0, _useSprout.default)(budfile);
+    generator
+  } = (0, _useGenerator.default)(generatorFile);
   const {
     data
-  } = (0, _useData.default)(sprout);
+  } = (0, _useData.default)(generator);
   const {
     status,
     complete
   } = (0, _useSubscription.default)({
     config,
     data,
-    sprout,
-    projectDir: output ? output : process.cwd()
+    generator,
+    projectDir: output
   });
   return /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
-    sprout: sprout,
     complete: complete
   });
 };
 
 var _default = GeneratorMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useSprout":"../src/hooks/useSprout.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"generate/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useGenerator":"../src/hooks/useGenerator.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"generate/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1536,11 +1534,13 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
+var _path = _interopRequireDefault(require("path"));
+
 var _lodash = require("lodash");
 
 var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
 
-var _useGenerators = _interopRequireDefault(require("./../../src/hooks/useGenerators"));
+var _useGeneratorIndex = _interopRequireDefault(require("./../../src/hooks/useGeneratorIndex"));
 
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
@@ -1552,20 +1552,30 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+const {
+  cwd
+} = process;
 /** Command: bud generate */
 /// Run a generator.
+
 const Generate = ({
   inputArgs
 }) => {
   var _inputArgs$;
 
-  const [name] = (0, _react.useState)((_inputArgs$ = inputArgs[1]) !== null && _inputArgs$ !== void 0 ? _inputArgs$ : null);
+  const [name] = (0, _react.useState)((_inputArgs$ = inputArgs === null || inputArgs === void 0 ? void 0 : inputArgs[1]) !== null && _inputArgs$ !== void 0 ? _inputArgs$ : null);
+  const [output, setOutput] = (0, _react.useState)(cwd);
+  (0, _react.useEffect)(() => {
+    (inputArgs === null || inputArgs === void 0 ? void 0 : inputArgs[2]) && (() => {
+      setOutput(_path.default.resolve(cwd, inputArgs[2]));
+    })();
+  }, [inputArgs]);
   const {
     core,
     plugin,
     project,
     complete
-  } = (0, _useGenerators.default)();
+  } = (0, _useGeneratorIndex.default)();
   const [buds, setBuds] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
     complete && setBuds([...project, ...plugin, ...core].map(bud => ({
@@ -1586,7 +1596,8 @@ const Generate = ({
     items: buds,
     onSelect: selection => setSelection(selection)
   }), selection && /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
-    budfile: selection.value
+    output: output,
+    generatorFile: selection.value
   }));
 };
 
@@ -1595,5 +1606,5 @@ Generate.propTypes = {
 };
 var _default = Generate;
 exports.default = _default;
-},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}]},{},["generate/index.js"], null)
+},{"./../../src/hooks/useGeneratorIndex":"../src/hooks/useGeneratorIndex.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}]},{},["generate/index.js"], null)
 //# sourceMappingURL=/generate/index.js.map

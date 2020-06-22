@@ -5,12 +5,12 @@ import {concatMap} from 'rxjs/operators'
  * Curried actions
  *
  * @prop {Observer} observer
- * @prop {object}   sprout
+ * @prop {object}   generator
  * @prop {object}   task
  * @prop {object}   actionProps
  */
-const actions = ({observer, sprout, actions, ...props}) => {
-  from(sprout.tasks)
+const actions = ({observer, generator, actions, ...props}) => {
+  from(generator.tasks)
     .pipe(
       concatMap(
         task =>

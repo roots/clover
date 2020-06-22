@@ -42,6 +42,7 @@
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "resolve-pkg": "^2.0.0",
     "rxjs": "^6.5.5"
   },
   "devDependencies": {

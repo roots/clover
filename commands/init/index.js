@@ -1,4 +1,4 @@
-import {resolve} from 'path'
+import {resolve, join} from 'path'
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -9,18 +9,19 @@ const init = resolve(
   __dirname,
   './../../../src/generators/init/init.bud.js',
 )
+const {cwd} = process
 
 /** Command: bud init */
 /// Create a new project
-const Init = props => (
-  <GeneratorMiddleware budfile={init} output={props.output} />
-)
+const Init = ({inputArgs}) => {
+  const output =
+    inputArgs && inputArgs[1] ? join(cwd, inputArgs[1]) : null
+  return <GeneratorMiddleware generatorFile={init} output={output} />
+}
 
 Init.propTypes = {
   /// Output directory
-  output: PropTypes.string,
+  inputArgs: PropTypes.array,
 }
-
-Init.positionalArgs = ['output']
 
 export default Init

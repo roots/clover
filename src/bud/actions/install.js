@@ -20,8 +20,11 @@ const install = async ({task, observer, util}) => {
   }
 
   observer.next(`Installating packages from ${task.repo}`)
+
   const {command, exitCode, stderr} = await util.command(cmdStr())
+
   command && observer.next(command)
+
   exitCode == 0 ? observer.complete() : observer.error(stderr)
 }
 

@@ -4,16 +4,16 @@ import {prompt} from 'enquirer'
 /**
  * Use prompts
  */
-const useData = sprout => {
+const useData = generator => {
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    if (sprout && !data) {
-      sprout.prompts
-        ? prompt(sprout.prompts).then(data => setData(data))
+    if (generator && !data) {
+      generator.prompts
+        ? prompt(generator.prompts).then(data => setData(data))
         : setData({})
     }
-  }, [sprout])
+  }, [generator])
 
   return {data}
 }

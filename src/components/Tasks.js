@@ -18,11 +18,11 @@ const Tasks = ({status, complete}) => {
     )
   }
 
-  if (!status) {
+  if (!status || complete) {
     return []
   }
 
-  return !complete ? (
+  return (
     <Box>
       {status && (
         <Text>
@@ -33,8 +33,6 @@ const Tasks = ({status, complete}) => {
         </Text>
       )}
     </Box>
-  ) : (
-    []
   )
 }
 

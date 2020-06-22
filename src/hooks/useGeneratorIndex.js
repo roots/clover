@@ -25,7 +25,7 @@ const useProjectGenerators = () => {
       setChecked(false)
 
       const matches = await globby([
-        `${cwd}/.bud/budfiles/**/*.bud.js`,
+        `${cwd}/.bud/generators/**/*.bud.js`,
       ])
 
       setGenerators(fromMatches(matches))
@@ -53,9 +53,14 @@ const useModuleGenerators = keyword => {
         dir: path.resolve(path.join(cwd, 'node_modules')),
         scanAllDirs: true,
         keyword,
-      }).map(plugin => path.join(plugin.dir, '/**/*.bud.js'))
+      }).map(plugin =>
+        path.join(plugin.dir, '/generators/**/*.bud.js'),
+      )
 
-      const matches = globby.sync(packages)
+      const matches = await globby([
+        ...packages,
+        '!/**/*.preset.bud.js',
+      ])
 
       setGenerators(fromMatches(matches))
       setChecked(true)
@@ -68,7 +73,7 @@ const useModuleGenerators = keyword => {
 /**
  * useGenerators hook
  */
-const useGenerators = () => {
+const useGeneratorIndex = () => {
   const [project, checkedProject] = useProjectGenerators()
   const [core, checkedCore] = useModuleGenerators(
     'bud-core-generators',
@@ -88,5 +93,5 @@ const useGenerators = () => {
   }
 }
 
-export default useGenerators
+export default useGeneratorIndex
 export {useProjectGenerators, useModuleGenerators}

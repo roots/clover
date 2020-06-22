@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/useGenerators.js":[function(require,module,exports) {
+})({"../src/hooks/useGeneratorIndex.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -157,7 +157,7 @@ const useProjectGenerators = () => {
 
     (async () => {
       setChecked(false);
-      const matches = await (0, _globby.default)([`${cwd}/.bud/budfiles/**/*.bud.js`]);
+      const matches = await (0, _globby.default)([`${cwd}/.bud/generators/**/*.bud.js`]);
       setGenerators(fromMatches(matches));
       setChecked(true);
     })();
@@ -185,10 +185,8 @@ const useModuleGenerators = keyword => {
         dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
         scanAllDirs: true,
         keyword
-      }).map(plugin => _path.default.join(plugin.dir, '/**/*.bud.js'));
-
-      const matches = _globby.default.sync(packages);
-
+      }).map(plugin => _path.default.join(plugin.dir, '/generators/**/*.bud.js'));
+      const matches = await (0, _globby.default)([...packages, '!/**/*.preset.bud.js']);
       setGenerators(fromMatches(matches));
       setChecked(true);
     })();
@@ -202,7 +200,7 @@ const useModuleGenerators = keyword => {
 
 exports.useModuleGenerators = useModuleGenerators;
 
-const useGenerators = () => {
+const useGeneratorIndex = () => {
   const [project, checkedProject] = useProjectGenerators();
   const [core, checkedCore] = useModuleGenerators('bud-core-generators');
   const [plugin, checkedPlugin] = useModuleGenerators('bud-generator');
@@ -219,7 +217,84 @@ const useGenerators = () => {
   };
 };
 
-var _default = useGenerators;
+var _default = useGeneratorIndex;
+exports.default = _default;
+},{}],"../src/hooks/usePresetIndex.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useModulePresets = exports.default = void 0;
+
+var _path = _interopRequireDefault(require("path"));
+
+var _react = require("react");
+
+var _findPlugins = _interopRequireDefault(require("find-plugins"));
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const cwd = process.cwd();
+/**
+ * Process globby matches into expected object
+ */
+
+const fromMatches = matches => matches.map(generator => ({
+  name: _path.default.basename(generator).replace('.preset.bud.js', ''),
+  path: generator
+}));
+/**
+ * Presets sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+
+
+const useModulePresets = keyword => {
+  const [presets, setPresets] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      setChecked(false);
+      const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
+        keyword
+      }).map(pkg => _path.default.join(_path.default.join(pkg.dir, 'presets'), '/**/*.preset.bud.js'));
+      const matches = await (0, _globby.default)(packages);
+      setPresets(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, [keyword]);
+  return [presets, checked];
+};
+/**
+ * usePresets hook
+ */
+
+
+exports.useModulePresets = useModulePresets;
+
+const usePresetIndex = () => {
+  const [core, checkedCore] = useModulePresets('bud-core-presets');
+  const [plugin, checkedPlugin] = useModulePresets('bud-preset');
+  return {
+    plugin,
+    core,
+    status: {
+      plugin: checkedPlugin,
+      core: checkedCore
+    },
+    complete: checkedCore && checkedPlugin
+  };
+};
+
+var _default = usePresetIndex;
 exports.default = _default;
 },{}],"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
@@ -340,7 +415,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _useGenerators = _interopRequireDefault(require("./../../src/hooks/useGenerators"));
+var _useGeneratorIndex = _interopRequireDefault(require("./../../src/hooks/useGeneratorIndex"));
+
+var _usePresetIndex = _interopRequireDefault(require("./../../src/hooks/usePresetIndex"));
 
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
@@ -350,23 +427,44 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /// List available budfiles
 const List = () => {
   const {
-    core,
-    plugin,
-    project,
-    complete
-  } = (0, _useGenerators.default)();
-  const buds = [...project, ...plugin, ...core];
+    core: coreGenerators,
+    plugin: pluginGenerators,
+    project: projectGenerators,
+    complete: generatorsComplete
+  } = (0, _useGeneratorIndex.default)();
+  const generators = [...projectGenerators, ...pluginGenerators, ...coreGenerators];
+  const {
+    core: corePresets,
+    plugin: pluginPresets,
+    complete: presetsComplete
+  } = (0, _usePresetIndex.default)();
+  const presets = [...corePresets, ...pluginPresets];
+  const complete = generatorsComplete && presetsComplete;
   return /*#__PURE__*/_react.default.createElement(_App.default, {
     isLoading: !complete
-  }, buds.map((bud, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    key: id,
+  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    flexDirection: "column"
+  }, presetsComplete && /*#__PURE__*/_react.default.createElement(_ink.Box, {
     flexDirection: "column",
-    flexGrow: 1,
-    justifyContent: "flex-start"
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, "\u25E6 ", bud.name))));
+    marginBottom: 1
+  }, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+    bgGreen: true,
+    black: true
+  }, "Presets")), presets.map((preset, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    key: id,
+    flexDirection: "column"
+  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, "\u25E6 ", preset.name)))), generatorsComplete && /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    flexDirection: "column"
+  }, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+    bgGreen: true,
+    black: true
+  }, "Generators")), generators.map((generator, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+    key: id,
+    flexDirection: "column"
+  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, "\u25E6 ", generator.name))))));
 };
 
 var _default = List;
 exports.default = _default;
-},{"./../../src/hooks/useGenerators":"../src/hooks/useGenerators.js","./../../src/components/App":"../src/components/App.js"}]},{},["list/index.js"], null)
+},{"./../../src/hooks/useGeneratorIndex":"../src/hooks/useGeneratorIndex.js","./../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js","./../../src/components/App":"../src/components/App.js"}]},{},["list/index.js"], null)
 //# sourceMappingURL=/list/index.js.map

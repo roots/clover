@@ -117,7 +117,191 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/useConfig.js":[function(require,module,exports) {
+})({"../src/hooks/usePresetIndex.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useModulePresets = exports.default = void 0;
+
+var _path = _interopRequireDefault(require("path"));
+
+var _react = require("react");
+
+var _findPlugins = _interopRequireDefault(require("find-plugins"));
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const cwd = process.cwd();
+/**
+ * Process globby matches into expected object
+ */
+
+const fromMatches = matches => matches.map(generator => ({
+  name: _path.default.basename(generator).replace('.preset.bud.js', ''),
+  path: generator
+}));
+/**
+ * Presets sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+
+
+const useModulePresets = keyword => {
+  const [presets, setPresets] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      setChecked(false);
+      const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
+        keyword
+      }).map(pkg => _path.default.join(_path.default.join(pkg.dir, 'presets'), '/**/*.preset.bud.js'));
+      const matches = await (0, _globby.default)(packages);
+      setPresets(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, [keyword]);
+  return [presets, checked];
+};
+/**
+ * usePresets hook
+ */
+
+
+exports.useModulePresets = useModulePresets;
+
+const usePresetIndex = () => {
+  const [core, checkedCore] = useModulePresets('bud-core-presets');
+  const [plugin, checkedPlugin] = useModulePresets('bud-preset');
+  return {
+    plugin,
+    core,
+    status: {
+      plugin: checkedPlugin,
+      core: checkedCore
+    },
+    complete: checkedCore && checkedPlugin
+  };
+};
+
+var _default = usePresetIndex;
+exports.default = _default;
+},{}],"../src/components/Banner.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkLink = _interopRequireDefault(require("ink-link"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  marginBottom: 1
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
+  url: "https://github.com/roots/bud",
+  fallback: false
+}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  green: true
+}, "\u26A1\uFE0F @roots/bud"))));
+
+var _default = Banner;
+exports.default = _default;
+},{}],"../src/components/Loading.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Loading
+ *
+ * @prop {string} message
+ */
+const Loading = ({
+  message,
+  spinnerColor = 'white'
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  keyword: spinnerColor
+}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', message);
+
+Loading.propTypes = {
+  message: _propTypes.default.string
+};
+Loading.defaultProps = {
+  message: 'Loading'
+};
+var _default = Loading;
+exports.default = _default;
+},{}],"../src/components/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+var _Banner = _interopRequireDefault(require("./Banner"));
+
+var _Loading = _interopRequireDefault(require("./Loading"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Bud application.
+ *
+ * @prop {object} children
+ */
+const App = ({
+  isLoading,
+  loadingMessage,
+  children
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  paddingTop: 1,
+  paddingRight: 1,
+  paddingBottom: 0,
+  paddingLeft: 1
+}, /*#__PURE__*/_react.default.createElement(_Banner.default, null), isLoading && /*#__PURE__*/_react.default.createElement(_Loading.default, {
+  spinnerColor: "green",
+  message: loadingMessage !== null && loadingMessage !== void 0 ? loadingMessage : 'Loading'
+}), children);
+
+var _default = App;
+exports.default = _default;
+},{"./Banner":"../src/components/Banner.js","./Loading":"../src/components/Loading.js"}],"../src/hooks/useConfig.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -171,44 +355,86 @@ const useData = generator => {
 
 var _default = useData;
 exports.default = _default;
-},{}],"../src/hooks/useGenerator.js":[function(require,module,exports) {
+},{}],"../src/hooks/usePreset.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeGeneratorTemplateDir = exports.makeGenerator = exports.default = void 0;
-
-var _path = require("path");
+exports.default = void 0;
 
 var _fs = require("fs");
 
-const makeGenerator = generatorFile => (0, _fs.existsSync)(generatorFile) ? require(generatorFile) : null;
+var _path = require("path");
 
-exports.makeGenerator = makeGenerator;
+var _react = require("react");
+
+var _resolvePkg = _interopRequireDefault(require("resolve-pkg"));
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Make a preset
+ */
+const make = file => (0, _fs.existsSync)(file) ? require(file) : null;
 
 const makeGeneratorTemplateDir = generatorFile => (0, _path.join)((0, _path.dirname)(generatorFile), 'templates');
 /**
- * Use Generator
+ * Use Preset
+ *
+ * Returns a consolidated generator from a preset file path.
  */
 
 
-exports.makeGeneratorTemplateDir = makeGeneratorTemplateDir;
+const usePreset = presetFile => {
+  const preset = make(presetFile);
+  const [generator, setGenerator] = (0, _react.useState)({
+    prompts: [],
+    tasks: []
+  });
+  const [steps, setSteps] = (0, _react.useState)(0);
+  (0, _react.useEffect)(() => {
+    ;
 
-const useGenerator = generatorFile => {
-  const generator = { ...makeGenerator(generatorFile),
-    templateDir: makeGeneratorTemplateDir(generatorFile)
-  }; // Attach the templateDir ref. to each generator task.
+    (async () => {
+      var _generator$prompts, _current$prompts, _generator$tasks, _current$tasks;
 
-  generator.tasks = generator.tasks.map(task => ({ ...task,
-    templateDir: generator.templateDir
-  }));
-  return {
-    generator
-  };
+      const step = preset.generators[steps];
+      if (!step) return;
+      const pkg = await (0, _resolvePkg.default)(step.pkg);
+      const results = await (0, _globby.default)([`${pkg}/generators/${step.name}/*.bud.js`]);
+      const current = make(results[0]);
+      const templateDir = makeGeneratorTemplateDir(results[0]);
+
+      if (current) {
+        current.tasks = current.tasks.map(task => ({ ...task,
+          templateDir
+        }));
+      }
+
+      setGenerator({
+        prompts: [...((_generator$prompts = generator === null || generator === void 0 ? void 0 : generator.prompts) !== null && _generator$prompts !== void 0 ? _generator$prompts : []), ...((_current$prompts = current === null || current === void 0 ? void 0 : current.prompts) !== null && _current$prompts !== void 0 ? _current$prompts : [])],
+        tasks: [...((_generator$tasks = generator === null || generator === void 0 ? void 0 : generator.tasks) !== null && _generator$tasks !== void 0 ? _generator$tasks : []), ...((_current$tasks = current === null || current === void 0 ? void 0 : current.tasks) !== null && _current$tasks !== void 0 ? _current$tasks : [])]
+      });
+      setSteps(1 + steps);
+    })();
+  }, [preset, steps]);
+  const [complete, setComplete] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    steps && steps >= preset.generators.length && (() => {
+      setComplete(true);
+    })();
+  }, [steps]);
+  /**
+   * Return aggregated generators
+   */
+
+  return complete ? generator : false;
 };
 
-var _default = useGenerator;
+var _default = usePreset;
 exports.default = _default;
 },{}],"../src/bud/compiler/helpers/index.js":[function(require,module,exports) {
 "use strict";
@@ -1255,7 +1481,7 @@ const Tasks = ({
 
 var _default = Tasks;
 exports.default = _default;
-},{}],"../src/middleware/GeneratorMiddleware.js":[function(require,module,exports) {
+},{}],"../src/middleware/PresetMiddleware.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1269,7 +1495,7 @@ var _useConfig = _interopRequireDefault(require("./../hooks/useConfig"));
 
 var _useData = _interopRequireDefault(require("./../hooks/useData"));
 
-var _useGenerator = _interopRequireDefault(require("./../hooks/useGenerator"));
+var _usePreset = _interopRequireDefault(require("../hooks/usePreset"));
 
 var _useSubscription = _interopRequireDefault(require("./../hooks/useSubscription"));
 
@@ -1278,32 +1504,30 @@ var _Tasks = _interopRequireDefault(require("./../components/Tasks"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Middleware: Generator
+ * Middleware: Preset
  *
- * @prop {string} generatorFile
+ * @prop {string} budfile
  * @prop {string} output
  */
-const GeneratorMiddleware = ({
-  generatorFile,
+const PresetMiddleware = ({
+  presetFile,
   output
 }) => {
   const {
     config
   } = (0, _useConfig.default)(process.cwd());
-  const {
-    generator
-  } = (0, _useGenerator.default)(generatorFile);
+  const preset = (0, _usePreset.default)(presetFile);
   const {
     data
-  } = (0, _useData.default)(generator);
+  } = (0, _useData.default)(preset);
   const {
     status,
     complete
   } = (0, _useSubscription.default)({
     config,
     data,
-    generator,
-    projectDir: output
+    generator: preset,
+    projectDir: output ? output : process.cwd()
   });
   return /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
@@ -1311,9 +1535,9 @@ const GeneratorMiddleware = ({
   });
 };
 
-var _default = GeneratorMiddleware;
+var _default = PresetMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useGenerator":"../src/hooks/useGenerator.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"init/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","../hooks/usePreset":"../src/hooks/usePreset.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"preset/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1321,39 +1545,67 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _path = require("path");
-
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middleware/GeneratorMiddleware"));
+var _lodash = require("lodash");
+
+var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
+
+var _usePresetIndex = _interopRequireDefault(require("../../src/hooks/usePresetIndex"));
+
+var _App = _interopRequireDefault(require("./../../src/components/App"));
+
+var _PresetMiddleware = _interopRequireDefault(require("./../../src/middleware/PresetMiddleware"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/** Constants */
-const init = (0, _path.resolve)(__dirname, './../../../src/generators/init/init.bud.js');
-const {
-  cwd
-} = process;
-/** Command: bud init */
-/// Create a new project
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-const Init = ({
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+/** Command: bud preset */
+/// Run a preset.
+const Generate = ({
   inputArgs
 }) => {
-  const output = inputArgs && inputArgs[1] ? (0, _path.join)(cwd, inputArgs[1]) : null;
-  return /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
-    generatorFile: init,
-    output: output
-  });
+  var _inputArgs$;
+
+  const [name] = (0, _react.useState)((_inputArgs$ = inputArgs[1]) !== null && _inputArgs$ !== void 0 ? _inputArgs$ : null);
+  const {
+    plugin,
+    core,
+    complete
+  } = (0, _usePresetIndex.default)();
+  const [presets, setPresets] = (0, _react.useState)(null);
+  (0, _react.useEffect)(() => {
+    complete && setPresets([...core, ...plugin].map(preset => ({
+      value: preset.path,
+      label: preset.name
+    })));
+  }, [name, complete]);
+  const [selection, setSelection] = (0, _react.useState)(null);
+  (0, _react.useEffect)(() => {
+    name && presets && complete && setSelection(presets.filter(preset => (0, _lodash.isEqual)(preset.label, name))[0]);
+  }, [complete, presets, name]);
+  const isLoading = !name && !presets && !selection;
+  const displayQuickSearch = !name && presets && !selection;
+  return /*#__PURE__*/_react.default.createElement(_App.default, {
+    isLoading: isLoading
+  }, displayQuickSearch && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
+    label: "Select a preset",
+    items: presets,
+    onSelect: selection => setSelection(selection)
+  }), selection && /*#__PURE__*/_react.default.createElement(_PresetMiddleware.default, {
+    presetFile: selection.value
+  }));
 };
 
-Init.propTypes = {
-  /// Output directory
+Generate.propTypes = {
   inputArgs: _propTypes.default.array
 };
-var _default = Init;
+var _default = Generate;
 exports.default = _default;
-},{"./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}]},{},["init/index.js"], null)
-//# sourceMappingURL=/init/index.js.map
+},{"../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js"}]},{},["preset/index.js"], null)
+//# sourceMappingURL=/preset/index.js.map

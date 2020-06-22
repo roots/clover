@@ -7,11 +7,11 @@ import handlebarsHelpers from 'handlebars-helpers'
  *
  * @param {handlebars} handlebars
  */
-const makeCompiler = ({sprout, data}) => {
+const makeCompiler = ({generator, data}) => {
   handlebarsHelpers({handlebars})
 
-  sprout.registerHelpers &&
-    sprout.registerHelpers.forEach(helper => {
+  generator.registerHelpers &&
+    generator.registerHelpers.forEach(helper => {
       helpers.push(helper)
     })
 

@@ -3,9 +3,8 @@
  *
  * @param {string} projectDir
  */
-const makeConfig = ({projectDir, sprout: {templateDir}, config}) => ({
+const makeConfig = ({projectDir, config}) => ({
   projectDir,
-  templateDir,
   ...config,
   execa: {
     cwd: projectDir,

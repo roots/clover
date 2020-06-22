@@ -2,29 +2,29 @@ import React from 'react'
 
 import useConfig from './../hooks/useConfig'
 import useData from './../hooks/useData'
-import useGenerator from './../hooks/useGenerator'
+import usePreset from '../hooks/usePreset'
 import useSubscription from './../hooks/useSubscription'
 
 import Tasks from './../components/Tasks'
 
 /**
- * Middleware: Generator
+ * Middleware: Preset
  *
- * @prop {string} generatorFile
+ * @prop {string} budfile
  * @prop {string} output
  */
-const GeneratorMiddleware = ({generatorFile, output}) => {
+const PresetMiddleware = ({presetFile, output}) => {
   const {config} = useConfig(process.cwd())
-  const {generator} = useGenerator(generatorFile)
-  const {data} = useData(generator)
+  const preset = usePreset(presetFile)
+  const {data} = useData(preset)
   const {status, complete} = useSubscription({
     config,
     data,
-    generator,
-    projectDir: output,
+    generator: preset,
+    projectDir: output ? output : process.cwd(),
   })
 
   return <Tasks status={status} complete={complete} />
 }
 
-export default GeneratorMiddleware
+export default PresetMiddleware

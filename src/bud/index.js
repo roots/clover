@@ -9,26 +9,27 @@ import actions from './actions'
 import prettier from './prettier'
 
 /**
- * 🌱 bud starter
+ * Bud
  *
  * @prop {string} projectDir
  * @prop {object} config
  * @prop {object} data
- * @prop {object} sprout
+ * @prop {object} generator
  * @prop {string} templateDir
  * @prop {bool}   logging
  *
  * @return {Observable}
  */
 const bud = props => {
-  const {sprout} = props
+  /** 🌱 */
+  const {generator} = props
   const config = makeConfig({...props})
   const data = makeData({...props})
   const util = makeUtil({config})
-  const compiler = makeCompiler({sprout, data})
+  const compiler = makeCompiler({generator, data})
 
-  sprout.registerActions &&
-    sprout.registerActions.forEach(action => {
+  generator.registerActions &&
+    generator.registerActions.forEach(action => {
       actions.register({action})
     })
 
@@ -40,7 +41,7 @@ const bud = props => {
       compiler,
       prettier,
       util,
-      sprout,
+      generator,
     }
 
     from(pipes)

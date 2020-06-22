@@ -5,7 +5,7 @@
  * @prop   {object} data
  * @return {object}
  */
-const makeData = ({config, data, sprout}) => {
+const makeData = ({config, data, generator}) => {
   const setData = ({key, value}) => {
     data[key] = value
   }
@@ -13,7 +13,7 @@ const makeData = ({config, data, sprout}) => {
   return {
     ...(config ? config.project : []),
     ...data,
-    ...(sprout.data ? sprout.data : []),
+    ...(generator.data ? generator.data : []),
     setData,
   }
 }

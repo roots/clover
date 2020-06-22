@@ -5,11 +5,11 @@ import {concatMap} from 'rxjs/operators'
  * Curry ensureDirs
  *
  * @prop {Observer} observer
- * @prop {object}   sprout
+ * @prop {object}   generator
  * @prop {object}   actions
  */
-const ensureDirs = ({observer, sprout, actions, ...props}) => {
-  from(sprout.tasks)
+const ensureDirs = ({observer, generator, actions, ...props}) => {
+  from(generator.tasks)
     .pipe(
       concatMap(
         task =>

@@ -10,8 +10,8 @@ import {copy as fsCopy} from 'fs-extra'
  *
  * @return {void}
  */
-const copy = async ({task, observer, config}) => {
-  const src = join(config.templateDir, task.src)
+const copy = async ({task, config, observer}) => {
+  const src = join(task.templateDir, task.src)
   const dest = join(config.projectDir, task.dest)
 
   observer.next(`Copying file`)
