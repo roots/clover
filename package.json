@@ -30,7 +30,7 @@
     "ink": "^2.7.1",
     "ink-divider": "^2.0.1",
     "ink-link": "^1.1.0",
-    "ink-spinner": "^3.0.1",
+    "ink-spinner": "^3.1.0",
     "ink-table": "^2.0.1",
     "ink-use-stdout-dimensions": "^1.0.5",
     "pastel": "^1.0.3",
