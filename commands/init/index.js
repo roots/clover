@@ -9,13 +9,14 @@ const init = resolve(
   __dirname,
   './../../../src/generators/init/init.bud.js',
 )
-const {cwd} = process
+
+const cwd = process.cwd()
 
 /** Command: bud init */
 /// Create a new project
 const Init = ({inputArgs}) => {
   const output =
-    inputArgs && inputArgs[1] ? join(cwd, inputArgs[1]) : null
+    inputArgs && inputArgs[1] ? join(cwd, inputArgs[1]) : cwd
   return <GeneratorMiddleware generatorFile={init} output={output} />
 }
 

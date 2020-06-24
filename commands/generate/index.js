@@ -9,7 +9,7 @@ import useGeneratorIndex from './../../src/hooks/useGeneratorIndex'
 import App from './../../src/components/App'
 import GeneratorMiddleware from './../../src/middleware/GeneratorMiddleware'
 
-const {cwd} = process
+const cwd = process.cwd()
 
 /** Command: bud generate */
 /// Run a generator.
@@ -17,9 +17,10 @@ const Generate = ({inputArgs}) => {
   const [name] = useState(inputArgs?.[1] ?? null)
   const [output, setOutput] = useState(cwd)
   useEffect(() => {
-    inputArgs?.[2] && (() => {
-      setOutput(path.resolve(cwd, inputArgs[2]))
-    })()
+    inputArgs?.[2] &&
+      (() => {
+        setOutput(path.resolve(cwd, inputArgs[2]))
+      })()
   }, [inputArgs])
 
   const {core, plugin, project, complete} = useGeneratorIndex()

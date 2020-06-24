@@ -1,4 +1,5 @@
 import addDependencies from './addDependencies'
+import command from './command'
 import compile from './compile'
 import copy from './copy'
 import ensureDir from './ensureDir'
@@ -15,6 +16,7 @@ import touch from './touch'
  */
 const actions = {
   addDependencies,
+  command,
   compile,
   copy,
   ensureDir,

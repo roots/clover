@@ -534,6 +534,38 @@ const addDependencies = async ({
 
 var _default = addDependencies;
 exports.default = _default;
+},{}],"../src/bud/actions/command.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+/**
+ * Action: Arbitrary command
+ *
+ * @prop   {object}   task
+ * @prop   {Observer} observer
+ * @prop   {object}   util
+ *
+ * @return {Observable}
+ */
+const command = async ({
+  task,
+  observer,
+  util
+}) => {
+  task.msg && observer.next(`${task.msg}`);
+  const {
+    exitCode,
+    stderr
+  } = await util.command(task.run);
+  exitCode == 0 ? observer.complete() : observer.error(stderr);
+};
+
+var _default = command;
+exports.default = _default;
 },{}],"../src/bud/actions/compile.js":[function(require,module,exports) {
 "use strict";
 
@@ -897,6 +929,8 @@ exports.default = void 0;
 
 var _addDependencies = _interopRequireDefault(require("./addDependencies"));
 
+var _command = _interopRequireDefault(require("./command"));
+
 var _compile = _interopRequireDefault(require("./compile"));
 
 var _copy = _interopRequireDefault(require("./copy"));
@@ -922,6 +956,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 const actions = {
   addDependencies: _addDependencies.default,
+  command: _command.default,
   compile: _compile.default,
   copy: _copy.default,
   ensureDir: _ensureDir.default,
@@ -938,7 +973,7 @@ const actions = {
 };
 var _default = actions;
 exports.default = _default;
-},{"./addDependencies":"../src/bud/actions/addDependencies.js","./compile":"../src/bud/actions/compile.js","./copy":"../src/bud/actions/copy.js","./ensureDir":"../src/bud/actions/ensureDir.js","./ensureDirs":"../src/bud/actions/ensureDirs.js","./git":"../src/bud/actions/git/index.js","./install":"../src/bud/actions/install.js","./json":"../src/bud/actions/json.js","./touch":"../src/bud/actions/touch.js"}],"../src/bud/prettier/inferParser.js":[function(require,module,exports) {
+},{"./addDependencies":"../src/bud/actions/addDependencies.js","./command":"../src/bud/actions/command.js","./compile":"../src/bud/actions/compile.js","./copy":"../src/bud/actions/copy.js","./ensureDir":"../src/bud/actions/ensureDir.js","./ensureDirs":"../src/bud/actions/ensureDirs.js","./git":"../src/bud/actions/git/index.js","./install":"../src/bud/actions/install.js","./json":"../src/bud/actions/json.js","./touch":"../src/bud/actions/touch.js"}],"../src/bud/prettier/inferParser.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1333,16 +1368,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /** Constants */
 const init = (0, _path.resolve)(__dirname, './../../../src/generators/init/init.bud.js');
-const {
-  cwd
-} = process;
+const cwd = process.cwd();
 /** Command: bud init */
 /// Create a new project
 
 const Init = ({
   inputArgs
 }) => {
-  const output = inputArgs && inputArgs[1] ? (0, _path.join)(cwd, inputArgs[1]) : null;
+  const output = inputArgs && inputArgs[1] ? (0, _path.join)(cwd, inputArgs[1]) : cwd;
   return /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
     generatorFile: init,
     output: output
