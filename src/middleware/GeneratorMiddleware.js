@@ -7,6 +7,8 @@ import useSubscription from './../hooks/useSubscription'
 
 import Tasks from './../components/Tasks'
 
+const cwd = process.cwd()
+
 /**
  * Middleware: Generator
  *
@@ -14,7 +16,7 @@ import Tasks from './../components/Tasks'
  * @prop {string} output
  */
 const GeneratorMiddleware = ({generatorFile, output}) => {
-  const {config} = useConfig(process.cwd())
+  const {config} = useConfig(cwd)
   const {generator} = useGenerator(generatorFile)
   const {data} = useData(generator)
   const {status, complete} = useSubscription({

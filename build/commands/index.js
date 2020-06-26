@@ -117,109 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/useGeneratorIndex.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useModuleGenerators = exports.useProjectGenerators = exports.default = void 0;
-
-var _path = _interopRequireDefault(require("path"));
-
-var _react = require("react");
-
-var _findPlugins = _interopRequireDefault(require("find-plugins"));
-
-var _globby = _interopRequireDefault(require("globby"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const cwd = process.cwd();
-/**
- * Process globby matches into expected object
- */
-
-const fromMatches = matches => matches.map(generator => ({
-  name: _path.default.basename(generator).replace('.bud.js', ''),
-  path: generator
-}));
-/**
- * Generators sourced from project .bud dir
- */
-
-
-const useProjectGenerators = () => {
-  const [generators, setGenerators] = (0, _react.useState)([]);
-  const [checked, setChecked] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      setChecked(false);
-      const matches = await (0, _globby.default)([`${cwd}/.bud/generators/**/*.bud.js`]);
-      setGenerators(fromMatches(matches));
-      setChecked(true);
-    })();
-  }, []);
-  return [generators, checked];
-};
-/**
- * Generators sourced from node_modules
- *
- * @param {string} keyword package.json keywords match
- */
-
-
-exports.useProjectGenerators = useProjectGenerators;
-
-const useModuleGenerators = keyword => {
-  const [generators, setGenerators] = (0, _react.useState)([]);
-  const [checked, setChecked] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      setChecked(false);
-      const packages = (0, _findPlugins.default)({
-        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
-        scanAllDirs: true,
-        keyword
-      }).map(plugin => _path.default.join(plugin.dir, '/generators/**/*.bud.js'));
-      const matches = await (0, _globby.default)([...packages, '!/**/*.preset.bud.js']);
-      setGenerators(fromMatches(matches));
-      setChecked(true);
-    })();
-  }, [keyword]);
-  return [generators, checked];
-};
-/**
- * useGenerators hook
- */
-
-
-exports.useModuleGenerators = useModuleGenerators;
-
-const useGeneratorIndex = () => {
-  const [project, checkedProject] = useProjectGenerators();
-  const [core, checkedCore] = useModuleGenerators('bud-core-generators');
-  const [plugin, checkedPlugin] = useModuleGenerators('bud-generator');
-  return {
-    project,
-    plugin,
-    core,
-    status: {
-      project: checkedProject,
-      plugin: checkedPlugin,
-      core: checkedCore
-    },
-    complete: checkedCore && checkedProject && checkedPlugin
-  };
-};
-
-var _default = useGeneratorIndex;
-exports.default = _default;
-},{}],"../src/components/Banner.js":[function(require,module,exports) {
+})({"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -885,7 +783,9 @@ const ensureDir = async ({
   data,
   compiler
 }) => {
+  console.log(task, config, data);
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
+  console.log(path);
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -1344,7 +1244,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {Observable}
  */
 const bud = props => {
-  /** 🌱 */
   const {
     generator
   } = props;
@@ -1521,19 +1420,21 @@ var _Tasks = _interopRequireDefault(require("./../components/Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const cwd = process.cwd();
 /**
  * Middleware: Generator
  *
  * @prop {string} generatorFile
  * @prop {string} output
  */
+
 const GeneratorMiddleware = ({
   generatorFile,
   output
 }) => {
   const {
     config
-  } = (0, _useConfig.default)(process.cwd());
+  } = (0, _useConfig.default)(cwd);
   const {
     generator
   } = (0, _useGenerator.default)(generatorFile);
@@ -1557,7 +1458,109 @@ const GeneratorMiddleware = ({
 
 var _default = GeneratorMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useGenerator":"../src/hooks/useGenerator.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"generate/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","./../hooks/useGenerator":"../src/hooks/useGenerator.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"../src/hooks/useGeneratorIndex.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useModuleGenerators = exports.useProjectGenerators = exports.default = void 0;
+
+var _path = _interopRequireDefault(require("path"));
+
+var _react = require("react");
+
+var _findPlugins = _interopRequireDefault(require("find-plugins"));
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const cwd = process.cwd();
+/**
+ * Process globby matches into expected object
+ */
+
+const fromMatches = matches => matches.map(generator => ({
+  name: _path.default.basename(generator).replace('.bud.js', ''),
+  path: generator
+}));
+/**
+ * Generators sourced from project .bud dir
+ */
+
+
+const useProjectGenerators = () => {
+  const [generators, setGenerators] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      setChecked(false);
+      const matches = await (0, _globby.default)([`${cwd}/.bud/generators/**/*.bud.js`]);
+      setGenerators(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, []);
+  return [generators, checked];
+};
+/**
+ * Generators sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+
+
+exports.useProjectGenerators = useProjectGenerators;
+
+const useModuleGenerators = keyword => {
+  const [generators, setGenerators] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      setChecked(false);
+      const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
+        keyword
+      }).map(plugin => _path.default.join(plugin.dir, '/generators/**/*.bud.js'));
+      const matches = await (0, _globby.default)([...packages, '!/**/*.preset.bud.js']);
+      setGenerators(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, [keyword]);
+  return [generators, checked];
+};
+/**
+ * useGenerators hook
+ */
+
+
+exports.useModuleGenerators = useModuleGenerators;
+
+const useGeneratorIndex = () => {
+  const [project, checkedProject] = useProjectGenerators();
+  const [core, checkedCore] = useModuleGenerators('bud-core-generators');
+  const [plugin, checkedPlugin] = useModuleGenerators('bud-generator');
+  return {
+    project,
+    plugin,
+    core,
+    status: {
+      project: checkedProject,
+      plugin: checkedPlugin,
+      core: checkedCore
+    },
+    complete: checkedCore && checkedProject && checkedPlugin
+  };
+};
+
+var _default = useGeneratorIndex;
+exports.default = _default;
+},{}],"generate/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1575,11 +1578,11 @@ var _lodash = require("lodash");
 
 var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
 
-var _useGeneratorIndex = _interopRequireDefault(require("./../../src/hooks/useGeneratorIndex"));
-
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
 var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middleware/GeneratorMiddleware"));
+
+var _useGeneratorIndex = _interopRequireDefault(require("./../../src/hooks/useGeneratorIndex"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1639,7 +1642,7 @@ Generate.propTypes = {
 };
 var _default = Generate;
 exports.default = _default;
-},{"./../../src/hooks/useGeneratorIndex":"../src/hooks/useGeneratorIndex.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js"}],"index.js":[function(require,module,exports) {
+},{"./../../src/components/App":"../src/components/App.js","./../../src/middleware/GeneratorMiddleware":"../src/middleware/GeneratorMiddleware.js","./../../src/hooks/useGeneratorIndex":"../src/hooks/useGeneratorIndex.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

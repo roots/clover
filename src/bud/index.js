@@ -21,7 +21,6 @@ import prettier from './prettier'
  * @return {Observable}
  */
 const bud = props => {
-  /** 🌱 */
   const {generator} = props
   const config = makeConfig({...props})
   const data = makeData({...props})

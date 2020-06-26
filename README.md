@@ -81,7 +81,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ### Dependencies
 
-- @roots/bud-generators
 - enquirer
 - esm
 - execa
@@ -107,6 +106,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 ### Development dependencies
 
 - @roots/bud
+- @roots/bud-generators
 - babel-eslint
 - eslint
 - eslint-plugin-react

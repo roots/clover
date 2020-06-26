@@ -117,84 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/hooks/usePresetIndex.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useModulePresets = exports.default = void 0;
-
-var _path = _interopRequireDefault(require("path"));
-
-var _react = require("react");
-
-var _findPlugins = _interopRequireDefault(require("find-plugins"));
-
-var _globby = _interopRequireDefault(require("globby"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const cwd = process.cwd();
-/**
- * Process globby matches into expected object
- */
-
-const fromMatches = matches => matches.map(generator => ({
-  name: _path.default.basename(generator).replace('.preset.bud.js', ''),
-  path: generator
-}));
-/**
- * Presets sourced from node_modules
- *
- * @param {string} keyword package.json keywords match
- */
-
-
-const useModulePresets = keyword => {
-  const [presets, setPresets] = (0, _react.useState)([]);
-  const [checked, setChecked] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      setChecked(false);
-      const packages = (0, _findPlugins.default)({
-        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
-        scanAllDirs: true,
-        keyword
-      }).map(pkg => _path.default.join(_path.default.join(pkg.dir, 'presets'), '/**/*.preset.bud.js'));
-      const matches = await (0, _globby.default)(packages);
-      setPresets(fromMatches(matches));
-      setChecked(true);
-    })();
-  }, [keyword]);
-  return [presets, checked];
-};
-/**
- * usePresets hook
- */
-
-
-exports.useModulePresets = useModulePresets;
-
-const usePresetIndex = () => {
-  const [core, checkedCore] = useModulePresets('bud-core-presets');
-  const [plugin, checkedPlugin] = useModulePresets('bud-preset');
-  return {
-    plugin,
-    core,
-    status: {
-      plugin: checkedPlugin,
-      core: checkedCore
-    },
-    complete: checkedCore && checkedPlugin
-  };
-};
-
-var _default = usePresetIndex;
-exports.default = _default;
-},{}],"../src/components/Banner.js":[function(require,module,exports) {
+})({"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -902,7 +825,9 @@ const ensureDir = async ({
   data,
   compiler
 }) => {
+  console.log(task, config, data);
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
+  console.log(path);
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -1361,7 +1286,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {Observable}
  */
 const bud = props => {
-  /** 🌱 */
   const {
     generator
   } = props;
@@ -1538,19 +1462,21 @@ var _Tasks = _interopRequireDefault(require("./../components/Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const cwd = process.cwd();
 /**
  * Middleware: Preset
  *
  * @prop {string} budfile
  * @prop {string} output
  */
+
 const PresetMiddleware = ({
   presetFile,
   output
 }) => {
   const {
     config
-  } = (0, _useConfig.default)(process.cwd());
+  } = (0, _useConfig.default)(cwd);
   const preset = (0, _usePreset.default)(presetFile);
   const {
     data
@@ -1562,7 +1488,7 @@ const PresetMiddleware = ({
     config,
     data,
     generator: preset,
-    projectDir: output ? output : process.cwd()
+    projectDir: output
   });
   return /*#__PURE__*/_react.default.createElement(_Tasks.default, {
     status: status,
@@ -1572,13 +1498,92 @@ const PresetMiddleware = ({
 
 var _default = PresetMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","../hooks/usePreset":"../src/hooks/usePreset.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"preset/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","../hooks/usePreset":"../src/hooks/usePreset.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"../src/hooks/usePresetIndex.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useModulePresets = exports.default = void 0;
+
+var _path = _interopRequireDefault(require("path"));
+
+var _react = require("react");
+
+var _findPlugins = _interopRequireDefault(require("find-plugins"));
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const cwd = process.cwd();
+/**
+ * Process globby matches into expected object
+ */
+
+const fromMatches = matches => matches.map(generator => ({
+  name: _path.default.basename(generator).replace('.preset.bud.js', ''),
+  path: generator
+}));
+/**
+ * Presets sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+
+
+const useModulePresets = keyword => {
+  const [presets, setPresets] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      setChecked(false);
+      const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
+        keyword
+      }).map(pkg => _path.default.join(_path.default.join(pkg.dir, 'presets'), '/**/*.preset.bud.js'));
+      const matches = await (0, _globby.default)(packages);
+      setPresets(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, [keyword]);
+  return [presets, checked];
+};
+/**
+ * usePresets hook
+ */
+
+
+exports.useModulePresets = useModulePresets;
+
+const usePresetIndex = () => {
+  const [core, checkedCore] = useModulePresets('bud-core-presets');
+  const [plugin, checkedPlugin] = useModulePresets('bud-preset');
+  return {
+    plugin,
+    core,
+    status: {
+      plugin: checkedPlugin,
+      core: checkedCore
+    },
+    complete: checkedCore && checkedPlugin
+  };
+};
+
+var _default = usePresetIndex;
+exports.default = _default;
+},{}],"preset/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var _path = require("path");
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -1588,11 +1593,11 @@ var _lodash = require("lodash");
 
 var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
 
-var _usePresetIndex = _interopRequireDefault(require("../../src/hooks/usePresetIndex"));
-
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
 var _PresetMiddleware = _interopRequireDefault(require("./../../src/middleware/PresetMiddleware"));
+
+var _usePresetIndex = _interopRequireDefault(require("../../src/hooks/usePresetIndex"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1600,14 +1605,15 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+const cwd = process.cwd();
 /** Command: bud preset */
 /// Run a preset.
-const Generate = ({
+
+const Preset = ({
   inputArgs
 }) => {
-  var _inputArgs$;
-
-  const [name] = (0, _react.useState)((_inputArgs$ = inputArgs[1]) !== null && _inputArgs$ !== void 0 ? _inputArgs$ : null);
+  const name = inputArgs[1] || null;
+  const output = inputArgs[2] ? (0, _path.join)(cwd, inputArgs[2]) : cwd;
   const {
     plugin,
     core,
@@ -1633,14 +1639,15 @@ const Generate = ({
     items: presets,
     onSelect: selection => setSelection(selection)
   }), selection && /*#__PURE__*/_react.default.createElement(_PresetMiddleware.default, {
+    output: output,
     presetFile: selection.value
   }));
 };
 
-Generate.propTypes = {
+Preset.propTypes = {
   inputArgs: _propTypes.default.array
 };
-var _default = Generate;
+var _default = Preset;
 exports.default = _default;
-},{"../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js"}]},{},["preset/index.js"], null)
+},{"./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js","../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js"}]},{},["preset/index.js"], null)
 //# sourceMappingURL=/preset/index.js.map

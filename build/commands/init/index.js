@@ -676,7 +676,9 @@ const ensureDir = async ({
   data,
   compiler
 }) => {
+  console.log(task, config, data);
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
+  console.log(path);
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
@@ -1135,7 +1137,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {Observable}
  */
 const bud = props => {
-  /** 🌱 */
   const {
     generator
   } = props;
@@ -1312,19 +1313,21 @@ var _Tasks = _interopRequireDefault(require("./../components/Tasks"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const cwd = process.cwd();
 /**
  * Middleware: Generator
  *
  * @prop {string} generatorFile
  * @prop {string} output
  */
+
 const GeneratorMiddleware = ({
   generatorFile,
   output
 }) => {
   const {
     config
-  } = (0, _useConfig.default)(process.cwd());
+  } = (0, _useConfig.default)(cwd);
   const {
     generator
   } = (0, _useGenerator.default)(generatorFile);

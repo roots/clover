@@ -7,6 +7,8 @@ import useSubscription from './../hooks/useSubscription'
 
 import Tasks from './../components/Tasks'
 
+const cwd = process.cwd()
+
 /**
  * Middleware: Preset
  *
@@ -14,14 +16,14 @@ import Tasks from './../components/Tasks'
  * @prop {string} output
  */
 const PresetMiddleware = ({presetFile, output}) => {
-  const {config} = useConfig(process.cwd())
+  const {config} = useConfig(cwd)
   const preset = usePreset(presetFile)
   const {data} = useData(preset)
   const {status, complete} = useSubscription({
     config,
     data,
     generator: preset,
-    projectDir: output ? output : process.cwd(),
+    projectDir: output,
   })
 
   return <Tasks status={status} complete={complete} />

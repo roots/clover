@@ -4,10 +4,9 @@ import path from 'path'
 import {isEqual} from 'lodash'
 import QuickSearchInput from 'ink-quicksearch-input'
 
-import useGeneratorIndex from './../../src/hooks/useGeneratorIndex'
-
 import App from './../../src/components/App'
 import GeneratorMiddleware from './../../src/middleware/GeneratorMiddleware'
+import useGeneratorIndex from './../../src/hooks/useGeneratorIndex'
 
 const cwd = process.cwd()
 

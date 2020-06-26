@@ -19,7 +19,9 @@ const ensureDir = async ({
   data,
   compiler,
 }) => {
+  console.log(task, config, data)
   const path = join(config.projectDir, compiler.make(task.path)(data))
+  console.log(path)
   observer.next(`Writing directory ${path}`)
   await fs.ensureDir(path)
 

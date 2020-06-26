@@ -1,17 +1,20 @@
+import {join} from 'path'
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {isEqual} from 'lodash'
 import QuickSearchInput from 'ink-quicksearch-input'
 
-import usePresetIndex from '../../src/hooks/usePresetIndex'
-
 import App from './../../src/components/App'
 import PresetMiddleware from './../../src/middleware/PresetMiddleware'
+import usePresetIndex from '../../src/hooks/usePresetIndex'
+
+const cwd = process.cwd()
 
 /** Command: bud preset */
 /// Run a preset.
-const Generate = ({inputArgs}) => {
-  const [name] = useState(inputArgs[1] ?? null)
+const Preset = ({inputArgs}) => {
+  const name = inputArgs[1] || null
+  const output = inputArgs[2] ? join(cwd, inputArgs[2]) : cwd
   const {plugin, core, complete} = usePresetIndex()
 
   const [presets, setPresets] = useState(null)
@@ -48,13 +51,18 @@ const Generate = ({inputArgs}) => {
         />
       )}
 
-      {selection && <PresetMiddleware presetFile={selection.value} />}
+      {selection && (
+        <PresetMiddleware
+          output={output}
+          presetFile={selection.value}
+        />
+      )}
     </App>
   )
 }
 
-Generate.propTypes = {
+Preset.propTypes = {
   inputArgs: PropTypes.array,
 }
 
-export default Generate
+export default Preset
