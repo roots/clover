@@ -783,9 +783,7 @@ const ensureDir = async ({
   data,
   compiler
 }) => {
-  console.log(task, config, data);
   const path = (0, _path.join)(config.projectDir, compiler.make(task.path)(data));
-  console.log(path);
   observer.next(`Writing directory ${path}`);
   await _fsExtra.default.ensureDir(path);
   observer.complete();
