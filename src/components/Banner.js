@@ -1,14 +1,13 @@
 import React from 'react'
-import {Box, Text, Color} from 'ink'
-import Link from 'ink-link'
+import {Box, Text} from 'ink'
 
 const Banner = () => (
-  <Box flexDirection="column" marginBottom={1}>
-    <Text>
-      <Link url="https://github.com/roots/bud" fallback={false}>
-        <Color green>⚡️ @roots/bud</Color>
-      </Link>
-    </Text>
+  <Box
+    borderStyle="round"
+    borderColor="green"
+    flexDirection="column"
+    marginBottom={1}>
+    <Text color="green">⚡️ @roots/bud</Text>
   </Box>
 )
 

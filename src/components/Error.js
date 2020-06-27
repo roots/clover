@@ -1,12 +1,12 @@
 import React from 'react'
-import {Box, Color} from 'ink'
+import {Box, Text} from 'ink'
 
 /**
  * Error
  */
 const Error = ({message}) => (
   <Box>
-    <Color red>💥 {JSON.stringify(message)}</Color>
+    <Text color="red">💥 {JSON.stringify(message)}</Text>
   </Box>
 )
 

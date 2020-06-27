@@ -117,7 +117,331 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/components/Banner.js":[function(require,module,exports) {
+})({"../src/components/input/select-input/Indicator.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _ink = require("ink");
+
+var _figures = _interopRequireDefault(require("figures"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Indicator = ({
+  isSelected
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  marginRight: 1
+}, isSelected ? /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  color: "blue"
+}, _figures.default.pointer) : ' ');
+
+Indicator.propTypes = {
+  isSelected: _propTypes.default.bool
+};
+Indicator.defaultProps = {
+  isSelected: false
+};
+var _default = Indicator;
+exports.default = _default;
+},{}],"../src/components/input/select-input/Item.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _ink = require("ink");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Item = ({
+  isSelected,
+  label
+}) => /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  blue: isSelected
+}, label);
+
+Item.propTypes = {
+  isSelected: _propTypes.default.bool,
+  label: _propTypes.default.string.isRequired
+};
+Item.defaultProps = {
+  isSelected: false
+};
+var _default = Item;
+exports.default = _default;
+},{}],"../src/components/input/select-input/SelectInput.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "Indicator", {
+  enumerable: true,
+  get: function () {
+    return _Indicator.default;
+  }
+});
+Object.defineProperty(exports, "Item", {
+  enumerable: true,
+  get: function () {
+    return _Item.default;
+  }
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _lodash = _interopRequireDefault(require("lodash.isequal"));
+
+var _arrRotate = _interopRequireDefault(require("arr-rotate"));
+
+var _ink = require("ink");
+
+var _Indicator = _interopRequireDefault(require("./Indicator"));
+
+var _Item = _interopRequireDefault(require("./Item"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+const ARROW_UP = '\u001B[A';
+const ARROW_DOWN = '\u001B[B';
+const ENTER = '\r';
+
+class SelectInput extends _react.PureComponent {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "state", {
+      rotateIndex: 0,
+      selectedIndex: this.props.initialIndex
+    });
+
+    _defineProperty(this, "handleInput", data => {
+      const {
+        items,
+        focus,
+        onSelect,
+        onHighlight
+      } = this.props;
+      const {
+        rotateIndex,
+        selectedIndex
+      } = this.state;
+      const hasLimit = this.hasLimit();
+      const limit = this.getLimit();
+
+      if (focus === false) {
+        return;
+      }
+
+      const s = String(data);
+
+      if (s === ARROW_UP || s === 'k') {
+        const lastIndex = (hasLimit ? limit : items.length) - 1;
+        const atFirstIndex = selectedIndex === 0;
+        const nextIndex = hasLimit ? selectedIndex : lastIndex;
+        const nextRotateIndex = atFirstIndex ? rotateIndex + 1 : rotateIndex;
+        const nextSelectedIndex = atFirstIndex ? nextIndex : selectedIndex - 1;
+        this.setState({
+          rotateIndex: nextRotateIndex,
+          selectedIndex: nextSelectedIndex
+        });
+        const slicedItems = hasLimit ? (0, _arrRotate.default)(items, nextRotateIndex).slice(0, limit) : items;
+        onHighlight(slicedItems[nextSelectedIndex]);
+      }
+
+      if (s === ARROW_DOWN || s === 'j') {
+        const atLastIndex = selectedIndex === (hasLimit ? limit : items.length) - 1;
+        const nextIndex = hasLimit ? selectedIndex : 0;
+        const nextRotateIndex = atLastIndex ? rotateIndex - 1 : rotateIndex;
+        const nextSelectedIndex = atLastIndex ? nextIndex : selectedIndex + 1;
+        this.setState({
+          rotateIndex: nextRotateIndex,
+          selectedIndex: nextSelectedIndex
+        });
+        const slicedItems = hasLimit ? (0, _arrRotate.default)(items, nextRotateIndex).slice(0, limit) : items;
+        onHighlight(slicedItems[nextSelectedIndex]);
+      }
+
+      if (s === ENTER) {
+        const slicedItems = hasLimit ? (0, _arrRotate.default)(items, rotateIndex).slice(0, limit) : items;
+        onSelect(slicedItems[selectedIndex]);
+      }
+    });
+
+    _defineProperty(this, "hasLimit", () => {
+      const {
+        limit,
+        items
+      } = this.props;
+      return typeof limit === 'number' && items.length > limit;
+    });
+
+    _defineProperty(this, "getLimit", () => {
+      const {
+        limit,
+        items
+      } = this.props;
+
+      if (this.hasLimit()) {
+        return Math.min(limit, items.length);
+      }
+
+      return items.length;
+    });
+  }
+
+  render() {
+    const {
+      items,
+      indicatorComponent,
+      itemComponent
+    } = this.props;
+    const {
+      rotateIndex,
+      selectedIndex
+    } = this.state;
+    const limit = this.getLimit();
+    const slicedItems = this.hasLimit() ? (0, _arrRotate.default)(items, rotateIndex).slice(0, limit) : items;
+    return /*#__PURE__*/_react.default.createElement(_ink.Box, {
+      flexDirection: "column"
+    }, slicedItems.map((item, index) => {
+      const isSelected = index === selectedIndex;
+      return /*#__PURE__*/_react.default.createElement(_ink.Box, {
+        key: item.key || item.value
+      }, _react.default.createElement(indicatorComponent, {
+        isSelected
+      }), _react.default.createElement(itemComponent, { ...item,
+        isSelected
+      }));
+    }));
+  }
+
+  componentDidMount() {
+    const {
+      stdin,
+      setRawMode
+    } = this.props;
+    setRawMode(true);
+    stdin.on('data', this.handleInput);
+  }
+
+  componentWillUnmount() {
+    const {
+      stdin,
+      setRawMode
+    } = this.props;
+    stdin.removeListener('data', this.handleInput);
+    setRawMode(false);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!(0, _lodash.default)(prevProps.items, this.props.items)) {
+      this.setState({
+        // eslint-disable-line react/no-did-update-set-state
+        rotateIndex: 0,
+        selectedIndex: 0
+      });
+    }
+  }
+
+}
+
+_defineProperty(SelectInput, "propTypes", {
+  items: _propTypes.default.array,
+  focus: _propTypes.default.bool,
+  initialIndex: _propTypes.default.number,
+  indicatorComponent: _propTypes.default.func,
+  itemComponent: _propTypes.default.func,
+  limit: _propTypes.default.number,
+  stdin: _propTypes.default.object.isRequired,
+  setRawMode: _propTypes.default.func.isRequired,
+  onSelect: _propTypes.default.func,
+  onHighlight: _propTypes.default.func
+});
+
+_defineProperty(SelectInput, "defaultProps", {
+  items: [],
+  focus: true,
+  initialIndex: 0,
+  indicatorComponent: _Indicator.default,
+  itemComponent: _Item.default,
+  limit: null,
+
+  onSelect() {},
+
+  onHighlight() {}
+
+});
+
+const SelectInputWithStdin = props => {
+  const {
+    stdin,
+    setRawMode
+  } = (0, _ink.useStdin)();
+  return /*#__PURE__*/_react.default.createElement(SelectInput, _extends({}, props, {
+    stdin: stdin,
+    setRawMode: setRawMode
+  }));
+};
+
+var _default = SelectInputWithStdin;
+exports.default = _default;
+},{"./Indicator":"../src/components/input/select-input/Indicator.js","./Item":"../src/components/input/select-input/Item.js"}],"../src/components/input/select-input/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    return _SelectInput.default;
+  }
+});
+Object.defineProperty(exports, "Item", {
+  enumerable: true,
+  get: function () {
+    return _SelectInput.Item;
+  }
+});
+Object.defineProperty(exports, "Indicator", {
+  enumerable: true,
+  get: function () {
+    return _SelectInput.Indicator;
+  }
+});
+
+var _SelectInput = _interopRequireWildcard(require("./SelectInput"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+},{"./SelectInput":"../src/components/input/select-input/SelectInput.js"}],"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -129,19 +453,16 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkLink = _interopRequireDefault(require("ink-link"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  borderStyle: "round",
+  borderColor: "green",
   flexDirection: "column",
   marginBottom: 1
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://github.com/roots/bud",
-  fallback: false
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, "\u26A1\uFE0F @roots/bud"))));
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  color: "green"
+}, "\u26A1\uFE0F @roots/bud"));
 
 var _default = Banner;
 exports.default = _default;
@@ -157,8 +478,6 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
-
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -171,9 +490,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const Loading = ({
   message,
   spinnerColor = 'white'
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  keyword: spinnerColor
-}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', message);
+}) => /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  color: spinnerColor
+}, " ", message);
 
 Loading.propTypes = {
   message: _propTypes.default.string
@@ -266,11 +585,13 @@ var _enquirer = require("enquirer");
  */
 const useData = generator => {
   const [data, setData] = (0, _react.useState)(null);
+  const [promptsInitialized, setPromptsInitialized] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
-    if (generator && !data) {
+    if (generator && !data && !promptsInitialized) {
+      setPromptsInitialized(true);
       generator.prompts ? (0, _enquirer.prompt)(generator.prompts).then(data => setData(data)) : setData({});
     }
-  }, [generator]);
+  }, [generator, data, promptsInitialized]);
   return {
     data
   };
@@ -1422,18 +1743,18 @@ const Tasks = ({
   complete
 }) => {
   if (complete) {
-    return /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+    return /*#__PURE__*/_react.default.createElement(_ink.Text, {
       green: true
-    }, "\uD83C\uDFC1", '  ', "Done"));
+    }, "\uD83C\uDFC1", '  ', "Done");
   }
 
   if (!status || complete) {
     return [];
   }
 
-  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, {
     green: true
-  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', status.toString()));
+  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null), " ", status));
 };
 
 var _default = Tasks;
@@ -1589,7 +1910,7 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _lodash = require("lodash");
 
-var _inkQuicksearchInput = _interopRequireDefault(require("ink-quicksearch-input"));
+var _selectInput = _interopRequireDefault(require("../../src/components/input/select-input"));
 
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
@@ -1632,7 +1953,7 @@ const Preset = ({
   const displayQuickSearch = !name && presets && !selection;
   return /*#__PURE__*/_react.default.createElement(_App.default, {
     isLoading: isLoading
-  }, displayQuickSearch && /*#__PURE__*/_react.default.createElement(_inkQuicksearchInput.default, {
+  }, displayQuickSearch && /*#__PURE__*/_react.default.createElement(_selectInput.default, {
     label: "Select a preset",
     items: presets,
     onSelect: selection => setSelection(selection)
@@ -1647,5 +1968,5 @@ Preset.propTypes = {
 };
 var _default = Preset;
 exports.default = _default;
-},{"./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js","../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js"}]},{},["preset/index.js"], null)
+},{"../../src/components/input/select-input":"../src/components/input/select-input/index.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js","../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js"}]},{},["preset/index.js"], null)
 //# sourceMappingURL=/preset/index.js.map

@@ -2,7 +2,7 @@ import {join} from 'path'
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {isEqual} from 'lodash'
-import QuickSearchInput from 'ink-quicksearch-input'
+import SelectInput from '../../src/components/input/select-input'
 
 import App from './../../src/components/App'
 import PresetMiddleware from './../../src/middleware/PresetMiddleware'
@@ -44,7 +44,7 @@ const Preset = ({inputArgs}) => {
   return (
     <App isLoading={isLoading}>
       {displayQuickSearch && (
-        <QuickSearchInput
+        <SelectInput
           label="Select a preset"
           items={presets}
           onSelect={selection => setSelection(selection)}

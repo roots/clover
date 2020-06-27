@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box, Color, Text} from 'ink'
+import {Box, Text} from 'ink'
 import Spinner from 'ink-spinner'
 
 /**
@@ -11,11 +11,7 @@ import Spinner from 'ink-spinner'
  */
 const Tasks = ({status, complete}) => {
   if (complete) {
-    return (
-      <Text>
-        <Color green>🏁{'  '}Done</Color>
-      </Text>
-    )
+    return <Text green>🏁{'  '}Done</Text>
   }
 
   if (!status || complete) {
@@ -25,11 +21,8 @@ const Tasks = ({status, complete}) => {
   return (
     <Box>
       {status && (
-        <Text>
-          <Color green>
-            <Spinner />
-          </Color>{' '}
-          {status.toString()}
+        <Text green>
+          <Spinner /> {status}
         </Text>
       )}
     </Box>

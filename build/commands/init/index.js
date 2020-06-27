@@ -159,11 +159,13 @@ var _enquirer = require("enquirer");
  */
 const useData = generator => {
   const [data, setData] = (0, _react.useState)(null);
+  const [promptsInitialized, setPromptsInitialized] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
-    if (generator && !data) {
+    if (generator && !data && !promptsInitialized) {
+      setPromptsInitialized(true);
       generator.prompts ? (0, _enquirer.prompt)(generator.prompts).then(data => setData(data)) : setData({});
     }
-  }, [generator]);
+  }, [generator, data, promptsInitialized]);
   return {
     data
   };
@@ -1273,18 +1275,18 @@ const Tasks = ({
   complete
 }) => {
   if (complete) {
-    return /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+    return /*#__PURE__*/_react.default.createElement(_ink.Text, {
       green: true
-    }, "\uD83C\uDFC1", '  ', "Done"));
+    }, "\uD83C\uDFC1", '  ', "Done");
   }
 
   if (!status || complete) {
     return [];
   }
 
-  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
+  return /*#__PURE__*/_react.default.createElement(_ink.Box, null, status && /*#__PURE__*/_react.default.createElement(_ink.Text, {
     green: true
-  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', status.toString()));
+  }, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null), " ", status));
 };
 
 var _default = Tasks;

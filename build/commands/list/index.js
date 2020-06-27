@@ -308,19 +308,16 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkLink = _interopRequireDefault(require("ink-link"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  borderStyle: "round",
+  borderColor: "green",
   flexDirection: "column",
   marginBottom: 1
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_inkLink.default, {
-  url: "https://github.com/roots/bud",
-  fallback: false
-}, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  green: true
-}, "\u26A1\uFE0F @roots/bud"))));
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  color: "green"
+}, "\u26A1\uFE0F @roots/bud"));
 
 var _default = Banner;
 exports.default = _default;
@@ -336,8 +333,6 @@ var _react = _interopRequireDefault(require("react"));
 
 var _ink = require("ink");
 
-var _inkSpinner = _interopRequireDefault(require("ink-spinner"));
-
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -350,9 +345,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const Loading = ({
   message,
   spinnerColor = 'white'
-}) => /*#__PURE__*/_react.default.createElement(_ink.Box, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-  keyword: spinnerColor
-}, /*#__PURE__*/_react.default.createElement(_inkSpinner.default, null)), ' ', message);
+}) => /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  color: spinnerColor
+}, " ", message);
 
 Loading.propTypes = {
   message: _propTypes.default.string

@@ -6,14 +6,16 @@ import {prompt} from 'enquirer'
  */
 const useData = generator => {
   const [data, setData] = useState(null)
-
+  const [promptsInitialized, setPromptsInitialized] = useState(null)
   useEffect(() => {
-    if (generator && !data) {
+    if (generator && !data && !promptsInitialized) {
+      setPromptsInitialized(true)
+
       generator.prompts
         ? prompt(generator.prompts).then(data => setData(data))
         : setData({})
     }
-  }, [generator])
+  }, [generator, data, promptsInitialized])
 
   return {data}
 }

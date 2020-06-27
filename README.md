@@ -81,6 +81,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ### Dependencies
 
+- chalk
 - enquirer
 - esm
 - execa
@@ -91,11 +92,10 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 - handlebars-helpers
 - ink
 - ink-link
-- ink-quicksearch-input
 - ink-spinner
-- ink-table
 - ink-text-input
 - ink-use-stdout-dimensions
+- lodash
 - pastel
 - prettier
 - prop-types
@@ -107,6 +107,7 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 - @roots/bud
 - @roots/bud-generators
+- arr-rotate
 - babel-eslint
 - eslint
 - eslint-plugin-react
