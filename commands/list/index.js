@@ -1,13 +1,14 @@
 import React from 'react'
-import {Box, Color, Text} from 'ink'
+import {Box} from 'ink'
 
 import useGeneratorIndex from './../../src/hooks/useGeneratorIndex'
 import usePresetIndex from './../../src/hooks/usePresetIndex'
 import App from './../../src/components/App'
+import List from './../../src/components/List'
 
 /** Command: bud list */
 /// List available budfiles
-const List = () => {
+const ListCommand = () => {
   const {
     core: coreGenerators,
     plugin: pluginGenerators,
@@ -32,38 +33,11 @@ const List = () => {
   return (
     <App isLoading={!complete}>
       <Box flexDirection="column">
-        {presetsComplete && (
-          <Box flexDirection="column" marginBottom={1}>
-            <Text>
-              <Color bgGreen black>
-                Presets
-              </Color>
-            </Text>
-            {presets.map((preset, id) => (
-              <Box key={id} flexDirection="column">
-                <Box>◦ {preset.name}</Box>
-              </Box>
-            ))}
-          </Box>
-        )}
-
-        {generatorsComplete && (
-          <Box flexDirection="column">
-            <Text>
-              <Color bgGreen black>
-                Generators
-              </Color>
-            </Text>
-            {generators.map((generator, id) => (
-              <Box key={id} flexDirection="column">
-                <Box>◦ {generator.name}</Box>
-              </Box>
-            ))}
-          </Box>
-        )}
+        <List label="Presets" items={presets} />
+        <List label="Generators" items={generators} />
       </Box>
     </App>
   )
 }
 
-export default List
+export default ListCommand

@@ -139,9 +139,9 @@ const Indicator = ({
   isSelected
 }) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
   marginRight: 1
-}, isSelected ? /*#__PURE__*/_react.default.createElement(_ink.Text, {
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, {
   color: "blue"
-}, _figures.default.pointer) : ' ');
+}, isSelected ? _figures.default.pointer : ''));
 
 Indicator.propTypes = {
   isSelected: _propTypes.default.bool
@@ -456,8 +456,6 @@ var _ink = require("ink");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  borderStyle: "round",
-  borderColor: "green",
   flexDirection: "column",
   marginBottom: 1
 }, /*#__PURE__*/_react.default.createElement(_ink.Text, {

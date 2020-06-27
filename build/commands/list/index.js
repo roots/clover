@@ -311,8 +311,6 @@ var _ink = require("ink");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Banner = () => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-  borderStyle: "round",
-  borderColor: "green",
   flexDirection: "column",
   marginBottom: 1
 }, /*#__PURE__*/_react.default.createElement(_ink.Text, {
@@ -398,7 +396,37 @@ const App = ({
 
 var _default = App;
 exports.default = _default;
-},{"./Banner":"../src/components/Banner.js","./Loading":"../src/components/Loading.js"}],"list/index.js":[function(require,module,exports) {
+},{"./Banner":"../src/components/Banner.js","./Loading":"../src/components/Loading.js"}],"../src/components/List.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ink = require("ink");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const List = ({
+  label,
+  items
+}) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  flexDirection: "column",
+  marginBottom: 1
+}, label && /*#__PURE__*/_react.default.createElement(_ink.Text, {
+  color: "black",
+  backgroundColor: "green"
+}, label), items === null || items === void 0 ? void 0 : items.map((preset, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  key: id,
+  flexDirection: "column"
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, "\u25E6 ", preset.name))));
+
+var _default = List;
+exports.default = _default;
+},{}],"list/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -416,11 +444,13 @@ var _usePresetIndex = _interopRequireDefault(require("./../../src/hooks/usePrese
 
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
+var _List = _interopRequireDefault(require("./../../src/components/List"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Command: bud list */
 /// List available budfiles
-const List = () => {
+const ListCommand = () => {
   const {
     core: coreGenerators,
     plugin: pluginGenerators,
@@ -439,27 +469,16 @@ const List = () => {
     isLoading: !complete
   }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
     flexDirection: "column"
-  }, presetsComplete && /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "column",
-    marginBottom: 1
-  }, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    bgGreen: true,
-    black: true
-  }, "Presets")), presets.map((preset, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    key: id,
-    flexDirection: "column"
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, "\u25E6 ", preset.name)))), generatorsComplete && /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    flexDirection: "column"
-  }, /*#__PURE__*/_react.default.createElement(_ink.Text, null, /*#__PURE__*/_react.default.createElement(_ink.Color, {
-    bgGreen: true,
-    black: true
-  }, "Generators")), generators.map((generator, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
-    key: id,
-    flexDirection: "column"
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, null, "\u25E6 ", generator.name))))));
+  }, /*#__PURE__*/_react.default.createElement(_List.default, {
+    label: "Presets",
+    items: presets
+  }), /*#__PURE__*/_react.default.createElement(_List.default, {
+    label: "Generators",
+    items: generators
+  })));
 };
 
-var _default = List;
+var _default = ListCommand;
 exports.default = _default;
-},{"./../../src/hooks/useGeneratorIndex":"../src/hooks/useGeneratorIndex.js","./../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js","./../../src/components/App":"../src/components/App.js"}]},{},["list/index.js"], null)
+},{"./../../src/hooks/useGeneratorIndex":"../src/hooks/useGeneratorIndex.js","./../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js","./../../src/components/App":"../src/components/App.js","./../../src/components/List":"../src/components/List.js"}]},{},["list/index.js"], null)
 //# sourceMappingURL=/list/index.js.map
