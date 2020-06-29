@@ -6,7 +6,7 @@ import globby from 'globby'
 const cwd = process.cwd()
 
 /**
- * Process globby matches into expected object
+ * Process glob matches into the format the rest of the application anticipates.
  */
 const fromMatches = matches =>
   matches.map(generator => ({

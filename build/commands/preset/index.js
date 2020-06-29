@@ -441,7 +441,84 @@ var _SelectInput = _interopRequireWildcard(require("./SelectInput"));
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-},{"./SelectInput":"../src/components/input/select-input/SelectInput.js"}],"../src/components/Banner.js":[function(require,module,exports) {
+},{"./SelectInput":"../src/components/input/select-input/SelectInput.js"}],"../src/hooks/usePresetIndex.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useModulePresets = exports.default = void 0;
+
+var _path = _interopRequireDefault(require("path"));
+
+var _react = require("react");
+
+var _findPlugins = _interopRequireDefault(require("find-plugins"));
+
+var _globby = _interopRequireDefault(require("globby"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const cwd = process.cwd();
+/**
+ * Process glob matches into the format the rest of the application anticipates.
+ */
+
+const fromMatches = matches => matches.map(generator => ({
+  name: _path.default.basename(generator).replace('.preset.bud.js', ''),
+  path: generator
+}));
+/**
+ * Presets sourced from node_modules
+ *
+ * @param {string} keyword package.json keywords match
+ */
+
+
+const useModulePresets = keyword => {
+  const [presets, setPresets] = (0, _react.useState)([]);
+  const [checked, setChecked] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      setChecked(false);
+      const packages = (0, _findPlugins.default)({
+        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
+        scanAllDirs: true,
+        keyword
+      }).map(pkg => _path.default.join(_path.default.join(pkg.dir, 'presets'), '/**/*.preset.bud.js'));
+      const matches = await (0, _globby.default)(packages);
+      setPresets(fromMatches(matches));
+      setChecked(true);
+    })();
+  }, [keyword]);
+  return [presets, checked];
+};
+/**
+ * usePresets hook
+ */
+
+
+exports.useModulePresets = useModulePresets;
+
+const usePresetIndex = () => {
+  const [core, checkedCore] = useModulePresets('bud-core-presets');
+  const [plugin, checkedPlugin] = useModulePresets('bud-preset');
+  return {
+    plugin,
+    core,
+    status: {
+      plugin: checkedPlugin,
+      core: checkedCore
+    },
+    complete: checkedCore && checkedPlugin
+  };
+};
+
+var _default = usePresetIndex;
+exports.default = _default;
+},{}],"../src/components/Banner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -618,59 +695,103 @@ var _globby = _interopRequireDefault(require("globby"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Make a preset
+ * Helpers: resolve generators.
  */
-const make = file => (0, _fs.existsSync)(file) ? require(file) : null;
+const generatorObj = file => (0, _fs.existsSync)(file) ? require(file) : null;
 
-const makeGeneratorTemplateDir = generatorFile => (0, _path.join)((0, _path.dirname)(generatorFile), 'templates');
+const getTemplateDir = generatorFile => (0, _path.join)((0, _path.dirname)(generatorFile), 'templates');
 /**
  * Use Preset
  *
- * Returns a consolidated generator from a preset file path.
+ * Returns a single generator with prompts and tasks merged
+ * from all the generators specified in the preset.
+ *
+ * @param  {string} presetFile
+ * @return {object}
  */
 
 
 const usePreset = presetFile => {
-  const preset = make(presetFile);
+  const preset = generatorObj(presetFile);
+  /**
+   * This is the singular generator where the hook will
+   * place everything specified in the preset.
+   */
+
   const [generator, setGenerator] = (0, _react.useState)({
     prompts: [],
     tasks: []
   });
+  /**
+   * This seems kind of hackish but it seems to be consistently working..
+   *
+   * The order of the generators specified in the preset must be preserved.
+   * Steps state is incremented once a generator has been fully processed.
+   *
+   * This allows the application to remain non-blocking while also preserving
+   * the order indicated by the preset.
+   */
+
   const [steps, setSteps] = (0, _react.useState)(0);
   (0, _react.useEffect)(() => {
-    ;
+    /**
+     * If no generator is available then bail early. This effect loops
+     * endlessly so it's best to do it straight away.
+     */
+    const step = preset.generators[steps];
+    if (!step) return;
 
     (async () => {
       var _generator$prompts, _current$prompts, _generator$tasks, _current$tasks;
 
-      const step = preset.generators[steps];
-      if (!step) return;
+      /** Resolve the pkg dir */
       const pkg = await (0, _resolvePkg.default)(step.pkg);
+      /** Resolve the actual generator obj. */
+
       const results = await (0, _globby.default)([`${pkg}/generators/${step.name}/*.bud.js`]);
-      const current = make(results[0]);
-      const templateDir = makeGeneratorTemplateDir(results[0]);
+      const current = generatorObj(results[0]);
+      const templateDir = getTemplateDir(results[0]);
+      /**
+       * Map the current generators template dir path
+       * onto each task in the generator. This simplifies things
+       * when Bud is processing each action.
+       */
 
       if (current) {
         current.tasks = current.tasks.map(task => ({ ...task,
           templateDir
         }));
       }
+      /**
+       * Spread assign the current generator values with the
+       * cumulative generator to be returned from the hook.
+       */
+
 
       setGenerator({
         prompts: [...((_generator$prompts = generator === null || generator === void 0 ? void 0 : generator.prompts) !== null && _generator$prompts !== void 0 ? _generator$prompts : []), ...((_current$prompts = current === null || current === void 0 ? void 0 : current.prompts) !== null && _current$prompts !== void 0 ? _current$prompts : [])],
         tasks: [...((_generator$tasks = generator === null || generator === void 0 ? void 0 : generator.tasks) !== null && _generator$tasks !== void 0 ? _generator$tasks : []), ...((_current$tasks = current === null || current === void 0 ? void 0 : current.tasks) !== null && _current$tasks !== void 0 ? _current$tasks : [])]
       });
+      /**
+       * Lastly, increment the index. This will cause the effect to be
+       * called again on React's next render.
+       */
+
       setSteps(1 + steps);
     })();
   }, [preset, steps]);
+  /**
+   * When the steps counter exceeds the length of
+   * the total number of generators in the preset, its's safe
+   * to conclude that we have processed all the generators.
+   */
+
   const [complete, setComplete] = (0, _react.useState)(false);
   (0, _react.useEffect)(() => {
-    steps && steps >= preset.generators.length && (() => {
-      setComplete(true);
-    })();
+    steps && steps >= preset.generators.length && setComplete(true);
   }, [steps]);
   /**
-   * Return aggregated generators
+   * Return aggregated generators once they have finished processing.
    */
 
   return complete ? generator : false;
@@ -1671,6 +1792,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * Use subscription.
+ *
+ * Once there is a generator and data available it is passed to the bud
+ * engine to be run. Bud will return an rxjs observable to be utilized
+ * by components like Tasks to indicate to the user what is going on
+ * with the scaffold process.
  */
 const useSubscription = ({
   config,
@@ -1815,84 +1941,7 @@ const PresetMiddleware = ({
 
 var _default = PresetMiddleware;
 exports.default = _default;
-},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","../hooks/usePreset":"../src/hooks/usePreset.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"../src/hooks/usePresetIndex.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useModulePresets = exports.default = void 0;
-
-var _path = _interopRequireDefault(require("path"));
-
-var _react = require("react");
-
-var _findPlugins = _interopRequireDefault(require("find-plugins"));
-
-var _globby = _interopRequireDefault(require("globby"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const cwd = process.cwd();
-/**
- * Process globby matches into expected object
- */
-
-const fromMatches = matches => matches.map(generator => ({
-  name: _path.default.basename(generator).replace('.preset.bud.js', ''),
-  path: generator
-}));
-/**
- * Presets sourced from node_modules
- *
- * @param {string} keyword package.json keywords match
- */
-
-
-const useModulePresets = keyword => {
-  const [presets, setPresets] = (0, _react.useState)([]);
-  const [checked, setChecked] = (0, _react.useState)(false);
-  (0, _react.useEffect)(() => {
-    ;
-
-    (async () => {
-      setChecked(false);
-      const packages = (0, _findPlugins.default)({
-        dir: _path.default.resolve(_path.default.join(cwd, 'node_modules')),
-        scanAllDirs: true,
-        keyword
-      }).map(pkg => _path.default.join(_path.default.join(pkg.dir, 'presets'), '/**/*.preset.bud.js'));
-      const matches = await (0, _globby.default)(packages);
-      setPresets(fromMatches(matches));
-      setChecked(true);
-    })();
-  }, [keyword]);
-  return [presets, checked];
-};
-/**
- * usePresets hook
- */
-
-
-exports.useModulePresets = useModulePresets;
-
-const usePresetIndex = () => {
-  const [core, checkedCore] = useModulePresets('bud-core-presets');
-  const [plugin, checkedPlugin] = useModulePresets('bud-preset');
-  return {
-    plugin,
-    core,
-    status: {
-      plugin: checkedPlugin,
-      core: checkedCore
-    },
-    complete: checkedCore && checkedPlugin
-  };
-};
-
-var _default = usePresetIndex;
-exports.default = _default;
-},{}],"preset/index.js":[function(require,module,exports) {
+},{"./../hooks/useConfig":"../src/hooks/useConfig.js","./../hooks/useData":"../src/hooks/useData.js","../hooks/usePreset":"../src/hooks/usePreset.js","./../hooks/useSubscription":"../src/hooks/useSubscription.js","./../components/Tasks":"../src/components/Tasks.js"}],"preset/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1910,11 +1959,11 @@ var _lodash = require("lodash");
 
 var _selectInput = _interopRequireDefault(require("../../src/components/input/select-input"));
 
+var _usePresetIndex = _interopRequireDefault(require("../../src/hooks/usePresetIndex"));
+
 var _App = _interopRequireDefault(require("./../../src/components/App"));
 
 var _PresetMiddleware = _interopRequireDefault(require("./../../src/middleware/PresetMiddleware"));
-
-var _usePresetIndex = _interopRequireDefault(require("../../src/hooks/usePresetIndex"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1929,8 +1978,26 @@ const cwd = process.cwd();
 const Preset = ({
   inputArgs
 }) => {
+  /**
+   * If a particular preset is specified, put it in state.
+   */
   const name = inputArgs[1] || null;
+  /**
+   * If an output directory was passed as an argument
+   * then resolve the full path and put it in state.
+   *
+   * No argument will default to the cwd.
+   */
+
   const output = inputArgs[2] ? (0, _path.join)(cwd, inputArgs[2]) : cwd;
+  /**
+   * Load all discoverable presets.
+   *
+   * @note The preset index hook
+   *       also returns a boolean `complete` value which means that the
+   *       search has concluded and we have all the values.
+   */
+
   const {
     plugin,
     core,
@@ -1943,12 +2010,42 @@ const Preset = ({
       label: preset.name
     })));
   }, [name, complete]);
+  /**
+   * If the user passed a name as an argument, filter the presets
+   * with that value.
+   */
+
   const [selection, setSelection] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
-    name && presets && complete && setSelection(presets.filter(preset => (0, _lodash.isEqual)(preset.label, name))[0]);
+    if (name && presets && complete) {
+      /**
+       * @todo it is possible that there was more than one matching presets for
+       *       the specified name. We should let the user know that we are running
+       *       the first result we find, but that a conflict existed.
+       */
+      const presetCandidates = presets.filter(preset => (0, _lodash.isEqual)(preset.label, name));
+      const selection = presetCandidates[0];
+      setSelection(selection);
+    }
   }, [complete, presets, name]);
-  const isLoading = !name && !presets && !selection;
+  /**
+   * Presets are considered loading when there are
+   * no resolved presets and no selection
+   */
+
+  const isLoading = !presets && !selection;
+  /**
+   * Display search when no particular preset was specified,
+   * we have presets to display and no selection has yet
+   * been made.
+   */
+
   const displayQuickSearch = !name && presets && !selection;
+  /**
+   * Display the search field, and once a selection has been made
+   * run the generator middleware on the selected generator.
+   */
+
   return /*#__PURE__*/_react.default.createElement(_App.default, {
     isLoading: isLoading
   }, displayQuickSearch && /*#__PURE__*/_react.default.createElement(_selectInput.default, {
@@ -1966,5 +2063,5 @@ Preset.propTypes = {
 };
 var _default = Preset;
 exports.default = _default;
-},{"../../src/components/input/select-input":"../src/components/input/select-input/index.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js","../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js"}]},{},["preset/index.js"], null)
+},{"../../src/components/input/select-input":"../src/components/input/select-input/index.js","../../src/hooks/usePresetIndex":"../src/hooks/usePresetIndex.js","./../../src/components/App":"../src/components/App.js","./../../src/middleware/PresetMiddleware":"../src/middleware/PresetMiddleware.js"}]},{},["preset/index.js"], null)
 //# sourceMappingURL=/preset/index.js.map

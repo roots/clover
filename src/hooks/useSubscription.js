@@ -4,6 +4,11 @@ import bud from './../bud'
 
 /**
  * Use subscription.
+ *
+ * Once there is a generator and data available it is passed to the bud
+ * engine to be run. Bud will return an rxjs observable to be utilized
+ * by components like Tasks to indicate to the user what is going on
+ * with the scaffold process.
  */
 const useSubscription = ({config, data, projectDir, generator}) => {
   const {exit} = useApp()

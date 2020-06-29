@@ -1629,6 +1629,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * Use subscription.
+ *
+ * Once there is a generator and data available it is passed to the bud
+ * engine to be run. Bud will return an rxjs observable to be utilized
+ * by components like Tasks to indicate to the user what is going on
+ * with the scaffold process.
  */
 const useSubscription = ({
   config,
@@ -1916,39 +1921,82 @@ const Generate = ({
 }) => {
   var _inputArgs$;
 
+  /**
+   * If a particular generator is specified, put it in state.
+   */
   const [name] = (0, _react.useState)((_inputArgs$ = inputArgs === null || inputArgs === void 0 ? void 0 : inputArgs[1]) !== null && _inputArgs$ !== void 0 ? _inputArgs$ : null);
+  /**
+   * If an output directory was passed as an argument
+   * then resolve the full path and put it in state.
+   *
+   * No argument will default to the cwd.
+   */
+
   const [output, setOutput] = (0, _react.useState)(cwd);
   (0, _react.useEffect)(() => {
-    (inputArgs === null || inputArgs === void 0 ? void 0 : inputArgs[2]) && (() => {
-      setOutput(_path.default.resolve(cwd, inputArgs[2]));
-    })();
+    (inputArgs === null || inputArgs === void 0 ? void 0 : inputArgs[2]) && setOutput(_path.default.resolve(cwd, inputArgs[2]));
   }, [inputArgs]);
+  /**
+   * Load all discoverable generators.
+   *
+   * @note The generator index hook also returns a boolean
+   *       `complete` value indicating that the
+   *       search has concluded and we have all the values.
+   */
+
   const {
     core,
     plugin,
     project,
     complete
   } = (0, _useGeneratorIndex.default)();
-  const [buds, setBuds] = (0, _react.useState)(null);
+  const [generators, setGenerators] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
     const allResults = [...project, ...plugin, ...core].map(bud => ({
       value: bud.path,
       label: bud.name
     }));
-    complete && setBuds(allResults);
+    complete && setGenerators(allResults);
   }, [name, complete]);
+  /**
+   * If the user passed a name as an argument, filter the generators
+   * with that value.
+   */
+
   const [selection, setSelection] = (0, _react.useState)(null);
   (0, _react.useEffect)(() => {
-    const rdy = name && buds && complete;
-    const selection = buds === null || buds === void 0 ? void 0 : buds.filter(bud => (0, _lodash.isEqual)(bud.label, name))[0];
-    rdy && setSelection(selection);
-  }, [complete, buds, name]);
-  const isLoading = !name && !buds && !selection;
-  const displayQuickSearch = !name && buds && !selection;
+    /**
+     * @todo it is possible that there was more than one matching generator for
+     *       the specified name. We should let the user know that we are running
+     *       the first result we find, but that a conflict existed.
+     */
+    const candidates = generators === null || generators === void 0 ? void 0 : generators.filter(bud => (0, _lodash.isEqual)(bud.label, name));
+    const selection = candidates === null || candidates === void 0 ? void 0 : candidates[0];
+    const isReady = name && generators && complete;
+    isReady && setSelection(selection);
+  }, [complete, generators, name]);
+  /**
+   * Generators are considered loading when there are
+   * no resolved generators and no selection
+   */
+
+  const isLoading = !generators && !selection;
+  /**
+   * Display search when no particular generator was specified,
+   * we have generators to display and no selection has yet
+   * been made.
+   */
+
+  const displaySearch = !name && generators && !selection;
+  /**
+   * Display the search field, and once a selection has been made
+   * run the generator middleware on the selected generator.
+   */
+
   return /*#__PURE__*/_react.default.createElement(_App.default, {
     isLoading: isLoading
-  }, displayQuickSearch && /*#__PURE__*/_react.default.createElement(_selectInput.default, {
-    items: buds,
+  }, displaySearch && /*#__PURE__*/_react.default.createElement(_selectInput.default, {
+    items: generators,
     onSelect: selection => setSelection(selection)
   }), (selection === null || selection === void 0 ? void 0 : selection.value) && /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
     output: output,
