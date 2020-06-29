@@ -88,7 +88,7 @@ You can write your own custom generators and presets or install/share them by wr
 
 Documentation forthcoming. For now, you can run `yarn bud list` to see what is available out-of-the-box.
 
-## All commands
+## All commands:
 
 | Command      | Description             |
 | ------------ | ----------------------- |
