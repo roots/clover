@@ -207,7 +207,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _lodash = _interopRequireDefault(require("lodash.isequal"));
+var _lodash = require("lodash");
 
 var _arrRotate = _interopRequireDefault(require("arr-rotate"));
 
@@ -360,7 +360,7 @@ class SelectInput extends _react.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!(0, _lodash.default)(prevProps.items, this.props.items)) {
+    if (!(0, _lodash.isEqual)(prevProps.items, this.props.items)) {
       this.setState({
         // eslint-disable-line react/no-did-update-set-state
         rotateIndex: 0,

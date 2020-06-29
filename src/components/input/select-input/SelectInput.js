@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
-import isEqual from 'lodash.isequal'
+import {isEqual} from 'lodash'
 import arrRotate from 'arr-rotate'
 import {Box, useStdin} from 'ink'
 import Indicator from './Indicator'

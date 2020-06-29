@@ -105,7 +105,6 @@ Documentation forthcoming. For now, you can run `yarn generate:list` to see what
 
 ### Development dependencies
 
-- @roots/bud
 - @roots/bud-generators
 - arr-rotate
 - babel-eslint
