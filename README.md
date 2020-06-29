@@ -50,24 +50,43 @@ Bud is an extendable, zero configuration scaffolding CLI for WordPress editor bl
 Bud is currently pre-release. But, you can try it out now:
 
 ```sh
-npx @roots/bud@1.0.0-rc.5 init [project-dir]
+npx @roots/bud@1.0.0-rc.6 init [project-dir]
 ```
 
 This will initialize your project and install `@roots/bud` as a local dev dependency.
 
-After initializing, you might try additional generators to kick-start your dev process:
+After initializing, you might try additional generators to kick-start your dev process.
+
+Select from a list of available generators:
 
 ```sh
-yarn generate plugin
+yarn bud generate
 ```
+
+Run a particular generator by name:
 
 ```sh
-yarn generate block
+yarn bud generate block
 ```
 
-But, you can also write your own custom generators, or install/share them by writing a plugin for Bud.
+If you are using Bud in order to build a plugin for the WordPress block editor, you can get started with a recommended preset rather than running several generators manually:
 
-Documentation forthcoming. For now, you can run `yarn generate:list` to see what is available out-of-the-box.
+```sh
+yarn bud preset wp-plugin
+```
+
+This is equivalent to:
+
+```sh
+yarn bud generate wp-plugin
+yarn bud generate block
+yarn bud generate wp-editor-component-image
+yarn bud generate wp-editor-extension
+```
+
+You can write your own custom generators and presets or install/share them by writing a plugin for Bud.
+
+Documentation forthcoming. For now, you can run `yarn bud list` to see what is available out-of-the-box.
 
 ## All commands:
 
