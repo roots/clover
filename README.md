@@ -50,7 +50,7 @@ Bud is an extendable, zero configuration scaffolding CLI for WordPress editor bl
 Bud is currently pre-release. But, you can try it out now:
 
 ```sh
-npx @roots/bud@1.0.0-rc.6 init [project-dir]
+npx @roots/bud@1.0.0-rc.6-1 init [project-dir]
 ```
 
 This will initialize your project and install `@roots/bud` as a local dev dependency.
@@ -100,6 +100,7 @@ Documentation forthcoming. For now, you can run `yarn bud list` to see what is a
 
 ### Dependencies
 
+- arr-rotate
 - chalk
 - enquirer
 - esm
@@ -125,7 +126,6 @@ Documentation forthcoming. For now, you can run `yarn bud list` to see what is a
 ### Development dependencies
 
 - @roots/bud-generators
-- arr-rotate
 - babel-eslint
 - eslint
 - eslint-plugin-react
