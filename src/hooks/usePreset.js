@@ -49,7 +49,6 @@ const usePreset = presetFile => {
      */
     const step = preset.generators[steps]
     if (!step) return
-
     ;(async () => {
       /** Resolve the pkg dir */
       const pkg = await resolvePkg(step.pkg)
