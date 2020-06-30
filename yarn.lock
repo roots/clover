@@ -927,8 +927,9 @@
     physical-cpu-count "^2.0.0"
 
 "@roots/bud-generators@roots/bud-generators#master":
-  version "0.0.5"
-  resolved "https://codeload.github.com/roots/bud-generators/tar.gz/5032687bb47974c24c9671b6d22f37e56ba75dfd"
+  version "0.0.6"
+  uid "6bc03d13216196399276af6ed6e141904d457114"
+  resolved "https://codeload.github.com/roots/bud-generators/tar.gz/6bc03d13216196399276af6ed6e141904d457114"
 
 "@types/ci-info@*":
   version "2.0.0"
