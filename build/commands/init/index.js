@@ -1368,13 +1368,19 @@ var _path = require("path");
 
 var _fsExtra = require("fs-extra");
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _lodash = require("lodash");
 
 var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middleware/GeneratorMiddleware"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /** Constants */
 const cwd = process.cwd();
@@ -1394,15 +1400,34 @@ const Init = ({
    */
   const output = inputArgs && inputArgs[1] ? (0, _path.join)(cwd, inputArgs[1]) : cwd;
   /**
+   * Determine if target out directory is an existing project or all-new
+   */
+
+  const [newProject, setNewProject] = (0, _react.useState)(null);
+  (0, _react.useEffect)(() => {
+    ;
+
+    (async () => {
+      const projectExists = await (0, _fsExtra.exists)((0, _path.join)(output, 'package.json'));
+      setNewProject(!projectExists);
+    })();
+  }, []);
+  /**
    * If the target dir already contains a package.json file
    * then run the init generator which respects that.
    */
 
-  const init = (0, _fsExtra.exists)((0, _path.join)(output, 'package.json')) ? existingProjectInit : newProjectInit;
-  return /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
-    generatorFile: init,
+  const [command, setCommand] = (0, _react.useState)(null);
+  (0, _react.useEffect)(() => {
+    if (!(0, _lodash.isNull)(newProject)) {
+      const init = newProject ? newProjectInit : existingProjectInit;
+      setCommand(init);
+    }
+  }, [newProject]);
+  return command ? /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
+    generatorFile: command,
     output: output
-  });
+  }) : [];
 };
 
 Init.propTypes = {

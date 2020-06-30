@@ -58,7 +58,9 @@ const Preset = ({inputArgs}) => {
        *       the specified name. We should let the user know that we are running
        *       the first result we find, but that a conflict existed.
        */
-      const presetCandidates = presets.filter(preset => isEqual(preset.label, name))
+      const presetCandidates = presets.filter(preset =>
+        isEqual(preset.label, name),
+      )
       const selection = presetCandidates[0]
 
       setSelection(selection)

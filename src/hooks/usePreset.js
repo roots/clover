@@ -7,8 +7,9 @@ import globby from 'globby'
 /**
  * Helpers: resolve generators.
  */
-const generatorObj = file => existsSync(file) ? require(file) : null
-const getTemplateDir = generatorFile => join(dirname(generatorFile), 'templates')
+const generatorObj = file => (existsSync(file) ? require(file) : null)
+const getTemplateDir = generatorFile =>
+  join(dirname(generatorFile), 'templates')
 
 /**
  * Use Preset
@@ -48,7 +49,6 @@ const usePreset = presetFile => {
      */
     const step = preset.generators[steps]
     if (!step) return
-
     ;(async () => {
       /** Resolve the pkg dir */
       const pkg = await resolvePkg(step.pkg)
@@ -102,8 +102,7 @@ const usePreset = presetFile => {
    */
   const [complete, setComplete] = useState(false)
   useEffect(() => {
-    steps &&
-      steps >= preset.generators.length && setComplete(true)
+    steps && steps >= preset.generators.length && setComplete(true)
   }, [steps])
 
   /**
