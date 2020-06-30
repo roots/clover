@@ -1,9 +1,9 @@
 {
 	"commands": [
 		{
-			"path": "generate/index.js",
-			"name": "generate",
-			"description": "Run a generator.",
+			"path": "index.js",
+			"name": "index",
+			"description": "Bud CLI",
 			"args": [
 				{
 					"key": "inputArgs",
@@ -33,16 +33,9 @@
 			"subCommands": []
 		},
 		{
-			"path": "list/index.js",
-			"name": "list",
-			"description": "List available budfiles",
-			"args": [],
-			"subCommands": []
-		},
-		{
-			"path": "preset/index.js",
-			"name": "preset",
-			"description": "Run a preset.",
+			"path": "generate/index.js",
+			"name": "generate",
+			"description": "Run a generator.",
 			"args": [
 				{
 					"key": "inputArgs",
@@ -56,9 +49,16 @@
 			"subCommands": []
 		},
 		{
-			"path": "index.js",
-			"name": "index",
-			"description": "Bud CLI",
+			"path": "list/index.js",
+			"name": "list",
+			"description": "List available budfiles",
+			"args": [],
+			"subCommands": []
+		},
+		{
+			"path": "preset/index.js",
+			"name": "preset",
+			"description": "Run a preset.",
 			"args": [
 				{
 					"key": "inputArgs",

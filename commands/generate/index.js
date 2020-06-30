@@ -26,9 +26,7 @@ const Generate = ({inputArgs}) => {
    */
   const [output, setOutput] = useState(cwd)
   useEffect(() => {
-    inputArgs?.[2] && setOutput(
-      path.resolve(cwd, inputArgs[2])
-    )
+    inputArgs?.[2] && setOutput(path.resolve(cwd, inputArgs[2]))
   }, [inputArgs])
 
   /**
@@ -60,7 +58,9 @@ const Generate = ({inputArgs}) => {
      *       the specified name. We should let the user know that we are running
      *       the first result we find, but that a conflict existed.
      */
-    const candidates = generators?.filter(bud => isEqual(bud.label, name))
+    const candidates = generators?.filter(bud =>
+      isEqual(bud.label, name),
+    )
     const selection = candidates?.[0]
 
     const isReady = name && generators && complete
