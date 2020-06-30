@@ -1,6 +1,6 @@
 import {join} from 'path'
 import {exists} from 'fs-extra'
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {isNull} from 'lodash'
 
@@ -32,9 +32,9 @@ const Init = ({inputArgs}) => {
    */
   const [newProject, setNewProject] = useState(null)
   useEffect(() => {
-    ;(async() => {
+    ;(async () => {
       const projectExists = await exists(join(output, 'package.json'))
-      setNewProject(! projectExists)
+      setNewProject(!projectExists)
     })()
   }, [])
 
@@ -44,16 +44,18 @@ const Init = ({inputArgs}) => {
    */
   const [command, setCommand] = useState(null)
   useEffect(() => {
-    if (! isNull(newProject)) {
-      const init = newProject
-        ? newProjectInit
-        : existingProjectInit
+    if (!isNull(newProject)) {
+      const init = newProject ? newProjectInit : existingProjectInit
 
       setCommand(init)
     }
   }, [newProject])
 
-  return command ? <GeneratorMiddleware generatorFile={command} output={output} /> : []
+  return command ? (
+    <GeneratorMiddleware generatorFile={command} output={output} />
+  ) : (
+    []
+  )
 }
 
 Init.propTypes = {
