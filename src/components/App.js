@@ -18,7 +18,6 @@ const App = ({isLoading, loadingMessage, children}) => (
     paddingBottom={0}
     paddingLeft={1}>
     <Banner />
-
     {isLoading && (
       <Loading
         spinnerColor="green"

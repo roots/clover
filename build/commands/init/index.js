@@ -1205,6 +1205,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * Use subscription.
+ *
+ * Once there is a generator and data available it is passed to the bud
+ * engine to be run. Bud will return an rxjs observable to be utilized
+ * by components like Tasks to indicate to the user what is going on
+ * with the scaffold process.
  */
 const useSubscription = ({
   config,
@@ -1361,6 +1366,8 @@ exports.default = void 0;
 
 var _path = require("path");
 
+var _fsExtra = require("fs-extra");
+
 var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
@@ -1370,15 +1377,28 @@ var _GeneratorMiddleware = _interopRequireDefault(require("./../../src/middlewar
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Constants */
-const init = (0, _path.resolve)(__dirname, './../../../src/generators/init/init.bud.js');
 const cwd = process.cwd();
+
+const generatorsDir = require('@roots/bud-generators');
+
+const newProjectInit = (0, _path.join)(generatorsDir, 'bud-init-new/bud-init-new.bud.js');
+const existingProjectInit = (0, _path.join)(generatorsDir, 'bud-init-existing/bud-init-existing.bud.js');
 /** Command: bud init */
 /// Create a new project
 
 const Init = ({
   inputArgs
 }) => {
+  /**
+   * If no output is specified we assume cwd.
+   */
   const output = inputArgs && inputArgs[1] ? (0, _path.join)(cwd, inputArgs[1]) : cwd;
+  /**
+   * If the target dir already contains a package.json file
+   * then run the init generator which respects that.
+   */
+
+  const init = (0, _fsExtra.exists)((0, _path.join)(output, 'package.json')) ? existingProjectInit : newProjectInit;
   return /*#__PURE__*/_react.default.createElement(_GeneratorMiddleware.default, {
     generatorFile: init,
     output: output

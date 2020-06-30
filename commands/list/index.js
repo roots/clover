@@ -9,6 +9,9 @@ import List from './../../src/components/List'
 /** Command: bud list */
 /// List available budfiles
 const ListCommand = () => {
+  /**
+   * Fetch all available generators.
+   */
   const {
     core: coreGenerators,
     plugin: pluginGenerators,
@@ -21,6 +24,9 @@ const ListCommand = () => {
     ...coreGenerators,
   ]
 
+  /**
+   * Fetch all available presets.
+   */
   const {
     core: corePresets,
     plugin: pluginPresets,
@@ -28,14 +34,19 @@ const ListCommand = () => {
   } = usePresetIndex()
   const presets = [...corePresets, ...pluginPresets]
 
+  /**
+   * We have all available generators and presets.
+   */
   const complete = generatorsComplete && presetsComplete
 
   return (
     <App isLoading={!complete}>
-      <Box flexDirection="column">
-        <List label="Presets" items={presets} />
-        <List label="Generators" items={generators} />
-      </Box>
+      {complete && (
+        <Box flexDirection="column">
+          <List label="Presets" items={presets} />
+          <List label="Generators" items={generators} />
+        </Box>
+      )}
     </App>
   )
 }

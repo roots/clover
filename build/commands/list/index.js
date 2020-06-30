@@ -239,7 +239,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const cwd = process.cwd();
 /**
- * Process globby matches into expected object
+ * Process glob matches into the format the rest of the application anticipates.
  */
 
 const fromMatches = matches => matches.map(generator => ({
@@ -410,6 +410,13 @@ var _ink = require("ink");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Present an array of objects as a list.
+ *
+ * @prop {string} label
+ * @prop {array}  items
+ * @return {ReactElement}
+ */
 const List = ({
   label,
   items
@@ -419,10 +426,10 @@ const List = ({
 }, label && /*#__PURE__*/_react.default.createElement(_ink.Text, {
   color: "black",
   backgroundColor: "green"
-}, label), items === null || items === void 0 ? void 0 : items.map((preset, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
+}, label), items === null || items === void 0 ? void 0 : items.map((item, id) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
   key: id,
   flexDirection: "column"
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, "\u25E6 ", preset.name))));
+}, /*#__PURE__*/_react.default.createElement(_ink.Text, null, "\u25E6 ", item.name))));
 
 var _default = List;
 exports.default = _default;
@@ -451,6 +458,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /** Command: bud list */
 /// List available budfiles
 const ListCommand = () => {
+  /**
+   * Fetch all available generators.
+   */
   const {
     core: coreGenerators,
     plugin: pluginGenerators,
@@ -458,16 +468,24 @@ const ListCommand = () => {
     complete: generatorsComplete
   } = (0, _useGeneratorIndex.default)();
   const generators = [...projectGenerators, ...pluginGenerators, ...coreGenerators];
+  /**
+   * Fetch all available presets.
+   */
+
   const {
     core: corePresets,
     plugin: pluginPresets,
     complete: presetsComplete
   } = (0, _usePresetIndex.default)();
   const presets = [...corePresets, ...pluginPresets];
+  /**
+   * We have all available generators and presets.
+   */
+
   const complete = generatorsComplete && presetsComplete;
   return /*#__PURE__*/_react.default.createElement(_App.default, {
     isLoading: !complete
-  }, /*#__PURE__*/_react.default.createElement(_ink.Box, {
+  }, complete && /*#__PURE__*/_react.default.createElement(_ink.Box, {
     flexDirection: "column"
   }, /*#__PURE__*/_react.default.createElement(_List.default, {
     label: "Presets",
