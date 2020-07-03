@@ -5,11 +5,7 @@ import figures from 'figures'
 
 const Indicator = ({isSelected}) => (
   <Box marginRight={1}>
-    {isSelected ? (
-      <Text color="blue">
-				{figures.pointer}
-			</Text>
-		) : ' '}
+    {isSelected ? <Text color="blue">{figures.pointer}</Text> : ' '}
   </Box>
 )
 
