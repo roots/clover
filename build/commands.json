@@ -1,6 +1,22 @@
 {
 	"commands": [
 		{
+			"path": "generate/index.js",
+			"name": "generate",
+			"description": "Run a generator.",
+			"args": [
+				{
+					"key": "inputArgs",
+					"type": "array",
+					"description": "",
+					"isRequired": false,
+					"aliases": [],
+					"positional": false
+				}
+			],
+			"subCommands": []
+		},
+		{
 			"path": "index.js",
 			"name": "index",
 			"description": "Bud CLI",
@@ -25,22 +41,6 @@
 					"key": "inputArgs",
 					"type": "array",
 					"description": "Output directory",
-					"isRequired": false,
-					"aliases": [],
-					"positional": false
-				}
-			],
-			"subCommands": []
-		},
-		{
-			"path": "generate/index.js",
-			"name": "generate",
-			"description": "Run a generator.",
-			"args": [
-				{
-					"key": "inputArgs",
-					"type": "array",
-					"description": "",
 					"isRequired": false,
 					"aliases": [],
 					"positional": false

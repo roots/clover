@@ -139,9 +139,9 @@ const Indicator = ({
   isSelected
 }) => /*#__PURE__*/_react.default.createElement(_ink.Box, {
   marginRight: 1
-}, /*#__PURE__*/_react.default.createElement(_ink.Text, {
+}, isSelected ? /*#__PURE__*/_react.default.createElement(_ink.Text, {
   color: "blue"
-}, isSelected ? _figures.default.pointer : ''));
+}, _figures.default.pointer) : ' ');
 
 Indicator.propTypes = {
   isSelected: _propTypes.default.bool
@@ -171,7 +171,7 @@ const Item = ({
   isSelected,
   label
 }) => /*#__PURE__*/_react.default.createElement(_ink.Text, {
-  blue: isSelected
+  color: isSelected ? 'blue' : 'white'
 }, label);
 
 Item.propTypes = {

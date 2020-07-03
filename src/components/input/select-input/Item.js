@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Text} from 'ink'
 
 const Item = ({isSelected, label}) => (
-  <Text blue={isSelected}>{label}</Text>
+  <Text color={isSelected ? 'blue' : 'white'}>{label}</Text>
 )
 
 Item.propTypes = {
