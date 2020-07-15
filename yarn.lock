@@ -926,7 +926,8 @@
 
 "@roots/bud-generators@roots/bud-generators#master":
   version "0.0.9"
-  resolved "https://codeload.github.com/roots/bud-generators/tar.gz/ae2384bd9dd9f8275a18c01dafb6910159329044"
+  uid "0b9c12e979629d5bdba7685ed7c475a90079c81e"
+  resolved "https://codeload.github.com/roots/bud-generators/tar.gz/0b9c12e979629d5bdba7685ed7c475a90079c81e"
 
 "@types/ci-info@*":
   version "2.0.0"
