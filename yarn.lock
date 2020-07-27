@@ -3972,10 +3972,10 @@ ink-link@^1.1.0:
     prop-types "^15.7.2"
     terminal-link "^2.1.1"
 
-ink-spinner@^4.0.0-0:
-  version "4.0.0-0"
-  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.0-0.tgz#0a7660de9cf9754ef8f5199bdf3f4763d62af854"
-  integrity sha512-9HzOG0Hsgz+rjcbIpPaqFSYXLScWtpYKmQDlxhn45a8TwDL71LdHO3ICt0jR4CqVjy5N1FenhcVRIu0FGCAVNQ==
+ink-spinner@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.0.tgz#a233df86e17b76a28ba5c76c412b30d43ef96fa7"
+  integrity sha512-Oq2u5SY1qZ61LbzyQReJxpoRmruLcWw3lRb7cq8t3fj9484Eo5HggayyX5OVEcCGURWyyH8kJmFZJgrSGtJqkA==
   dependencies:
     "@types/react" "^16.9.38"
     cli-spinners "^2.3.0"
