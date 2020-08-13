@@ -39,7 +39,7 @@
     "ink-text-input": "^4.0.0-1",
     "ink-use-stdout-dimensions": "^1.0.5",
     "lodash": "^4.17.19",
-    "pastel": "^1.0.3",
+    "pastel": "^1.1.1",
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

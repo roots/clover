@@ -5502,10 +5502,10 @@ pascalcase@^0.1.1:
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
 
-pastel@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/pastel/-/pastel-1.0.3.tgz#2a85076bf67ec6f6f66d6fc92102db7ec977c1fe"
-  integrity sha512-Bq0WN/5RKikwc85DX4F0f3chJkhGvstmsA5ajToXDDI7BAx3ygO4rV/sUrNLFuac52kJpzLgWi8ctlwb9dwg2A==
+pastel@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/pastel/-/pastel-1.1.1.tgz#76e5d44540c96606cf77aeb41850c00e19df202a"
+  integrity sha512-9tAs6SQN4iXucNNiHuUWTxlHh8NdL+tUwmIUCKkehgd/5A1Ef+GgvoZbhbHRUb34xqFq9FzeXrKHJ9u6945fDg==
   dependencies:
     "@babel/parser" "^7.3.4"
     "@babel/traverse" "^7.3.4"
