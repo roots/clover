@@ -1007,7 +1007,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.9.19", "@types/react@^16.9.38":
+"@types/react@*", "@types/react@^16.9.19":
   version "16.9.43"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.43.tgz#c287f23f6189666ee3bebc2eb8d0f84bcb6cdb6b"
   integrity sha512-PxshAFcnJqIWYpJbLPriClH53Z2WlJcVZE+NP2etUtWQs2s7yIMj3/LDKZT/5CHJ/F62iyjVCDu2H3jHEXIxSg==
@@ -3972,12 +3972,11 @@ ink-link@^1.1.0:
     prop-types "^15.7.2"
     terminal-link "^2.1.1"
 
-ink-spinner@^4.0.0-0:
-  version "4.0.0-0"
-  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.0-0.tgz#0a7660de9cf9754ef8f5199bdf3f4763d62af854"
-  integrity sha512-9HzOG0Hsgz+rjcbIpPaqFSYXLScWtpYKmQDlxhn45a8TwDL71LdHO3ICt0jR4CqVjy5N1FenhcVRIu0FGCAVNQ==
+ink-spinner@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.1.tgz#f67a59ff6d4698a5d67b7bb66266ea6829a8a4e1"
+  integrity sha512-2eYtzzUPb22Z0Cn2bGvE4BteYjcqDhgrHnCzGJM81EHXXlyNU7aYfucPgZs2CZPy0LWz/5hwoecFhd0mj1hrbw==
   dependencies:
-    "@types/react" "^16.9.38"
     cli-spinners "^2.3.0"
 
 ink-text-input@^4.0.0-1:
