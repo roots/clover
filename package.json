@@ -44,7 +44,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "resolve-pkg": "^2.0.0",
-    "rxjs": "^6.6.0"
+    "rxjs": "^6.6.3"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
