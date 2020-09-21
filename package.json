@@ -36,7 +36,7 @@
     "ink": "^3.0.0-6",
     "ink-link": "^1.1.0",
     "ink-spinner": "^4.0.0-0",
-    "ink-text-input": "^4.0.0-1",
+    "ink-text-input": "^4.0.1",
     "ink-use-stdout-dimensions": "^1.0.5",
     "lodash": "^4.17.19",
     "pastel": "^1.0.3",

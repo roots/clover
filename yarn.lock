@@ -3980,10 +3980,10 @@ ink-spinner@^4.0.0-0:
     "@types/react" "^16.9.38"
     cli-spinners "^2.3.0"
 
-ink-text-input@^4.0.0-1:
-  version "4.0.0-1"
-  resolved "https://registry.yarnpkg.com/ink-text-input/-/ink-text-input-4.0.0-1.tgz#d6ee88995613fe0b6d4c43627c2aad9791b09375"
-  integrity sha512-muFPlcWrH16MGV7zfD2LYf8a9x0gstOttIbB4h+wKJTE+NpVAyidljTpqwxd7ygLS80vP35Dq6+SV2y6l7kP9A==
+ink-text-input@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ink-text-input/-/ink-text-input-4.0.1.tgz#e3de3f7e7f4247d64018838c57bbbc6120901368"
+  integrity sha512-wiqkrB2tgnCnv51r2LpNLVfgrd/V+UXF3ccry+/Q7on9CBt8LVavX6NDYRMdXljuM+CcFV/sVro0bCr5oxB05w==
   dependencies:
     chalk "^4.1.0"
     type-fest "^0.15.1"
