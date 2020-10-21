@@ -33,7 +33,7 @@
     "globby": "^11.0.1",
     "handlebars": "^4.7.6",
     "handlebars-helpers": "^0.10.0",
-    "ink": "^3.0.0-6",
+    "ink": "^3.0.8",
     "ink-link": "^1.1.0",
     "ink-spinner": "^4.0.0-0",
     "ink-text-input": "^4.0.0-1",
